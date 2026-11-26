@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>あかとらサンタのクリスマス ミニゲームランド 🎄</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+      touch-action: manipulation;
+    }
+    body {
+      background-color: #590d0e;
+      background: radial-gradient(circle at 50% 25%, #8b1517 0%, #590d0e 65%, #3d0708 100%);
+      font-family: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: #fff;
+    }
+    #game-container {
+      position: relative;
+      width: 100vw;
+      max-width: 440px;
+      height: 100vh;
+      max-height: 840px;
+      background: linear-gradient(180deg, #1b4332 0%, #081c15 35%, #590d0e 75%, #3d0708 100%);
+      box-shadow: 0 12px 50px rgba(0,0,0,0.7);
+      overflow: hidden;
+      border-radius: 0;
+    }
+    @media (min-width: 480px) {
+      #game-container {
+        border-radius: 32px;
+        height: 94vh;
+        border: 5px solid #ffd700;
+        box-shadow: 0 16px 60px rgba(0,0,0,0.8), inset 0 0 14px rgba(0,0,0,0.4);
+      }
+    }
+
+    /* Top Sound & Home Bar */
+    .top-bar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 40;
+      pointer-events: none;
+    }
+    .icon-btn {
+      pointer-events: auto;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(45, 10, 11, 0.85);
+      border: 2px solid #ffd700;
+      color: #fff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .icon-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Screen Wrapper */
+    .view-screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      text-align: center;
+      transition: opacity 0.3s ease, visibility 0.3s;
+      z-index: 10;
+      overflow-y: auto;
+    }
+    .view-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Buttons (Playful Christmas Toy Style) */
+    .btn {
+      appearance: none;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 900;
+      border-radius: 50px;
+      padding: 13px 30px;
+      font-size: 18px;
+      color: #fff;
+      background: #c0392b;
+      border-bottom: 5px solid #8b0000;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+      transform: translateY(0);
+      transition: transform 0.08s, border-bottom-width 0.08s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .btn-green {
+      background: #27ae60;
+      border-bottom-color: #1a7440;
+    }
+    .btn-gold {
+      background: #e67e22;
+      border-bottom-color: #a8540b;
+      color: #fff;
+    }
+    .btn-small {
+      padding: 8px 18px;
+      font-size: 14px;
+      border-bottom-width: 3px;
+    }
+
+    /* --- PORTAL MENU SCREEN --- */
+    #menu-screen {
+      justify-content: flex-start;
+      padding-top: 55px;
+      padding-bottom: 24px;
+    }
+    .portal-banner {
+      background: #c0392b;
+      color: #fff;
+      padding: 6px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      border: 2px solid #ffd700;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .portal-title {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 6px;
+      text-shadow: 0 3px 0 #781012, 0 6px 12px rgba(0,0,0,0.5);
+    }
+    .portal-subtitle {
+      font-size: 13px;
+      color: #ffd700;
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+
+    /* 4 Game Cards Grid */
+    .games-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      max-width: 380px;
+      margin-bottom: 16px;
+    }
+    .game-card {
+      background: rgba(27, 67, 50, 0.9);
+      border: 2px solid #ffd700;
+      border-radius: 20px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      transition: transform 0.15s, background 0.15s;
+    }
+    .game-card:nth-child(even) {
+      background: rgba(139, 21, 23, 0.9);
+    }
+    .game-card:active {
+      transform: scale(0.95);
+      filter: brightness(1.1);
+    }
+    .game-icon {
+      font-size: 38px;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    }
+    .game-name {
+      font-size: 14px;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+    .game-badge {
+      font-size: 10px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px 8px;
+      border-radius: 10px;
+      color: #ffd700;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    /* Akatora Santa Letter Banner on Menu */
+    .letter-btn-banner {
+      width: 100%;
+      max-width: 380px;
+      border-radius: 18px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      margin-top: 4px;
+      transition: all 0.3s ease;
+    }
+    .letter-btn-banner.locked {
+      background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+      border: 2px dashed #9ca3af;
+      opacity: 0.9;
+    }
+    .letter-btn-banner.unlocked {
+      background: linear-gradient(135deg, #c0392b 0%, #8b0000 100%);
+      border: 2px solid #ffd700;
+      animation: unlockGlow 1.5s infinite alternate;
+    }
+    @keyframes unlockGlow {
+      0% { box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+      100% { box-shadow: 0 6px 24px rgba(255, 215, 0, 0.6); }
+    }
+    .letter-btn-banner:active {
+      transform: scale(0.97);
+    }
+    .letter-btn-content {
+      text-align: left;
+    }
+    .letter-btn-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .letter-btn-sub {
+      font-size: 11px;
+      color: #ffd700;
+    }
+    .letter-btn-banner.locked .letter-btn-sub {
+      color: #cbd5e1;
+    }
+
+    /* --- GAME 1: PRESENT CATCH STYLES --- */
+    #catch-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .game-hud {
+      position: absolute;
+      top: 58px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 15;
+    }
+    .hud-chip {
+      background: rgba(30, 10, 12, 0.88);
+      border: 2px solid #ffd700;
+      border-radius: 16px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .hud-chip.fever {
+      background: #c0392b;
+      border-color: #fff;
+      animation: feverPulse 0.5s infinite alternate;
+    }
+    @keyframes feverPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.06); }
+    }
+    #mobile-controls {
+      position: absolute;
+      bottom: 14px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      pointer-events: none;
+      z-index: 15;
+    }
+    .touch-btn {
+      pointer-events: auto;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #fff;
+      touch-action: none;
+    }
+    .touch-btn:active {
+      background: rgba(255, 215, 0, 0.6);
+      transform: scale(0.92);
+    }
+    .diff-tabs {
+      display: flex;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 4px;
+      border-radius: 18px;
+      margin-bottom: 12px;
+    }
+    .diff-tab {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: #b0bec5;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 4px;
+      border-radius: 14px;
+      cursor: pointer;
+    }
+    .diff-tab.active {
+      background: #27ae60;
+      color: #fff;
+    }
+
+    /* --- GAME 2: MEMORY CARD GAME STYLES --- */
+    .memory-diff-tabs {
+      display: flex;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 4px;
+      border-radius: 18px;
+      margin-bottom: 10px;
+      width: 100%;
+      max-width: 320px;
+    }
+    .memory-diff-tab {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: #cfd8dc;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 4px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .memory-diff-tab.active {
+      background: #27ae60;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .memory-grid {
+      display: grid;
+      gap: 10px;
+      width: 100%;
+      max-width: 360px;
+      perspective: 1000px;
+      margin: 10px 0;
+    }
+    .memory-grid.grid-6 {
+      gap: 5px;
+      max-width: 380px;
+    }
+    .memory-grid.grid-6 .memory-card {
+      border-radius: 8px;
+    }
+    .memory-grid.grid-6 .card-face {
+      border-radius: 8px;
+    }
+    .memory-grid.grid-6 .card-front {
+      font-size: 20px;
+      border-width: 2px;
+    }
+    .memory-grid.grid-6 .card-back {
+      font-size: 16px;
+      border-width: 2px;
+    }
+    .memory-card {
+      aspect-ratio: 1;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.3s;
+      cursor: pointer;
+      border-radius: 14px;
+    }
+    .memory-card.flipped {
+      transform: rotateY(180deg);
+    }
+    .memory-card.matched {
+      transform: rotateY(180deg) scale(0.92);
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .card-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .card-back {
+      background: #c0392b;
+      border: 3px solid #ffd700;
+      font-size: 24px;
+      color: #ffd700;
+    }
+    .card-front {
+      background: #fff;
+      border: 3px solid #27ae60;
+      transform: rotateY(180deg);
+      font-size: 32px;
+    }
+
+    /* --- GAME 3: CHIMNEY TAP GAME STYLES --- */
+    .chimney-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px 10px;
+      width: 100%;
+      max-width: 360px;
+      margin: 10px 0;
+    }
+    .chimney-hole {
+      position: relative;
+      height: 100px;
+      background: #172a1e;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid #2d6a4f;
+      box-shadow: inset 0 10px 15px rgba(0,0,0,0.6);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .chimney-pipe {
+      position: absolute;
+      bottom: 0;
+      left: 8%;
+      right: 8%;
+      height: 48px;
+      background: #b33939;
+      border: 3px solid #7d1d1d;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .chimney-snow {
+      position: absolute;
+      top: -6px;
+      left: -4px;
+      right: -4px;
+      height: 12px;
+      background: #fff;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .chimney-char {
+      position: absolute;
+      bottom: 25px;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      transform: translateY(85px);
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 3;
+      pointer-events: none;
+    }
+    .chimney-char.up {
+      transform: translateY(0px);
+    }
+    .chimney-char.hit {
+      transform: translateY(0px) scale(0.8);
+      filter: brightness(1.3);
+    }
+    .chimney-float-text {
+      position: absolute;
+      top: 15px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 900;
+      pointer-events: none;
+      z-index: 20;
+      text-shadow: 0 2px 4px #000;
+      animation: chimneyFloatUp 0.6s ease-out forwards;
+    }
+    @keyframes chimneyFloatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-24px); }
+    }
+
+    /* --- GAME 4: SCRATCH LOTTERY STYLES --- */
+    .scratch-wrapper {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 4px solid #ffd700;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      margin: 16px 0;
+    }
+    .scratch-under {
+      position: absolute;
+      inset: 0;
+      background: #fff9ea;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #333;
+    }
+    .scratch-under .rank {
+      font-size: 32px;
+      font-weight: 900;
+      color: #c0392b;
+      margin-bottom: 8px;
+    }
+    .scratch-under .msg {
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 800;
+      color: #4a2e18;
+    }
+    #scratch-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      cursor: pointer;
+    }
+
+    /* --- RESULT MODAL (Shared) --- */
+    .sub-result-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid #ffd700;
+      border-radius: 20px;
+      padding: 16px 24px;
+      margin: 12px 0 16px;
+      width: 85%;
+      max-width: 280px;
+    }
+    .sub-result-score {
+      font-size: 40px;
+      font-weight: 900;
+      color: #ffd700;
+    }
+
+    /* --- AKATORA SANTA LETTER MODAL (No extra spaces) --- */
+    #letter-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.3s;
+    }
+    #letter-modal.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .letter-paper {
+      position: relative;
+      background: #fff9ea;
+      color: #4a2e18;
+      border: 4px double #c0392b;
+      border-radius: 22px;
+      padding: 26px 20px;
+      max-width: 340px;
+      width: 100%;
+      box-shadow: 0 14px 35px rgba(0,0,0,0.6);
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.8;
+      animation: popIn 0.3s ease-out;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .letter-paper h3 {
+      text-align: center;
+      color: #c0392b;
+      font-size: 18px;
+      margin-bottom: 12px;
+      font-weight: 900;
+    }
+    .letter-sign {
+      text-align: right;
+      margin-top: 14px;
+      font-weight: 800;
+      color: #8b0000;
+    }
+    .letter-stamp {
+      position: absolute;
+      bottom: 16px;
+      left: 20px;
+      font-size: 36px;
+      opacity: 0.8;
+      transform: rotate(-10deg);
+    }
+
+    #confetti-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 45;
+    }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  <!-- Shared Top Navigation Bar -->
+  <div class="top-bar">
+    <button id="home-btn" class="icon-btn" title="メニューへもどる" style="visibility: hidden;">🏠</button>
+    <button id="sound-btn" class="icon-btn" title="おとのきりかえ">🔔</button>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- ================= SCREEN 0: PORTAL MENU ================= -->
+  <div id="menu-screen" class="view-screen">
+    <div class="portal-banner">🎄 あかとらサンタからのプレゼント 🎄</div>
+    <h1 class="portal-title">クリスマス<br>ミニゲームランド</h1>
+    <div class="portal-subtitle">あそびたいゲームをえらんでね！✨</div>
+
+    <!-- 4 Games Grid -->
+    <div class="games-grid">
+      <!-- Game 1 -->
+      <div class="game-card" onclick="openGame('catch')">
+        <div class="game-icon">🛷</div>
+        <div class="game-name">プレゼント<br>キャッチ</div>
+        <div class="game-badge">アクション</div>
+      </div>
+      <!-- Game 2 -->
+      <div class="game-card" onclick="openGame('memory')">
+        <div class="game-icon">🃏</div>
+        <div class="game-name">クリスマス<br>えあわせ</div>
+        <div class="game-badge">難易度えらべる</div>
+      </div>
+      <!-- Game 3 -->
+      <div class="game-card" onclick="openGame('chimney')">
+        <div class="game-icon">🏠</div>
+        <div class="game-name">えんとつから<br>ヒョコッ！</div>
+        <div class="game-badge">もぐらたたき風</div>
+      </div>
+      <!-- Game 4 -->
+      <div class="game-card" onclick="openGame('scratch')">
+        <div class="game-icon">✨</div>
+        <div class="game-name">あかとらサンタの<br>スクラッチ</div>
+        <div class="game-badge">ゆびで削る運だめし</div>
+      </div>
+    </div>
+
+    <!-- Akatora Santa Letter Button on Menu (Hidden until any game cleared) -->
+    <div id="menu-letter-btn" class="letter-btn-banner unlocked" onclick="openSantaLetter()" style="display: none;">
+      <div style="font-size: 32px;">💌</div>
+      <div class="letter-btn-content">
+        <div class="letter-btn-title">あかとらサンタからの手紙</div>
+        <div class="letter-btn-sub">かぜのこのみんなへの特別メッセージをよむ 🎅</div>
+      </div>
+      <div style="font-size: 20px; color: #ffd700;">▶</div>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 1: PRESENT CATCH ================= -->
+  <div id="catch-screen" class="view-screen hidden" style="padding: 0;">
+    <canvas id="catch-canvas"></canvas>
+
+    <div id="catch-hud" class="game-hud">
+      <div class="hud-chip">⏰ <span id="catch-time">30</span>秒</div>
+      <div id="catch-fever" class="hud-chip fever" style="display: none;">⭐ フィーバー中！</div>
+      <div class="hud-chip">スコア: <span id="catch-score" style="color:#ffd700;">0</span></div>
+    </div>
+
+    <div id="mobile-controls">
+      <div id="btn-left" class="touch-btn">◀</div>
+      <div id="btn-right" class="touch-btn">▶</div>
+    </div>
+
+    <!-- Catch Start Overlay -->
+    <div id="catch-start-overlay" class="view-screen" style="background: rgba(45,10,12,0.92);">
+      <h2 style="font-size: 24px; margin-bottom: 8px;">🛷 プレゼントキャッチ</h2>
+      <p style="font-size: 13px; color: #ffd700; margin-bottom: 10px;">ゆびやボタンでサンタをうごかして、おくりものをキャッチしよう！</p>
+      
+      <div style="font-size: 11px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 6px 12px; margin-bottom: 12px; line-height: 1.6;">
+        <span style="color:#ffd700;">🎁 プレゼント (+100〜)</span> / <span style="color:#ff7675;">🍰 ケーキ (+200)</span> / <span style="color:#ffd700;">⭐ フィーバー</span><br>
+        <span style="color:#74b9ff;">❄️ 雪玉 (-50)</span> / <span style="color:#0984e3;">🧊 つらら (-80)</span> / <span style="color:#ff4757;">💣 ばくだん (-120)</span>
+      </div>
+
+      <div style="width: 100%; max-width: 280px; margin-bottom: 14px;">
+        <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">むずかしさをえらんでね</div>
+        <div class="diff-tabs">
+          <button class="diff-tab active" data-diff="easy" onclick="setDifficulty('easy')">🐥 かんたん</button>
+          <button class="diff-tab" data-diff="normal" onclick="setDifficulty('normal')">🦌 ふつう</button>
+          <button class="diff-tab" data-diff="hard" onclick="setDifficulty('hard')">🎅 むずかしい</button>
+        </div>
+      </div>
+
+      <button class="btn btn-green" onclick="startCatchGame()">スタート！ 🎮</button>
+    </div>
+
+    <!-- Catch Result Overlay -->
+    <div id="catch-result-overlay" class="view-screen hidden" style="background: rgba(45,10,12,0.94);">
+      <h2 style="font-size: 22px;">🎉 タイムアップ！</h2>
+      <div id="catch-result-rank" style="font-size: 22px; color: #ffd700; margin: 6px 0; font-weight: 900;"></div>
+      <div class="sub-result-card">
+        <div style="font-size: 12px;">スコア</div>
+        <div id="catch-final-score" class="sub-result-score">0</div>
+        <div style="font-size: 12px; margin-top: 4px;">キャッチ数: <b id="catch-final-count">0</b>こ</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 250px;">
+        <button class="btn btn-gold btn-small" onclick="openSantaLetter()">🎅 あかとらサンタの手紙</button>
+        <button class="btn btn-green btn-small" onclick="startCatchGame()">もう一回あそぶ 🔄</button>
+        <button class="btn btn-small" style="background:#57606f; border-bottom-color:#2f3542;" onclick="backToMenu()">メニューにもどる 🏠</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 2: MEMORY CARD GAME ================= -->
+  <div id="memory-screen" class="view-screen hidden">
+    <h2 style="font-size: 22px; margin-bottom: 2px;">🃏 クリスマスえあわせ</h2>
+    <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">カードをめくって同じ絵をそろえよう！</div>
+
+    <!-- Memory Difficulty Tabs -->
+    <div class="memory-diff-tabs">
+      <button class="memory-diff-tab active" data-memdiff="easy" onclick="setMemoryDifficulty('easy')">🐥 かんたん (6枚)</button>
+      <button class="memory-diff-tab" data-memdiff="normal" onclick="setMemoryDifficulty('normal')">🦌 ふつう (12枚)</button>
+      <button class="memory-diff-tab" data-memdiff="hard" onclick="setMemoryDifficulty('hard')">🎅 むずかしい (36枚)</button>
+    </div>
+
+    <div style="display: flex; gap: 20px; font-size: 13px; font-weight: 800; margin-bottom: 4px;">
+      <div>見つけたペア: <span id="mem-pairs" style="color:#2ecc71;">0</span> / <span id="mem-total-pairs">3</span></div>
+      <div>めくった回数: <span id="mem-flips" style="color:#ffd700;">0</span>回</div>
+    </div>
+
+    <div class="memory-grid" id="memory-grid">
+      <!-- Cards generated by JS -->
+    </div>
+
+    <!-- Memory Result Overlay -->
+    <div id="memory-result-overlay" class="view-screen hidden" style="background: rgba(45,10,12,0.94);">
+      <h2 style="font-size: 24px; color: #ffd700;">🎉 ぜんぶそろった！</h2>
+      <div class="sub-result-card">
+        <div style="font-size: 13px;">かかった回数</div>
+        <div id="memory-final-flips" class="sub-result-score">0回</div>
+        <div id="memory-rank" style="font-size: 14px; font-weight: bold; margin-top: 4px; color: #2ecc71;">きおく力マスター！✨</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 250px;">
+        <button class="btn btn-gold btn-small" onclick="openSantaLetter()">🎅 あかとらサンタの手紙</button>
+        <button class="btn btn-green btn-small" onclick="initMemoryGame()">もう一回あそぶ 🔄</button>
+        <button class="btn btn-small" style="background:#57606f; border-bottom-color:#2f3542;" onclick="backToMenu()">メニューにもどる 🏠</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 3: CHIMNEY TAP GAME ================= -->
+  <div id="chimney-screen" class="view-screen hidden">
+    <h2 style="font-size: 22px; margin-bottom: 2px;">🏠 えんとつからヒョコッ！</h2>
+    <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">
+      サンタやトナカイをすばやくタップ！<span style="color:#74b9ff;">❄️雪玉や💣爆弾に注意！</span>
+    </div>
+
+    <!-- Chimney Difficulty Tabs -->
+    <div class="memory-diff-tabs" style="margin-bottom: 8px;">
+      <button class="memory-diff-tab active" data-chimdiff="easy" onclick="setChimneyDifficulty('easy')">🐥 かんたん</button>
+      <button class="memory-diff-tab" data-chimdiff="normal" onclick="setChimneyDifficulty('normal')">🦌 ふつう</button>
+      <button class="memory-diff-tab" data-chimdiff="hard" onclick="setChimneyDifficulty('hard')">🎅 むずかしい</button>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; width: 100%; max-width: 320px; font-size: 14px; font-weight: 800;">
+      <div class="hud-chip">⏰ のこり: <span id="chimney-time">30</span>秒</div>
+      <div class="hud-chip">とくてん: <span id="chimney-score" style="color:#ffd700;">0</span></div>
+    </div>
+
+    <div class="chimney-grid" id="chimney-grid">
+      <!-- 6 Chimney holes -->
+    </div>
+
+    <!-- Chimney Start Overlay -->
+    <div id="chimney-start-overlay" class="view-screen" style="background: rgba(45,10,12,0.92);">
+      <h2 style="font-size: 24px; margin-bottom: 8px;">🏠 えんとつタップ！</h2>
+      <p style="font-size: 13px; color: #ffd700; margin-bottom: 10px; line-height: 1.6;">
+        えんとつマスをタップしてキャラクターをつかまえよう！<br>
+        🎅 サンタ (+100) / 🦌 トナカイ (+150) / ⛄ 雪だるま (+80)<br>
+        <span style="color:#ff4757;">❄️ 雪玉 (-50) / 💣 爆弾 (-100) はたたかないで！</span>
+      </p>
+
+      <div style="width: 100%; max-width: 280px; margin-bottom: 14px;">
+        <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">むずかしさをえらんでね</div>
+        <div class="diff-tabs">
+          <button class="diff-tab active" data-chimstartdiff="easy" onclick="setChimneyDifficulty('easy')">🐥 かんたん</button>
+          <button class="diff-tab" data-chimstartdiff="normal" onclick="setChimneyDifficulty('normal')">🦌 ふつう</button>
+          <button class="diff-tab" data-chimstartdiff="hard" onclick="setChimneyDifficulty('hard')">🎅 むずかしい</button>
+        </div>
+      </div>
+
+      <button class="btn btn-green" onclick="startChimneyGame()">スタート！ 🔨</button>
+    </div>
+
+    <!-- Chimney Result Overlay -->
+    <div id="chimney-result-overlay" class="view-screen hidden" style="background: rgba(45,10,12,0.94);">
+      <h2 style="font-size: 22px;">🎉 タイムアップ！</h2>
+      <div id="chimney-rank" style="font-size: 22px; color: #ffd700; margin: 6px 0; font-weight: 900;"></div>
+      <div class="sub-result-card">
+        <div style="font-size: 12px;">スコア</div>
+        <div id="chimney-final-score" class="sub-result-score">0</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 250px;">
+        <button class="btn btn-gold btn-small" onclick="openSantaLetter()">🎅 あかとらサンタの手紙</button>
+        <button class="btn btn-green btn-small" onclick="startChimneyGame()">もう一回あそぶ 🔄</button>
+        <button class="btn btn-small" style="background:#57606f; border-bottom-color:#2f3542;" onclick="backToMenu()">メニューにもどる 🏠</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 4: SCRATCH LOTTERY ================= -->
+  <div id="scratch-screen" class="view-screen hidden">
+    <h2 style="font-size: 22px; margin-bottom: 2px;">✨ あかとらサンタのスクラッチ</h2>
+    <div style="font-size: 13px; color: #ffd700; margin-bottom: 8px;">ゆびで画面をこすって、おみくじを削ろう！</div>
+
+    <div class="scratch-wrapper">
+      <div class="scratch-under" id="scratch-under">
+        <div class="rank" id="scratch-rank">👑 超大吉！</div>
+        <div class="msg" id="scratch-msg">特大のハッピーをプレゼント！すてきなクリスマスを！</div>
+      </div>
+      <canvas id="scratch-canvas" width="300" height="300"></canvas>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+      <button class="btn btn-green btn-small" onclick="resetScratch()">もう1枚けずる 🪙</button>
+      <button class="btn btn-gold btn-small" onclick="openSantaLetter()">🎅 手紙をよむ</button>
+    </div>
+  </div>
+
+  <!-- ================= SHARED AKATORA SANTA LETTER MODAL ================= -->
+  <div id="letter-modal" class="hidden">
+    <div class="letter-paper">
+      <h3>🎅 あかとらサンタからのてがみ 🎄</h3>
+      <p id="letter-body">
+        かぜのこのみんなへ！<br><br>
+        メリークリスマス！<br>
+        プレゼントをうけとってくれてありがとう！<br>
+        みんなが元気にすごしてくれていて、あかとらサンタはとってもうれしいよ。<br><br>
+        きょうのクリスマスプレゼントはきにいってくれたかな？<br>
+        かぜをひかないようにして、笑顔いっぱいのすてきなクリスマスをすごしてね！<br>
+        もうすぐはじまる冬休みもいっぱい楽しんでね！
+      </p>
+      <div class="letter-sign">あかとらサンタより 🦌🛷</div>
+      <div class="letter-stamp">✨</div>
+      <div style="text-align: center; margin-top: 18px;">
+        <button class="btn btn-small btn-green" onclick="closeSantaLetter()">とじる ✖</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(() => {
+  // --- Audio Synthesizer (Shared Web Audio) ---
+  let audioCtx = null;
+  let soundEnabled = true;
+
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioClass = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioClass();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function playTone(freq, type = 'sine', duration = 0.1, gain = 0.15) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      g.gain.setValueAtTime(gain, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  function playSoundSuccess() {
+    initAudio();
+    playTone(523.25, 'triangle', 0.08, 0.2);
+    setTimeout(() => playTone(659.25, 'triangle', 0.12, 0.2), 65);
+    setTimeout(() => playTone(783.99, 'triangle', 0.15, 0.2), 130);
+  }
+
+  function playSoundBad() {
+    initAudio();
+    playTone(220, 'sawtooth', 0.15, 0.12);
+    setTimeout(() => playTone(175, 'sawtooth', 0.2, 0.12), 100);
+  }
+
+  function playFanfare() {
+    initAudio();
+    stopBGM();
+    const melody = [
+      {f: 523.25, d: 0.14, delay: 0},
+      {f: 523.25, d: 0.14, delay: 140},
+      {f: 523.25, d: 0.14, delay: 280},
+      {f: 659.25, d: 0.35, delay: 420},
+      {f: 587.33, d: 0.15, delay: 780},
+      {f: 783.99, d: 0.50, delay: 920}
+    ];
+    melody.forEach(item => {
+      setTimeout(() => playTone(item.f, 'triangle', item.d, 0.25), item.delay);
+    });
+    setTimeout(() => {
+      if (soundEnabled) startBGM();
+    }, 1800);
+  }
+
+  // --- Background Music System (5 Famous Christmas Songs for each game) ---
+  let bgmPlaying = false;
+  let bgmTimeout = null;
+  let currentBgmTrack = 'menu';
+  let currentBgmIndex = 0;
+
+  const bgmTracks = {
+    // 1. メニュー画面 (トップ画面): きよしこの夜 (Silent Night) - 澄んだハンドベル＆そりの鈴
+    menu: [
+      {f: 392.00, d: 0.45, rest: 0.55}, // ソ
+      {f: 440.00, d: 0.25, rest: 0.32}, // ラ
+      {f: 392.00, d: 0.35, rest: 0.45}, // ソ
+      {f: 329.63, d: 0.75, rest: 0.95}, // ミ
+      {f: 392.00, d: 0.45, rest: 0.55}, // ソ
+      {f: 440.00, d: 0.25, rest: 0.32}, // ラ
+      {f: 392.00, d: 0.35, rest: 0.45}, // ソ
+      {f: 329.63, d: 0.75, rest: 0.95}, // ミ
+
+      {f: 587.33, d: 0.55, rest: 0.65}, // レ
+      {f: 587.33, d: 0.28, rest: 0.35}, // レ
+      {f: 493.88, d: 0.80, rest: 1.00}, // シ
+      {f: 523.25, d: 0.55, rest: 0.65}, // ド
+      {f: 523.25, d: 0.28, rest: 0.35}, // ド
+      {f: 392.00, d: 0.80, rest: 1.00}, // ソ
+
+      {f: 440.00, d: 0.50, rest: 0.60}, // ラ
+      {f: 440.00, d: 0.30, rest: 0.35}, // ラ
+      {f: 523.25, d: 0.45, rest: 0.50}, // ド
+      {f: 493.88, d: 0.25, rest: 0.30}, // シ
+      {f: 440.00, d: 0.35, rest: 0.45}, // ラ
+      {f: 392.00, d: 0.50, rest: 0.60}, // ソ
+      {f: 440.00, d: 0.25, rest: 0.30}, // ラ
+      {f: 392.00, d: 0.35, rest: 0.45}, // ソ
+      {f: 329.63, d: 0.80, rest: 1.00}, // ミ
+
+      {f: 587.33, d: 0.50, rest: 0.60}, // レ
+      {f: 587.33, d: 0.30, rest: 0.35}, // レ
+      {f: 698.46, d: 0.45, rest: 0.55}, // ファ
+      {f: 587.33, d: 0.25, rest: 0.30}, // レ
+      {f: 493.88, d: 0.35, rest: 0.45}, // シ
+      {f: 523.25, d: 0.85, rest: 1.10}, // ド
+      {f: 659.25, d: 0.85, rest: 1.10}, // ミ
+
+      {f: 523.25, d: 0.40, rest: 0.50}, // ド
+      {f: 392.00, d: 0.30, rest: 0.40}, // ソ
+      {f: 329.63, d: 0.30, rest: 0.40}, // ミ
+      {f: 392.00, d: 0.35, rest: 0.45}, // ソ
+      {f: 349.23, d: 0.25, rest: 0.35}, // ファ
+      {f: 293.66, d: 0.35, rest: 0.45}, // レ
+      {f: 261.63, d: 1.20, rest: 1.60}  // ド (安らかな結び)
+    ],
+    // 2. キャッチ: ジングルベル (Jingle Bells) - 疾走感あふれるベル調
+    catch: [
+      {f: 329.63, d: 0.16, rest: 0.20},
+      {f: 329.63, d: 0.16, rest: 0.20},
+      {f: 329.63, d: 0.35, rest: 0.42},
+      {f: 329.63, d: 0.16, rest: 0.20},
+      {f: 329.63, d: 0.16, rest: 0.20},
+      {f: 329.63, d: 0.35, rest: 0.42},
+      {f: 329.63, d: 0.16, rest: 0.20},
+      {f: 392.00, d: 0.16, rest: 0.20},
+      {f: 261.63, d: 0.20, rest: 0.24},
+      {f: 293.66, d: 0.14, rest: 0.16},
+      {f: 329.63, d: 0.50, rest: 0.60},
+      {f: 349.23, d: 0.16, rest: 0.18},
+      {f: 349.23, d: 0.16, rest: 0.18},
+      {f: 349.23, d: 0.24, rest: 0.26},
+      {f: 349.23, d: 0.14, rest: 0.16},
+      {f: 349.23, d: 0.16, rest: 0.18},
+      {f: 329.63, d: 0.16, rest: 0.18},
+      {f: 329.63, d: 0.16, rest: 0.18},
+      {f: 329.63, d: 0.14, rest: 0.16},
+      {f: 329.63, d: 0.14, rest: 0.16},
+      {f: 293.66, d: 0.16, rest: 0.18},
+      {f: 293.66, d: 0.16, rest: 0.18},
+      {f: 329.63, d: 0.16, rest: 0.18},
+      {f: 293.66, d: 0.28, rest: 0.35},
+      {f: 392.00, d: 0.35, rest: 0.46}
+    ],
+    // 3. 絵合わせ: おめでとうクリスマス (We Wish You a Merry Christmas) - 楽しい3拍子
+    memory: [
+      {f: 293.66, d: 0.22, rest: 0.26},
+      {f: 392.00, d: 0.22, rest: 0.26},
+      {f: 392.00, d: 0.13, rest: 0.15},
+      {f: 440.00, d: 0.13, rest: 0.15},
+      {f: 392.00, d: 0.13, rest: 0.15},
+      {f: 369.99, d: 0.13, rest: 0.15},
+      {f: 329.63, d: 0.22, rest: 0.26},
+      {f: 329.63, d: 0.22, rest: 0.26},
+      {f: 329.63, d: 0.22, rest: 0.26},
+      {f: 440.00, d: 0.22, rest: 0.26},
+      {f: 440.00, d: 0.13, rest: 0.15},
+      {f: 493.88, d: 0.13, rest: 0.15},
+      {f: 440.00, d: 0.13, rest: 0.15},
+      {f: 392.00, d: 0.13, rest: 0.15},
+      {f: 369.99, d: 0.22, rest: 0.26},
+      {f: 293.66, d: 0.22, rest: 0.26},
+      {f: 293.66, d: 0.22, rest: 0.26},
+      {f: 493.88, d: 0.22, rest: 0.26},
+      {f: 493.88, d: 0.13, rest: 0.15},
+      {f: 523.25, d: 0.13, rest: 0.15},
+      {f: 493.88, d: 0.13, rest: 0.15},
+      {f: 440.00, d: 0.13, rest: 0.15},
+      {f: 392.00, d: 0.22, rest: 0.26},
+      {f: 329.63, d: 0.22, rest: 0.26},
+      {f: 293.66, d: 0.13, rest: 0.15},
+      {f: 293.66, d: 0.13, rest: 0.15},
+      {f: 329.63, d: 0.22, rest: 0.26},
+      {f: 440.00, d: 0.22, rest: 0.26},
+      {f: 369.99, d: 0.22, rest: 0.26},
+      {f: 392.00, d: 0.50, rest: 0.65}
+    ],
+    // 4. えんとつタップ: 赤鼻のトナカイ (Rudolph the Red-Nosed Reindeer) - コミカル＆リズミカル
+    chimney: [
+      {f: 392.00, d: 0.14, rest: 0.18},
+      {f: 440.00, d: 0.14, rest: 0.18},
+      {f: 392.00, d: 0.14, rest: 0.18},
+      {f: 329.63, d: 0.24, rest: 0.28},
+      {f: 523.25, d: 0.18, rest: 0.22},
+      {f: 440.00, d: 0.18, rest: 0.22},
+      {f: 392.00, d: 0.35, rest: 0.44},
+      {f: 392.00, d: 0.14, rest: 0.18},
+      {f: 440.00, d: 0.14, rest: 0.18},
+      {f: 392.00, d: 0.14, rest: 0.18},
+      {f: 440.00, d: 0.14, rest: 0.18},
+      {f: 392.00, d: 0.18, rest: 0.22},
+      {f: 523.25, d: 0.22, rest: 0.26},
+      {f: 493.88, d: 0.40, rest: 0.50},
+      {f: 349.23, d: 0.14, rest: 0.18},
+      {f: 392.00, d: 0.14, rest: 0.18},
+      {f: 349.23, d: 0.14, rest: 0.18},
+      {f: 293.66, d: 0.24, rest: 0.28},
+      {f: 493.88, d: 0.18, rest: 0.22},
+      {f: 440.00, d: 0.18, rest: 0.22},
+      {f: 392.00, d: 0.35, rest: 0.44},
+      {f: 392.00, d: 0.14, rest: 0.18},
+      {f: 440.00, d: 0.14, rest: 0.18},
+      {f: 392.00, d: 0.14, rest: 0.18},
+      {f: 440.00, d: 0.14, rest: 0.18},
+      {f: 392.00, d: 0.18, rest: 0.22},
+      {f: 440.00, d: 0.22, rest: 0.26},
+      {f: 329.63, d: 0.40, rest: 0.50}
+    ],
+    // 5. スクラッチ: もろびとこぞりて (Joy to the World) - 祝福感＆ワクワク
+    scratch: [
+      {f: 523.25, d: 0.30, rest: 0.38},
+      {f: 493.88, d: 0.22, rest: 0.26},
+      {f: 440.00, d: 0.22, rest: 0.26},
+      {f: 392.00, d: 0.40, rest: 0.48},
+      {f: 349.23, d: 0.18, rest: 0.22},
+      {f: 329.63, d: 0.18, rest: 0.22},
+      {f: 293.66, d: 0.18, rest: 0.22},
+      {f: 261.63, d: 0.45, rest: 0.58},
+      {f: 392.00, d: 0.22, rest: 0.26},
+      {f: 440.00, d: 0.22, rest: 0.26},
+      {f: 440.00, d: 0.22, rest: 0.26},
+      {f: 493.88, d: 0.22, rest: 0.26},
+      {f: 493.88, d: 0.22, rest: 0.26},
+      {f: 523.25, d: 0.45, rest: 0.58}
+    ]
+  };
+
+  // --- Sound Synthesizers (Bells, Sleigh Bells, Music Box) ---
+  let noiseBuffer = null;
+  function getNoiseBuffer() {
+    if (!noiseBuffer && audioCtx) {
+      const bufferSize = Math.floor(audioCtx.sampleRate * 0.15);
+      noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+    }
+    return noiseBuffer;
+  }
+
+  // そりの鈴 (スレイベル: シャンシャン…)
+  function playSleighBell(gainLevel = 0.035) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+      const now = audioCtx.currentTime;
+      [0, 0.032].forEach((offset, hitIdx) => {
+        const t = now + offset;
+        const vol = gainLevel * (hitIdx === 0 ? 0.7 : 1.0);
+
+        // 1. 金属鈴の共鳴 (高次非整数倍音)
+        const freqs = [2520, 3050, 3850, 4800, 5950];
+        freqs.forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq + (Math.random() * 30 - 15), t);
+          g.gain.setValueAtTime(vol * 0.35, t);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12 + i * 0.012);
+          osc.connect(g);
+          g.connect(audioCtx.destination);
+          osc.start(t);
+          osc.stop(t + 0.18);
+        });
+
+        // 2. 鈴のシャラシャラ感 (バンドパスフィルタノイズ)
+        const nBuf = getNoiseBuffer();
+        if (nBuf) {
+          const noise = audioCtx.createBufferSource();
+          noise.buffer = nBuf;
+          const filter = audioCtx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(5800, t);
+          filter.Q.setValueAtTime(3.0, t);
+
+          const noiseGain = audioCtx.createGain();
+          noiseGain.gain.setValueAtTime(vol * 0.65, t);
+          noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+
+          noise.connect(filter);
+          filter.connect(noiseGain);
+          noiseGain.connect(audioCtx.destination);
+          noise.start(t);
+          noise.stop(t + 0.10);
+        }
+      });
+    } catch(e) {}
+  }
+
+  // 澄んだクリスマスのハンドベル・チャイム音色 (チ〜〜ン…)
+  function playBellNote(freq, dur, gainLevel = 0.048) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+      const t = audioCtx.currentTime;
+
+      // 1. 基音 (温かみと澄んだベルの丸み)
+      const osc1 = audioCtx.createOscillator();
+      const g1 = audioCtx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(freq, t);
+      g1.gain.setValueAtTime(gainLevel * 0.85, t);
+      g1.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(dur * 1.6, 0.9));
+      osc1.connect(g1);
+      g1.connect(audioCtx.destination);
+      osc1.start(t);
+      osc1.stop(t + Math.max(dur * 1.6, 0.9));
+
+      // 2. 2倍音 (オクターブ上の華やかさ)
+      const osc2 = audioCtx.createOscillator();
+      const g2 = audioCtx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(freq * 2, t);
+      g2.gain.setValueAtTime(gainLevel * 0.45, t);
+      g2.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(dur, 0.5));
+      osc2.connect(g2);
+      g2.connect(audioCtx.destination);
+      osc2.start(t);
+      osc2.stop(t + Math.max(dur, 0.5));
+
+      // 3. クラング倍音 (ハンドベルのチリ〜ンという金属アタック音)
+      const osc3 = audioCtx.createOscillator();
+      const g3 = audioCtx.createGain();
+      osc3.type = 'triangle';
+      osc3.frequency.setValueAtTime(freq * 2.76, t);
+      g3.gain.setValueAtTime(gainLevel * 0.35, t);
+      g3.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+      osc3.connect(g3);
+      g3.connect(audioCtx.destination);
+      osc3.start(t);
+      osc3.stop(t + 0.30);
+    } catch(e) {}
+  }
+
+  function playMusicBoxNote(freq, dur) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
+
+      g.gain.setValueAtTime(0.045, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+
+      osc.connect(g);
+      osc2.connect(g);
+      g.connect(audioCtx.destination);
+
+      osc.start();
+      osc2.start();
+      osc.stop(audioCtx.currentTime + dur);
+      osc2.stop(audioCtx.currentTime + dur);
+    } catch(e) {}
+  }
+
+  // --- Sleigh Bell Rhythm for Menu (トップ画面用そりの鈴伴奏ループ) ---
+  let sleighBellTimeout = null;
+  let sleighBellPatternIndex = 0;
+  const sleighBellRhythm = [
+    {delay: 0.65, double: false},
+    {delay: 0.65, double: false},
+    {delay: 0.65, double: true},  // 軽やかにシャララン
+    {delay: 1.30, double: false}  // ゆったりとした呼吸
+  ];
+
+  function startSleighBells() {
+    if (!soundEnabled || !bgmPlaying || currentBgmTrack !== 'menu') return;
+    function loopBells() {
+      if (!soundEnabled || !bgmPlaying || currentBgmTrack !== 'menu') return;
+      const step = sleighBellRhythm[sleighBellPatternIndex];
+      playSleighBell(0.032);
+      if (step.double) {
+        setTimeout(() => {
+          if (soundEnabled && bgmPlaying && currentBgmTrack === 'menu') {
+            playSleighBell(0.024);
+          }
+        }, 130);
+      }
+      sleighBellPatternIndex = (sleighBellPatternIndex + 1) % sleighBellRhythm.length;
+      sleighBellTimeout = setTimeout(loopBells, step.delay * 1000);
+    }
+    loopBells();
+  }
+
+  function stopSleighBells() {
+    if (sleighBellTimeout) {
+      clearTimeout(sleighBellTimeout);
+      sleighBellTimeout = null;
+    }
+    sleighBellPatternIndex = 0;
+  }
+
+  function startBGM() {
+    if (!soundEnabled || bgmPlaying) return;
+    initAudio();
+    bgmPlaying = true;
+
+    // トップ画面 (メニュー) の場合はそりの鈴伴奏も一緒に優しくスタート
+    if (currentBgmTrack === 'menu') {
+      startSleighBells();
+    }
+
+    function nextNote() {
+      if (!bgmPlaying || !soundEnabled) return;
+      const track = bgmTracks[currentBgmTrack] || bgmTracks.menu;
+      const n = track[currentBgmIndex];
+
+      // トップ画面とスクラッチは澄んだハンドベル音色、他はオルゴール風
+      if (currentBgmTrack === 'menu' || currentBgmTrack === 'scratch') {
+        playBellNote(n.f, n.d);
+      } else {
+        playMusicBoxNote(n.f, n.d);
+      }
+
+      currentBgmIndex = (currentBgmIndex + 1) % track.length;
+      bgmTimeout = setTimeout(nextNote, n.rest * 1000);
+    }
+    nextNote();
+  }
+
+  function stopBGM() {
+    bgmPlaying = false;
+    if (bgmTimeout) {
+      clearTimeout(bgmTimeout);
+      bgmTimeout = null;
+    }
+    stopSleighBells();
+  }
+
+  function switchBGM(trackKey) {
+    if (currentBgmTrack === trackKey && bgmPlaying) return;
+    currentBgmTrack = trackKey;
+    currentBgmIndex = 0;
+    stopBGM();
+    if (soundEnabled) {
+      setTimeout(startBGM, 120);
+    }
+  }
+
+  // Sound Toggle Button
+  const soundBtn = document.getElementById('sound-btn');
+  soundBtn.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    soundBtn.textContent = soundEnabled ? '🔔' : '🔕';
+    if (soundEnabled) {
+      initAudio();
+      startBGM();
+    } else {
+      stopBGM();
+    }
+  });
+
+  // Start BGM on first user interaction anywhere
+  const initUserAudio = () => {
+    if (soundEnabled && !bgmPlaying) {
+      initAudio();
+      startBGM();
+    }
+  };
+  window.addEventListener('touchstart', initUserAudio, { once: true, passive: true });
+  window.addEventListener('mousedown', initUserAudio, { once: true });
+
+  // --- Confetti Celebration ---
+  const confCanvas = document.getElementById('confetti-canvas');
+  const confCtx = confCanvas.getContext('2d');
+  let confettis = [];
+
+  function resizeConfetti() {
+    const c = document.getElementById('game-container');
+    confCanvas.width = c.clientWidth;
+    confCanvas.height = c.clientHeight;
+  }
+  window.addEventListener('resize', resizeConfetti);
+  resizeConfetti();
+
+  function launchConfetti() {
+    confettis = [];
+    const colors = ['#ffd700', '#e74c3c', '#2ecc71', '#ffffff', '#e67e22'];
+    for (let i = 0; i < 80; i++) {
+      confettis.push({
+        x: Math.random() * confCanvas.width,
+        y: Math.random() * -confCanvas.height * 0.5,
+        w: Math.random() * 9 + 5,
+        h: Math.random() * 7 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vy: Math.random() * 2.8 + 1.8,
+        vx: (Math.random() - 0.5) * 1.8,
+        rot: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 7
+      });
+    }
+  }
+
+  function updateConfetti() {
+    confCtx.clearRect(0, 0, confCanvas.width, confCanvas.height);
+    if (confettis.length > 0) {
+      for (let i = confettis.length - 1; i >= 0; i--) {
+        const c = confettis[i];
+        c.x += c.vx;
+        c.y += c.vy;
+        c.rot += c.rotSpeed;
+
+        confCtx.save();
+        confCtx.translate(c.x, c.y);
+        confCtx.rotate((c.rot * Math.PI) / 180);
+        confCtx.fillStyle = c.color;
+        confCtx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+        confCtx.restore();
+
+        if (c.y > confCanvas.height + 20) confettis.splice(i, 1);
+      }
+    }
+    requestAnimationFrame(updateConfetti);
+  }
+  updateConfetti();
+
+  // --- Screen Navigation ---
+  let activeScreen = 'menu';
+  const homeBtn = document.getElementById('home-btn');
+
+  window.openGame = function(gameName) {
+    initAudio();
+    playBellNote(659.25, 0.15, 0.08);
+    document.querySelectorAll('.view-screen').forEach(s => s.classList.add('hidden'));
+    homeBtn.style.visibility = 'visible';
+
+    if (gameName === 'catch') {
+      document.getElementById('catch-screen').classList.remove('hidden');
+      document.getElementById('catch-start-overlay').classList.remove('hidden');
+      document.getElementById('catch-result-overlay').classList.add('hidden');
+      resizeCatchCanvas();
+      activeScreen = 'catch';
+      switchBGM('catch');
+    } else if (gameName === 'memory') {
+      document.getElementById('memory-screen').classList.remove('hidden');
+      initMemoryGame();
+      activeScreen = 'memory';
+      switchBGM('memory');
+    } else if (gameName === 'chimney') {
+      document.getElementById('chimney-screen').classList.remove('hidden');
+      document.getElementById('chimney-start-overlay').classList.remove('hidden');
+      document.getElementById('chimney-result-overlay').classList.add('hidden');
+      initChimneyGrid();
+      activeScreen = 'chimney';
+      switchBGM('chimney');
+    } else if (gameName === 'scratch') {
+      document.getElementById('scratch-screen').classList.remove('hidden');
+      resetScratch();
+      activeScreen = 'scratch';
+      switchBGM('scratch');
+    }
+  };
+
+  window.backToMenu = function() {
+    initAudio();
+    stopCatchGame();
+    stopChimneyGame();
+    document.querySelectorAll('.view-screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById('menu-screen').classList.remove('hidden');
+    homeBtn.style.visibility = 'hidden';
+    activeScreen = 'menu';
+    switchBGM('menu');
+  };
+  homeBtn.addEventListener('click', backToMenu);
+
+  // --- Akatora Santa Letter Lock / Unlock System ---
+  let letterUnlocked = false;
+
+  function unlockSantaLetter() {
+    if (!letterUnlocked) {
+      letterUnlocked = true;
+      try { localStorage.setItem('akatora_letter_unlocked', '1'); } catch(e) {}
+      updateLetterBtnUI();
+    }
+  }
+
+  function checkLetterUnlocked() {
+    try {
+      if (localStorage.getItem('akatora_letter_unlocked') === '1') {
+        letterUnlocked = true;
+      }
+    } catch(e) {}
+    updateLetterBtnUI();
+  }
+
+  function updateLetterBtnUI() {
+    const btn = document.getElementById('menu-letter-btn');
+    if (!btn) return;
+    btn.style.display = letterUnlocked ? 'flex' : 'none';
+  }
+
+  // Akatora Santa Letter Modal
+  const letterModal = document.getElementById('letter-modal');
+  window.openSantaLetter = function() {
+    unlockSantaLetter();
+    initAudio();
+    playTone(659.25, 'triangle', 0.2, 0.15);
+    letterModal.classList.remove('hidden');
+  };
+  window.closeSantaLetter = function() {
+    letterModal.classList.add('hidden');
+  };
+
+  // ========================================================
+  // GAME 1: PRESENT CATCH IMPLEMENTATION
+  // ========================================================
+  const catchCanvas = document.getElementById('catch-canvas');
+  const cctx = catchCanvas.getContext('2d');
+  let cWidth = 0, cHeight = 0;
+  let catchRunning = false;
+  let catchScore = 0, catchTime = 30, catchCombo = 0, catchCount = 0;
+  let isCatchFever = false, catchFeverEndTime = 0;
+  let catchDifficulty = 'easy';
+
+  const catchPlayer = { x: 200, y: 0, width: 80, height: 50, speed: 7.5, tilt: 0, bounce: 0 };
+  let catchItems = [];
+  let catchTexts = [];
+  let catchTimer = null, lastCatchSpawn = 0;
+  let catchLeft = false, catchRight = false;
+
+  function resizeCatchCanvas() {
+    const c = document.getElementById('game-container');
+    cWidth = c.clientWidth;
+    cHeight = c.clientHeight;
+    catchCanvas.width = cWidth;
+    catchCanvas.height = cHeight;
+    catchPlayer.y = cHeight - 90;
+  }
+  window.addEventListener('resize', resizeCatchCanvas);
+
+  window.setDifficulty = function(diff) {
+    catchDifficulty = diff;
+    document.querySelectorAll('.diff-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.diff === diff);
+    });
+    playTone(600, 'triangle', 0.08, 0.1);
+  };
+
+  function addCatchText(text, x, y, color = '#ffd700', size = 20) {
+    catchTexts.push({
+      text,
+      x,
+      y,
+      color,
+      size,
+      alpha: 1,
+      vy: -1.8,
+      life: 32
+    });
+  }
+
+  window.startCatchGame = function() {
+    initAudio();
+    catchRunning = true;
+    catchScore = 0;
+    catchTime = 30;
+    catchCombo = 0;
+    catchCount = 0;
+    isCatchFever = false;
+    catchItems = [];
+    catchTexts = [];
+    catchPlayer.x = cWidth / 2;
+
+    document.getElementById('catch-score').textContent = '0';
+    document.getElementById('catch-time').textContent = '30';
+    document.getElementById('catch-fever').style.display = 'none';
+    document.getElementById('catch-start-overlay').classList.add('hidden');
+    document.getElementById('catch-result-overlay').classList.add('hidden');
+
+    clearInterval(catchTimer);
+    catchTimer = setInterval(() => {
+      catchTime--;
+      document.getElementById('catch-time').textContent = catchTime;
+      if (catchTime <= 5 && catchTime > 0) playTone(440, 'triangle', 0.1, 0.12);
+      if (catchTime <= 0) endCatchGame();
+    }, 1000);
+  };
+
+  function stopCatchGame() {
+    catchRunning = false;
+    clearInterval(catchTimer);
+  }
+
+  function endCatchGame() {
+    stopCatchGame();
+    unlockSantaLetter();
+    let rank = 'サンタのお手伝い 🎁';
+    if (catchScore >= 3500) rank = 'クリスマス・マスター 👑';
+    else if (catchScore >= 2400) rank = 'プレゼントの達人 🌟';
+    else if (catchScore >= 1200) rank = 'トナカイの相棒 🦌';
+
+    document.getElementById('catch-result-rank').textContent = rank;
+    document.getElementById('catch-final-score').textContent = catchScore;
+    document.getElementById('catch-final-count').textContent = catchCount;
+    document.getElementById('catch-result-overlay').classList.remove('hidden');
+    launchConfetti();
+    playFanfare();
+  }
+
+  function drawSanta(x, y, tilt, bounce) {
+    cctx.save();
+    cctx.translate(x, y + bounce);
+    cctx.rotate(tilt);
+
+    // Sleigh
+    cctx.fillStyle = '#8d5b4c';
+    cctx.beginPath();
+    cctx.moveTo(-38, 14); cctx.lineTo(36, 14);
+    cctx.quadraticCurveTo(44, 14, 42, 4); cctx.lineTo(-34, 4);
+    cctx.closePath(); cctx.fill();
+
+    // Gold Rail
+    cctx.strokeStyle = '#ffd700'; cctx.lineWidth = 3; cctx.lineCap = 'round';
+    cctx.beginPath(); cctx.moveTo(-40, 22); cctx.lineTo(32, 22);
+    cctx.quadraticCurveTo(45, 22, 43, 10); cctx.stroke();
+
+    // Santa Face & Hat
+    cctx.fillStyle = '#ffdfba';
+    cctx.beginPath(); cctx.arc(0, -10, 12, 0, Math.PI * 2); cctx.fill();
+    // Eyes
+    cctx.strokeStyle = '#4a2e18'; cctx.lineWidth = 2;
+    cctx.beginPath(); cctx.arc(-5, -12, 2.5, Math.PI, Math.PI * 2); cctx.stroke();
+    cctx.beginPath(); cctx.arc(5, -12, 2.5, Math.PI, Math.PI * 2); cctx.stroke();
+    // Beard
+    cctx.fillStyle = '#ffffff';
+    cctx.beginPath(); cctx.arc(0, -4, 11, 0, Math.PI); cctx.fill();
+    // Nose
+    cctx.fillStyle = '#e74c3c';
+    cctx.beginPath(); cctx.arc(0, -9, 3, 0, Math.PI * 2); cctx.fill();
+    // Hat
+    cctx.fillStyle = '#c0392b';
+    cctx.beginPath(); cctx.moveTo(-12, -18); cctx.lineTo(12, -18);
+    cctx.quadraticCurveTo(6, -34, -12, -28); cctx.closePath(); cctx.fill();
+    cctx.fillStyle = '#fff';
+    cctx.fillRect(-13, -20, 26, 6);
+    cctx.beginPath(); cctx.arc(-13, -28, 4.5, 0, Math.PI * 2); cctx.fill();
+
+    cctx.restore();
+  }
+
+  function drawPresent(x, y, size, boxColor, ribbonColor) {
+    cctx.save();
+    cctx.translate(x, y);
+    cctx.fillStyle = boxColor;
+    cctx.beginPath(); cctx.roundRect(-size/2, -size/2, size, size, 4); cctx.fill();
+    cctx.fillStyle = ribbonColor;
+    cctx.fillRect(-size*0.12, -size/2, size*0.24, size);
+    cctx.fillRect(-size/2, -size*0.12, size, size*0.24);
+    cctx.restore();
+  }
+
+  function catchLoop(ts) {
+    if (activeScreen === 'catch' && catchRunning) {
+      // Speed multiplier (Hard is much faster and agile)
+      const mul = catchDifficulty === 'hard' ? 1.75 : (catchDifficulty === 'normal' ? 1.05 : 0.75);
+      const moveSpeed = catchDifficulty === 'hard' ? 10.5 : (catchDifficulty === 'normal' ? 8.0 : 7.0);
+
+      if (catchLeft) { catchPlayer.x -= moveSpeed; catchPlayer.tilt = -0.14; }
+      else if (catchRight) { catchPlayer.x += moveSpeed; catchPlayer.tilt = 0.14; }
+      else if (!isTouchingSanta) { catchPlayer.tilt *= 0.8; }
+
+      catchPlayer.x = Math.max(40, Math.min(cWidth - 40, catchPlayer.x));
+      if (catchPlayer.bounce < 0) catchPlayer.bounce *= 0.82;
+
+      // Fever timer
+      if (isCatchFever && Date.now() > catchFeverEndTime) {
+        isCatchFever = false;
+        document.getElementById('catch-fever').style.display = 'none';
+      }
+
+      // Spawn Interval: Hard is crazy fast (200ms) with multiple items!
+      const interval = isCatchFever ? 180 : (catchDifficulty === 'hard' ? 200 : (catchDifficulty === 'normal' ? 480 : 680));
+      if (ts - lastCatchSpawn > interval) {
+        const rand = Math.random() * 100;
+        let type = 'red';
+
+        if (catchDifficulty === 'hard') {
+          // Hard: 45% minus items, high variety
+          if (rand < 20) type = 'red';          // +100
+          else if (rand < 36) type = 'green';   // +150
+          else if (rand < 46) type = 'cake';    // +200
+          else if (rand < 53) type = 'gold';    // +300
+          else if (rand < 58) type = 'star';    // +500 FEVER
+          else if (rand < 75) type = 'snow';    // -50
+          else if (rand < 88) type = 'icicle';  // -80 (fast drop!)
+          else type = 'bomb';                   // -120
+        } else if (catchDifficulty === 'normal') {
+          // Normal: 18% minus items
+          if (rand < 38) type = 'red';
+          else if (rand < 62) type = 'green';
+          else if (rand < 74) type = 'cake';
+          else if (rand < 82) type = 'star';
+          else type = 'snow';
+        } else {
+          // Easy: 0% minus items, safe & gentle
+          if (rand < 45) type = 'red';
+          else if (rand < 75) type = 'green';
+          else if (rand < 90) type = 'cake';
+          else type = 'star';
+        }
+
+        let itemSpeed = (isCatchFever ? 4.5 : 2.8) * mul;
+        if (type === 'icicle') itemSpeed *= 1.35; // Icicles drop extra fast!
+
+        catchItems.push({
+          x: 35 + Math.random() * (cWidth - 70),
+          y: -30,
+          speed: itemSpeed,
+          type
+        });
+        lastCatchSpawn = ts;
+      }
+
+      // Update Items
+      for (let i = catchItems.length - 1; i >= 0; i--) {
+        const it = catchItems[i];
+        it.y += it.speed;
+
+        // Collision Check with Santa
+        const hitX = Math.abs(it.x - catchPlayer.x);
+        const hitY = Math.abs(it.y - catchPlayer.y);
+        const catchHitWidth = catchDifficulty === 'hard' ? 40 : 46;
+
+        if (hitX < catchHitWidth && hitY < 35) {
+          const spawnX = catchPlayer.x + (Math.random() - 0.5) * 20;
+          const spawnY = catchPlayer.y - 20;
+
+          if (it.type === 'snow') {
+            catchScore = Math.max(0, catchScore - 50);
+            addCatchText('-50', spawnX, spawnY, '#74b9ff', 20);
+            playSoundBad();
+          } else if (it.type === 'icicle') {
+            catchScore = Math.max(0, catchScore - 80);
+            addCatchText('-80', spawnX, spawnY, '#0984e3', 22);
+            playSoundBad();
+          } else if (it.type === 'bomb') {
+            catchScore = Math.max(0, catchScore - 120);
+            addCatchText('-120 💥', spawnX, spawnY, '#ff4757', 24);
+            playSoundBad();
+          } else {
+            catchCount++;
+            catchPlayer.bounce = -8;
+            playSoundSuccess();
+
+            if (it.type === 'red') {
+              catchScore += 100;
+              addCatchText('+100', spawnX, spawnY, '#ffd700', 20);
+            } else if (it.type === 'green') {
+              catchScore += 150;
+              addCatchText('+150', spawnX, spawnY, '#2ecc71', 21);
+            } else if (it.type === 'cake') {
+              catchScore += 200;
+              addCatchText('+200 🍰', spawnX, spawnY, '#ff7675', 22);
+            } else if (it.type === 'gold') {
+              catchScore += 300;
+              addCatchText('+300 ✨', spawnX, spawnY, '#ffd700', 24);
+            } else if (it.type === 'star') {
+              catchScore += 500;
+              isCatchFever = true;
+              catchFeverEndTime = Date.now() + 5000;
+              document.getElementById('catch-fever').style.display = 'flex';
+              addCatchText('+500 ⭐FEVER!', spawnX, spawnY - 10, '#ffd700', 26);
+            }
+          }
+          document.getElementById('catch-score').textContent = catchScore;
+          catchItems.splice(i, 1);
+          continue;
+        }
+        if (it.y > cHeight + 35) catchItems.splice(i, 1);
+      }
+
+      // Render Catch Scene
+      cctx.clearRect(0, 0, cWidth, cHeight);
+
+      // Render Items
+      for (const it of catchItems) {
+        if (it.type === 'red') {
+          drawPresent(it.x, it.y, 30, '#e74c3c', '#ffd700');
+        } else if (it.type === 'green') {
+          drawPresent(it.x, it.y, 30, '#27ae60', '#e74c3c');
+        } else if (it.type === 'gold') {
+          drawPresent(it.x, it.y, 32, '#ffd700', '#ffffff');
+          cctx.font = '14px sans-serif'; cctx.textAlign = 'center';
+          cctx.fillText('✨', it.x + 12, it.y - 12);
+        } else if (it.type === 'cake') {
+          cctx.font = '28px sans-serif'; cctx.textAlign = 'center';
+          cctx.fillText('🍰', it.x, it.y + 10);
+        } else if (it.type === 'star') {
+          cctx.font = '30px sans-serif'; cctx.textAlign = 'center';
+          cctx.fillText('⭐', it.x, it.y + 10);
+        } else if (it.type === 'snow') {
+          cctx.font = '26px sans-serif'; cctx.textAlign = 'center';
+          cctx.fillText('❄️', it.x, it.y + 10);
+        } else if (it.type === 'icicle') {
+          cctx.save();
+          cctx.translate(it.x, it.y);
+          cctx.fillStyle = '#74b9ff';
+          cctx.beginPath();
+          cctx.moveTo(-7, -15); cctx.lineTo(7, -15); cctx.lineTo(0, 18);
+          cctx.closePath(); cctx.fill();
+          cctx.strokeStyle = '#ffffff'; cctx.lineWidth = 1.5; cctx.stroke();
+          cctx.restore();
+        } else if (it.type === 'bomb') {
+          cctx.font = '28px sans-serif'; cctx.textAlign = 'center';
+          cctx.fillText('💣', it.x, it.y + 10);
+        }
+      }
+
+      // Render Santa Player
+      drawSanta(catchPlayer.x, catchPlayer.y, catchPlayer.tilt, catchPlayer.bounce);
+
+      // Render Floating Score Texts above Santa
+      for (let i = catchTexts.length - 1; i >= 0; i--) {
+        const ft = catchTexts[i];
+        ft.y += ft.vy;
+        ft.life--;
+        ft.alpha = Math.max(0, ft.life / 32);
+        if (ft.life <= 0) {
+          catchTexts.splice(i, 1);
+          continue;
+        }
+        cctx.save();
+        cctx.globalAlpha = ft.alpha;
+        cctx.font = `900 ${ft.size}px 'M PLUS Rounded 1c', sans-serif`;
+        cctx.fillStyle = ft.color;
+        cctx.strokeStyle = '#2d0a0b';
+        cctx.lineWidth = 3.5;
+        cctx.textAlign = 'center';
+        cctx.strokeText(ft.text, ft.x, ft.y);
+        cctx.fillText(ft.text, ft.x, ft.y);
+        cctx.restore();
+      }
+    }
+    requestAnimationFrame(catchLoop);
+  }
+  requestAnimationFrame(catchLoop);
+
+  // Catch Controls
+  const bL = document.getElementById('btn-left'), bR = document.getElementById('btn-right');
+  const bindT = (el, setV) => {
+    el.addEventListener('touchstart', (e) => { e.preventDefault(); setV(true); });
+    el.addEventListener('touchend', (e) => { e.preventDefault(); setV(false); });
+    el.addEventListener('mousedown', () => setV(true));
+    el.addEventListener('mouseup', () => setV(false));
+  };
+  bindT(bL, v => catchLeft = v);
+  bindT(bR, v => catchRight = v);
+
+  // Keyboard Arrow Keys & A/D Keys for PC
+  window.addEventListener('keydown', (e) => {
+    if (activeScreen === 'catch') {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        catchLeft = true;
+        e.preventDefault();
+      }
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        catchRight = true;
+        e.preventDefault();
+      }
+    }
+  });
+
+  window.addEventListener('keyup', (e) => {
+    if (activeScreen === 'catch') {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        catchLeft = false;
+        e.preventDefault();
+      }
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        catchRight = false;
+        e.preventDefault();
+      }
+    }
+  });
+
+  // Touch & Mouse Drag Controls for Santa (Direct Tap & Slide)
+  let isTouchingSanta = false;
+  let touchStartX = 0;
+  let santaStartX = 0;
+
+  function handleDragStart(clientX, clientY) {
+    if (activeScreen !== 'catch' || !catchRunning) return;
+    const rect = catchCanvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    // サンタがいる下部エリアをタップしたらドラッグ開始
+    if (y > cHeight * 0.4) {
+      isTouchingSanta = true;
+      touchStartX = x;
+      santaStartX = catchPlayer.x;
+
+      // タップした位置がサンタから離れている場合はサンタをその位置に寄せる
+      if (Math.abs(x - catchPlayer.x) > 30) {
+        catchPlayer.x = Math.max(40, Math.min(cWidth - 40, x));
+        santaStartX = catchPlayer.x;
+        touchStartX = x;
+      }
+    }
+  }
+
+  function handleDragMove(clientX) {
+    if (!isTouchingSanta || activeScreen !== 'catch' || !catchRunning) return;
+    const rect = catchCanvas.getBoundingClientRect();
+    const currentX = clientX - rect.left;
+    const deltaX = currentX - touchStartX;
+    const prevX = catchPlayer.x;
+
+    catchPlayer.x = Math.max(40, Math.min(cWidth - 40, santaStartX + deltaX));
+    catchPlayer.tilt = (catchPlayer.x - prevX) * 0.025; // 移動量に応じて自然に傾く
+  }
+
+  function handleDragEnd() {
+    isTouchingSanta = false;
+  }
+
+  // Touch Events (Mobile)
+  catchCanvas.addEventListener('touchstart', (e) => {
+    if (e.touches.length > 0) {
+      handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
+
+  catchCanvas.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+      handleDragMove(e.touches[0].clientX);
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', handleDragEnd);
+  window.addEventListener('touchcancel', handleDragEnd);
+
+  // Mouse Drag Events (PC)
+  catchCanvas.addEventListener('mousedown', (e) => {
+    handleDragStart(e.clientX, e.clientY);
+  });
+  window.addEventListener('mousemove', (e) => {
+    handleDragMove(e.clientX);
+  });
+  window.addEventListener('mouseup', handleDragEnd);
+
+  // ========================================================
+  // GAME 2: MEMORY PAIRS IMPLEMENTATION (With Difficulty)
+  // ========================================================
+  const memoryGrid = document.getElementById('memory-grid');
+  const allMemIcons = [
+    '🎅', '🦌', '🎄', '🍰', '🧦', '⭐', '⛄', '🔔',
+    '🎁', '🍪', '🕯️', '🧤', '❄️', '🧸', '🎈', '🦁',
+    '🎶', '💖'
+  ];
+  let currentMemDifficulty = 'easy';
+  let memCards = [], flippedCards = [], matchedPairs = 0, memFlips = 0, totalPairsToMatch = 3;
+  let memLock = false;
+
+  window.setMemoryDifficulty = function(diff) {
+    currentMemDifficulty = diff;
+    document.querySelectorAll('.memory-diff-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.memdiff === diff);
+    });
+    playTone(550, 'triangle', 0.08, 0.1);
+    initMemoryGame();
+  };
+
+  window.initMemoryGame = function() {
+    memoryGrid.innerHTML = '';
+    document.getElementById('memory-result-overlay').classList.add('hidden');
+    matchedPairs = 0;
+    memFlips = 0;
+    document.getElementById('mem-pairs').textContent = '0';
+    document.getElementById('mem-flips').textContent = '0';
+
+    let pairCount = 3; // easy: 6 cards (3x2)
+    let gridCols = 3;
+    memoryGrid.classList.remove('grid-6');
+
+    if (currentMemDifficulty === 'normal') {
+      pairCount = 6; // normal: 12 cards (4x3)
+      gridCols = 4;
+    } else if (currentMemDifficulty === 'hard') {
+      pairCount = 18; // hard: 36 cards (6x6)
+      gridCols = 6;
+      memoryGrid.classList.add('grid-6');
+    }
+    totalPairsToMatch = pairCount;
+    document.getElementById('mem-total-pairs').textContent = totalPairsToMatch;
+    memoryGrid.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
+
+    const selectedIcons = allMemIcons.slice(0, pairCount);
+    const deck = [...selectedIcons, ...selectedIcons].sort(() => Math.random() - 0.5);
+
+    memCards = deck.map((icon) => {
+      const card = document.createElement('div');
+      card.className = 'memory-card';
+      card.innerHTML = `
+        <div class="card-face card-back">🎁</div>
+        <div class="card-face card-front">${icon}</div>
+      `;
+      card.addEventListener('click', () => onCardClick(card, icon));
+      memoryGrid.appendChild(card);
+      return card;
+    });
+  };
+
+  function onCardClick(card, icon) {
+    if (memLock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+    initAudio();
+    playTone(500, 'triangle', 0.08, 0.15);
+
+    card.classList.add('flipped');
+    flippedCards.push({ card, icon });
+
+    if (flippedCards.length === 2) {
+      memFlips++;
+      document.getElementById('mem-flips').textContent = memFlips;
+      memLock = true;
+
+      const [c1, c2] = flippedCards;
+      if (c1.icon === c2.icon) {
+        setTimeout(() => {
+          c1.card.classList.add('matched');
+          c2.card.classList.add('matched');
+          matchedPairs++;
+          document.getElementById('mem-pairs').textContent = matchedPairs;
+          playSoundSuccess();
+          flippedCards = [];
+          memLock = false;
+
+          if (matchedPairs === totalPairsToMatch) {
+            unlockSantaLetter();
+            setTimeout(() => {
+              document.getElementById('memory-final-flips').textContent = `${memFlips}回`;
+              document.getElementById('memory-result-overlay').classList.remove('hidden');
+              launchConfetti();
+              playFanfare();
+            }, 400);
+          }
+        }, 350);
+      } else {
+        setTimeout(() => {
+          c1.card.classList.remove('flipped');
+          c2.card.classList.remove('flipped');
+          flippedCards = [];
+          memLock = false;
+        }, 750);
+      }
+    }
+  }
+
+  // ========================================================
+  // GAME 3: CHIMNEY TAP IMPLEMENTATION (With Difficulty)
+  // ========================================================
+  const chimneyGrid = document.getElementById('chimney-grid');
+  let chimneyScore = 0, chimneyTime = 30, chimneyTimer = null, chimneySpawnTimer = null;
+  let chimneyDifficulty = 'easy';
+
+  const chimConfigs = {
+    easy: {
+      stayDuration: 1300,
+      spawnInterval: 750,
+      multiSpawnChance: 0.1,
+      badChance: 0,
+      chars: [
+        { icon: '🎅', pts: 100 },
+        { icon: '🦌', pts: 150 },
+        { icon: '⛄', pts: 80 }
+      ]
+    },
+    normal: {
+      stayDuration: 850,
+      spawnInterval: 500,
+      multiSpawnChance: 0.35,
+      badChance: 0.22,
+      chars: [
+        { icon: '🎅', pts: 100 },
+        { icon: '🦌', pts: 150 },
+        { icon: '⛄', pts: 80 },
+        { icon: '❄️', pts: -50, isBad: true }
+      ]
+    },
+    hard: {
+      stayDuration: 420,
+      spawnInterval: 220,
+      multiSpawnChance: 0.65,
+      badChance: 0.42,
+      chars: [
+        { icon: '🎅', pts: 100 },
+        { icon: '🦌', pts: 150 },
+        { icon: '⭐', pts: 250 },
+        { icon: '❄️', pts: -50, isBad: true },
+        { icon: '💣', pts: -100, isBad: true }
+      ]
+    }
+  };
+
+  window.setChimneyDifficulty = function(diff) {
+    chimneyDifficulty = diff;
+    document.querySelectorAll('[data-chimdiff]').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.chimdiff === diff);
+    });
+    document.querySelectorAll('[data-chimstartdiff]').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.chimstartdiff === diff);
+    });
+    playTone(550, 'triangle', 0.08, 0.1);
+  };
+
+  function initChimneyGrid() {
+    chimneyGrid.innerHTML = '';
+    for (let i = 0; i < 6; i++) {
+      const hole = document.createElement('div');
+      hole.className = 'chimney-hole';
+      hole.dataset.idx = i;
+      hole.innerHTML = `
+        <div class="chimney-char" id="chim-char-${i}">🎅</div>
+        <div class="chimney-pipe"><div class="chimney-snow"></div></div>
+      `;
+      // マス全体（hole）をタップ判定にする！スマホでも100%反応
+      const triggerTap = (e) => {
+        e.preventDefault();
+        onChimneyTap(i);
+      };
+      hole.addEventListener('touchstart', triggerTap, { passive: false });
+      hole.addEventListener('mousedown', triggerTap);
+      chimneyGrid.appendChild(hole);
+    }
+  }
+
+  window.startChimneyGame = function() {
+    initAudio();
+    chimneyScore = 0;
+    chimneyTime = 30;
+    document.getElementById('chimney-score').textContent = '0';
+    document.getElementById('chimney-time').textContent = '30';
+    document.getElementById('chimney-start-overlay').classList.add('hidden');
+    document.getElementById('chimney-result-overlay').classList.add('hidden');
+
+    clearInterval(chimneyTimer);
+    clearInterval(chimneySpawnTimer);
+
+    // Reset all chimneys
+    for (let i = 0; i < 6; i++) {
+      const charEl = document.getElementById(`chim-char-${i}`);
+      if (charEl) {
+        charEl.className = 'chimney-char';
+      }
+    }
+
+    const cfg = chimConfigs[chimneyDifficulty];
+
+    chimneyTimer = setInterval(() => {
+      chimneyTime--;
+      document.getElementById('chimney-time').textContent = chimneyTime;
+      if (chimneyTime <= 5 && chimneyTime > 0) playTone(440, 'triangle', 0.1, 0.12);
+      if (chimneyTime <= 0) endChimneyGame();
+    }, 1000);
+
+    chimneySpawnTimer = setInterval(spawnChimneyBatch, cfg.spawnInterval);
+  };
+
+  function stopChimneyGame() {
+    clearInterval(chimneyTimer);
+    clearInterval(chimneySpawnTimer);
+  }
+
+  function spawnChimneyBatch() {
+    const cfg = chimConfigs[chimneyDifficulty];
+    spawnOneChimney();
+    if (Math.random() < cfg.multiSpawnChance) {
+      setTimeout(spawnOneChimney, 70);
+    }
+    if (chimneyDifficulty === 'hard' && Math.random() < 0.45) {
+      setTimeout(spawnOneChimney, 140);
+    }
+  }
+
+  function spawnOneChimney() {
+    const cfg = chimConfigs[chimneyDifficulty];
+    const available = [];
+    for (let i = 0; i < 6; i++) {
+      const charEl = document.getElementById(`chim-char-${i}`);
+      if (charEl && !charEl.classList.contains('up') && !charEl.classList.contains('hit')) {
+        available.push(i);
+      }
+    }
+    if (available.length === 0) return;
+
+    const idx = available[Math.floor(Math.random() * available.length)];
+    const charEl = document.getElementById(`chim-char-${idx}`);
+    if (!charEl) return;
+
+    let chosen;
+    const isBadRoll = Math.random() < cfg.badChance;
+    const badList = cfg.chars.filter(c => c.isBad);
+    const goodList = cfg.chars.filter(c => !c.isBad);
+
+    if (isBadRoll && badList.length > 0) {
+      chosen = badList[Math.floor(Math.random() * badList.length)];
+    } else {
+      chosen = goodList[Math.floor(Math.random() * goodList.length)];
+    }
+
+    charEl.textContent = chosen.icon;
+    charEl.dataset.pts = chosen.pts;
+    charEl.dataset.bad = chosen.isBad ? '1' : '0';
+    charEl.className = 'chimney-char up';
+
+    if (charEl.hideTimeout) clearTimeout(charEl.hideTimeout);
+
+    charEl.hideTimeout = setTimeout(() => {
+      if (charEl.classList.contains('up')) {
+        charEl.className = 'chimney-char';
+      }
+    }, cfg.stayDuration);
+  }
+
+  function onChimneyTap(idx) {
+    const charEl = document.getElementById(`chim-char-${idx}`);
+    if (!charEl || !charEl.classList.contains('up')) return;
+
+    charEl.className = 'chimney-char hit';
+    if (charEl.hideTimeout) clearTimeout(charEl.hideTimeout);
+
+    const pts = parseInt(charEl.dataset.pts, 10);
+    const isBad = charEl.dataset.bad === '1';
+
+    // Show floating point text right on this chimney
+    const hole = charEl.parentElement;
+    const floatEl = document.createElement('div');
+    floatEl.className = 'chimney-float-text';
+    floatEl.style.color = isBad ? '#ff4757' : '#ffd700';
+    floatEl.textContent = (pts > 0 ? `+${pts}` : `${pts}`);
+    hole.appendChild(floatEl);
+    setTimeout(() => floatEl.remove(), 600);
+
+    if (isBad) playSoundBad();
+    else playSoundSuccess();
+
+    chimneyScore = Math.max(0, chimneyScore + pts);
+    document.getElementById('chimney-score').textContent = chimneyScore;
+
+    setTimeout(() => {
+      charEl.className = 'chimney-char';
+    }, 180);
+  }
+
+  function endChimneyGame() {
+    stopChimneyGame();
+    unlockSantaLetter();
+
+    let rank = 'えんとつのお手伝い 🏠';
+    if (chimneyScore >= 2400) rank = 'えんとつマスター 👑';
+    else if (chimneyScore >= 1500) rank = 'スピードの達人 🌟';
+    else if (chimneyScore >= 800) rank = 'トナカイの早わざ 🦌';
+
+    document.getElementById('chimney-rank').textContent = rank;
+    document.getElementById('chimney-final-score').textContent = chimneyScore;
+    document.getElementById('chimney-result-overlay').classList.remove('hidden');
+    launchConfetti();
+    playFanfare();
+  }
+
+  // ========================================================
+  // GAME 4: SCRATCH LOTTERY IMPLEMENTATION
+  // ========================================================
+  const scratchCanvas = document.getElementById('scratch-canvas');
+  const sctx = scratchCanvas.getContext('2d');
+  let isScratching = false;
+
+  const scratchOutcomes = [
+    { rank: '👑 超大大吉！', msg: '宇宙一のハッピーがふってきた！今日はなんでもうまくいく無敵の日！', color: '#c0392b' },
+    { rank: '🌟 スーパーミラクル吉！', msg: '流れ星が3つ落ちてくるレベルの超大幸運！お願いごとが叶っちゃうかも！？', color: '#e67e22' },
+    { rank: '🌈 レインボー吉！', msg: '七色に輝く虹のソリを発見！きょうはずーっと笑顔で過ごせる魔法がかかったよ！', color: '#8e44ad' },
+    { rank: '💎 ダイヤモンド吉！', msg: 'ダイヤモンドみたいにピッカピカ！きみの笑顔がみんなを元気にするよ！', color: '#0984e3' },
+    { rank: '🦌 爆速トナカイ吉！', msg: 'トナカイのスーパーダッシュ！かけっこや鬼ごっこで一番になれちゃうかも！？', color: '#d35400' },
+    { rank: '🍰 ケーキ食べ放題吉！', msg: '今日食べるケーキは格別のおいしさ！大きないちごが当たっちゃうかも！？', color: '#e84393' },
+    { rank: '⛄ ニコニコ雪だるま吉！', msg: '寒さなんてヘッチャラ！心もからだもポッカポカに温まる嬉しいことが起きるよ！', color: '#00cec9' },
+    { rank: '🧦 びっくりくつした吉！', msg: '靴下の中をのぞいてみて！大好きなワクワクがたっぷりつまっているよ！', color: '#e17055' },
+    { rank: '🎄 きらめくモミの木吉！', msg: 'ぐんぐん背が伸びて元気もりもり！新しいお友だちがいっぱいできるよ！', color: '#27ae60' },
+    { rank: '🔔 幸せのジングルベル吉！', msg: 'シャンシャンシャン♪ 楽しい音が聞こえてきたら、ラッキーなことが起きる合図！', color: '#f39c12' },
+    { rank: '🍪 ジンジャーマン吉！', msg: 'あま〜いクッキーのいい匂い！今日のおやつは世界一おいしくなるよ!', color: '#b7791f' },
+    { rank: '🎮 ゲームの神様吉！', msg: '神ワザ連発！どんなゲームもハイスコア連発で大活躍できちゃうかも！？', color: '#6c5ce7' },
+    { rank: '📚 しゅくだいスラスラ吉！', msg: '頭がすっきり冴えわたる！学校のべんきょうや宿題があっという間に終わっちゃう奇跡！', color: '#2980b9' },
+    { rank: '😴 朝スッキリ吉！', msg: '朝のお布団からロケットみたいにピョン！一日中元気いっぱいで過ごせるよ！', color: '#00b894' },
+    { rank: '🎁 サプライズ吉！', msg: 'おうちの中で思いがけない嬉しいハッピーを発見！なにが起きるかはお楽しみ！', color: '#c0392b' },
+    { rank: '🤝 なかよし100人吉！', msg: 'お友だちと大笑いして仲良し度アップ！みんなから「ありがとう」って言われるよ！', color: '#e84393' },
+    { rank: '🎨 ひらめきピカッと吉！', msg: 'すごいアイデアが電球みたいにピカッ！お絵かきや工作で大傑作が誕生！', color: '#e67e22' },
+    { rank: '🍲 ごちそうモリモリ吉！', msg: '今夜の夜ごはんは大好物かも！？おいしいごはんをいっぱい食べてパワー全開！', color: '#d35400' },
+    { rank: '🧤 ぽかぽか手ぶくろ吉！', msg: '冷たい冬の風もなんのその！あったかい手袋をつけて外へ元気に出発だ！', color: '#e17055' },
+    { rank: '❄️ 奇跡の初雪吉！', msg: '空からふわふわ白い雪が舞い降りてくるよ！とびきり素敵な一日のはじまり！', color: '#0984e3' },
+    { rank: '🧸 宝物おもちゃ吉！', msg: 'お気に入りのおもちゃと最高にワクワク遊べるよ！新しい遊びを発見！', color: '#fd79a8' },
+    { rank: '⭐ 一番星みつけた吉！', msg: '夕方の夜空を見上げてみてね！サンタさんが星空から見守ってくれているよ！', color: '#f1c40f' },
+    { rank: '🎈 ふわふわスキップ吉！', msg: '気分はまるで雲の上！楽しいことが多すぎて、思わずスキップしちゃう日！', color: '#8e44ad' },
+    { rank: '🦁 ゆうき100倍吉！', msg: '心の中にライオンのパワー！ちょっとドキドキすることにも勇気を出して挑戦できる！', color: '#e67e22' },
+    { rank: '🎶 うたう小鳥吉！', msg: '鼻歌を歌うとハッピーがどんどん集まってくる！みんなを笑顔にする魔法！', color: '#00cec9' },
+    { rank: '🕯️ あたたかキャンドル吉！', msg: 'お部屋の中があたたかい光に包まれるよ！家族みんなでほっこり仲良し！', color: '#d35400' },
+    { rank: '✨ ミラクルスター吉！', msg: 'ポケットにキラキラの星を忍ばせて！きみの願いごとがきっと叶うよ！', color: '#f39c12' },
+    { rank: '💖 すべてうまくいく吉！', msg: '今日起きることはぜ〜んぶ大成功！自信を持って笑顔で元気にすごそう！', color: '#e84393' }
+  ];
+
+  let lastScratchIdx = -1;
+
+  window.resetScratch = function() {
+    initAudio();
+
+    // Pick a new outcome different from last time
+    let idx = Math.floor(Math.random() * scratchOutcomes.length);
+    if (idx === lastScratchIdx) {
+      idx = (idx + 1) % scratchOutcomes.length;
+    }
+    lastScratchIdx = idx;
+
+    const outcome = scratchOutcomes[idx];
+    const rankEl = document.getElementById('scratch-rank');
+    rankEl.textContent = outcome.rank;
+    rankEl.style.color = outcome.color || '#c0392b';
+    document.getElementById('scratch-msg').textContent = outcome.msg;
+
+    // Draw Festive Silver Scratch Cover
+    sctx.globalCompositeOperation = 'source-over';
+    sctx.fillStyle = '#b0bec5';
+    sctx.fillRect(0, 0, 300, 300);
+
+    // Decorative Snowflakes & text on scratch
+    sctx.fillStyle = '#607d8b';
+    sctx.font = 'bold 18px sans-serif';
+    sctx.textAlign = 'center';
+    sctx.fillText('❄️ ここをこすってね！ ❄️', 150, 155);
+
+    for (let i = 0; i < 8; i++) {
+      sctx.font = '24px sans-serif';
+      sctx.fillText('✨', (i * 45) % 280 + 15, (i * 73) % 260 + 25);
+    }
+  };
+
+  let scratchDrawn = 0;
+  function scratchAt(x, y) {
+    sctx.globalCompositeOperation = 'destination-out';
+    sctx.beginPath();
+    sctx.arc(x, y, 22, 0, Math.PI * 2);
+    sctx.fill();
+    scratchDrawn++;
+    if (scratchDrawn > 25) {
+      unlockSantaLetter();
+    }
+  }
+
+  const getScratchPos = (e) => {
+    const rect = scratchCanvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: (clientX - rect.left) * (scratchCanvas.width / rect.width),
+      y: (clientY - rect.top) * (scratchCanvas.height / rect.height)
+    };
+  };
+
+  scratchCanvas.addEventListener('mousedown', (e) => { isScratching = true; const p = getScratchPos(e); scratchAt(p.x, p.y); });
+  window.addEventListener('mousemove', (e) => { if (isScratching) { const p = getScratchPos(e); scratchAt(p.x, p.y); } });
+  window.addEventListener('mouseup', () => isScratching = false);
+
+  scratchCanvas.addEventListener('touchstart', (e) => {
+    isScratching = true;
+    const p = getScratchPos(e);
+    scratchAt(p.x, p.y);
+  }, { passive: true });
+  scratchCanvas.addEventListener('touchmove', (e) => {
+    if (isScratching) {
+      const p = getScratchPos(e);
+      scratchAt(p.x, p.y);
+    }
+  }, { passive: true });
+  window.addEventListener('touchend', () => isScratching = false);
+
+  // Initialize Letter Lock State
+  checkLetterUnlocked();
+
+})();
+</script>
+</body>
+</html>

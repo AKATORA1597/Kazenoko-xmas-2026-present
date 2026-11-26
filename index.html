@@ -17,11 +17,18 @@
       padding: 0;
       touch-action: manipulation;
     }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
     body {
       background-color: #590d0e;
       background: radial-gradient(circle at 50% 25%, #8b1517 0%, #590d0e 65%, #3d0708 100%);
       font-family: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', sans-serif;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -33,16 +40,20 @@
       width: 100vw;
       max-width: 440px;
       height: 100vh;
-      max-height: 840px;
+      height: 100dvh;
+      max-height: 100dvh;
       background: linear-gradient(180deg, #1b4332 0%, #081c15 35%, #590d0e 75%, #3d0708 100%);
       box-shadow: 0 12px 50px rgba(0,0,0,0.7);
       overflow: hidden;
       border-radius: 0;
+      box-sizing: border-box;
     }
     @media (min-width: 480px) {
       #game-container {
         border-radius: 32px;
         height: 94vh;
+        height: 94dvh;
+        max-height: 840px;
         border: 5px solid #ffd700;
         box-shadow: 0 16px 60px rgba(0,0,0,0.8), inset 0 0 14px rgba(0,0,0,0.4);
       }
@@ -51,7 +62,7 @@
     /* Top Sound & Home Bar */
     .top-bar {
       position: absolute;
-      top: 12px;
+      top: 10px;
       left: 12px;
       right: 12px;
       display: flex;
@@ -86,18 +97,26 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 20px 16px;
+      justify-content: flex-start;
+      padding: 54px 14px 20px;
       text-align: center;
       transition: opacity 0.3s ease, visibility 0.3s;
       z-index: 10;
       overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      box-sizing: border-box;
     }
     .view-screen.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
       z-index: 0;
+    }
+    /* Overlay screens (start & results) centered with scroll safety */
+    .view-screen[id$="-overlay"] {
+      justify-content: center;
+      min-height: 100%;
     }
 
     /* Buttons (Playful Christmas Toy Style) */
@@ -1023,19 +1042,19 @@
       <div class="game-card" onclick="openGame('memory')">
         <div class="game-icon">🃏</div>
         <div class="game-name">クリスマス<br>えあわせ</div>
-        <div class="game-badge">難易度えらべる</div>
+        <div class="game-badge">しんけいすいじゃく</div>
       </div>
       <!-- Game 3 -->
       <div class="game-card" onclick="openGame('chimney')">
         <div class="game-icon">🏠</div>
         <div class="game-name">えんとつから<br>ヒョコッ！</div>
-        <div class="game-badge">もぐらたたき風</div>
+        <div class="game-badge">もぐらたたき</div>
       </div>
       <!-- Game 4: Rhythm Game -->
       <div class="game-card" onclick="openGame('rhythm')">
         <div class="game-icon">🔔</div>
         <div class="game-name">サンタの<br>ベルリズム</div>
-        <div class="game-badge">おんがくゲーム</div>
+        <div class="game-badge">音楽ゲーム</div>
       </div>
       <!-- Game 5: Educational Game -->
       <div class="game-card" onclick="openGame('edu')">
@@ -1059,6 +1078,11 @@
         <div class="letter-btn-sub">かぜのこのみんなへの特別メッセージをよむ 🎅</div>
       </div>
       <div style="font-size: 20px; color: #ffd700;">▶</div>
+    </div>
+
+    <!-- MusMus & Audio Credits -->
+    <div style="font-size: 10.5px; color: rgba(255, 255, 255, 0.55); margin-top: 14px; margin-bottom: 8px; text-align: center; letter-spacing: 0.5px;">
+      BGM: MusMus / 効果音ラボ 他
     </div>
   </div>
 
@@ -1238,7 +1262,7 @@
   <!-- ================= SCREEN 5: RHYTHM GAME ================= -->
   <div id="rhythm-screen" class="view-screen hidden">
     <h2 style="font-size: 22px; margin-bottom: 2px;">🔔 サンタのベルリズム</h2>
-    <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">音楽に合わせて落ちてくるベルをタップ！🎶</div>
+    <div style="font-size: 13px; color: #ffd700; font-weight: 800; margin-bottom: 6px;">🎵 えんそう曲：ジングルベル 🔔</div>
 
     <div style="display: flex; justify-content: space-between; width: 100%; max-width: 320px; font-size: 14px; font-weight: 800; margin-bottom: 4px;">
       <div class="hud-chip">スコア: <span id="rhythm-score" style="color:#ffd700;">0</span></div>
@@ -1262,10 +1286,10 @@
 
     <!-- Rhythm Start Overlay -->
     <div id="rhythm-start-overlay" class="view-screen" style="background: rgba(13,27,42,0.94);">
-      <h2 style="font-size: 24px; margin-bottom: 8px;">🔔 サンタのベルリズム</h2>
-      <p style="font-size: 13px; color: #ffd700; margin-bottom: 12px; line-height: 1.6;">
-        クリスマスの曲に合わせて、金色のラインに<br>
-        ベルが重なったらタイミングよくタップ！✨
+      <h2 style="font-size: 24px; margin-bottom: 4px;">🔔 サンタのベルリズム</h2>
+      <div style="font-size: 15px; color: #ffd700; font-weight: 900; margin-bottom: 8px;">🎵 えんそう曲：ジングルベル</div>
+      <p style="font-size: 13px; color: #e0f2fe; margin-bottom: 12px; line-height: 1.6;">
+        落ちてくるベルに合わせてタイミングよくタップ！✨
       </p>
 
       <div style="width: 100%; max-width: 280px; margin-bottom: 14px;">
@@ -1476,7 +1500,7 @@
 
   function playFanfare() {
     initAudio();
-    stopBGM();
+    pauseBGM();
     const melody = [
       {f: 523.25, d: 0.14, delay: 0},
       {f: 523.25, d: 0.14, delay: 140},
@@ -1493,432 +1517,79 @@
     }, 1800);
   }
 
-  // --- Background Music System (5 Famous Christmas Songs for each game) ---
-  let bgmPlaying = false;
-  let bgmTimeout = null;
-  let currentBgmTrack = 'menu';
-  let currentBgmIndex = 0;
-
-  const bgmTracks = {
-    // 1. メニュー画面 (トップ画面): きよしこの夜 (Silent Night) - 澄んだハンドベル＆そりの鈴
-    menu: [
-      {f: 392.00, d: 0.45, rest: 0.55}, // ソ
-      {f: 440.00, d: 0.25, rest: 0.32}, // ラ
-      {f: 392.00, d: 0.35, rest: 0.45}, // ソ
-      {f: 329.63, d: 0.75, rest: 0.95}, // ミ
-      {f: 392.00, d: 0.45, rest: 0.55}, // ソ
-      {f: 440.00, d: 0.25, rest: 0.32}, // ラ
-      {f: 392.00, d: 0.35, rest: 0.45}, // ソ
-      {f: 329.63, d: 0.75, rest: 0.95}, // ミ
-
-      {f: 587.33, d: 0.55, rest: 0.65}, // レ
-      {f: 587.33, d: 0.28, rest: 0.35}, // レ
-      {f: 493.88, d: 0.80, rest: 1.00}, // シ
-      {f: 523.25, d: 0.55, rest: 0.65}, // ド
-      {f: 523.25, d: 0.28, rest: 0.35}, // ド
-      {f: 392.00, d: 0.80, rest: 1.00}, // ソ
-
-      {f: 440.00, d: 0.50, rest: 0.60}, // ラ
-      {f: 440.00, d: 0.30, rest: 0.35}, // ラ
-      {f: 523.25, d: 0.45, rest: 0.50}, // ド
-      {f: 493.88, d: 0.25, rest: 0.30}, // シ
-      {f: 440.00, d: 0.35, rest: 0.45}, // ラ
-      {f: 392.00, d: 0.50, rest: 0.60}, // ソ
-      {f: 440.00, d: 0.25, rest: 0.30}, // ラ
-      {f: 392.00, d: 0.35, rest: 0.45}, // ソ
-      {f: 329.63, d: 0.80, rest: 1.00}, // ミ
-
-      {f: 587.33, d: 0.50, rest: 0.60}, // レ
-      {f: 587.33, d: 0.30, rest: 0.35}, // レ
-      {f: 698.46, d: 0.45, rest: 0.55}, // ファ
-      {f: 587.33, d: 0.25, rest: 0.30}, // レ
-      {f: 493.88, d: 0.35, rest: 0.45}, // シ
-      {f: 523.25, d: 0.85, rest: 1.10}, // ド
-      {f: 659.25, d: 0.85, rest: 1.10}, // ミ
-
-      {f: 523.25, d: 0.40, rest: 0.50}, // ド
-      {f: 392.00, d: 0.30, rest: 0.40}, // ソ
-      {f: 329.63, d: 0.30, rest: 0.40}, // ミ
-      {f: 392.00, d: 0.35, rest: 0.45}, // ソ
-      {f: 349.23, d: 0.25, rest: 0.35}, // ファ
-      {f: 293.66, d: 0.35, rest: 0.45}, // レ
-      {f: 261.63, d: 1.20, rest: 1.60}  // ド (安らかな結び)
-    ],
-    // 2. キャッチ: ジングルベル (Jingle Bells) - 疾走感あふれるベル調
-    catch: [
-      {f: 329.63, d: 0.16, rest: 0.20},
-      {f: 329.63, d: 0.16, rest: 0.20},
-      {f: 329.63, d: 0.35, rest: 0.42},
-      {f: 329.63, d: 0.16, rest: 0.20},
-      {f: 329.63, d: 0.16, rest: 0.20},
-      {f: 329.63, d: 0.35, rest: 0.42},
-      {f: 329.63, d: 0.16, rest: 0.20},
-      {f: 392.00, d: 0.16, rest: 0.20},
-      {f: 261.63, d: 0.20, rest: 0.24},
-      {f: 293.66, d: 0.14, rest: 0.16},
-      {f: 329.63, d: 0.50, rest: 0.60},
-      {f: 349.23, d: 0.16, rest: 0.18},
-      {f: 349.23, d: 0.16, rest: 0.18},
-      {f: 349.23, d: 0.24, rest: 0.26},
-      {f: 349.23, d: 0.14, rest: 0.16},
-      {f: 349.23, d: 0.16, rest: 0.18},
-      {f: 329.63, d: 0.16, rest: 0.18},
-      {f: 329.63, d: 0.16, rest: 0.18},
-      {f: 329.63, d: 0.14, rest: 0.16},
-      {f: 329.63, d: 0.14, rest: 0.16},
-      {f: 293.66, d: 0.16, rest: 0.18},
-      {f: 293.66, d: 0.16, rest: 0.18},
-      {f: 329.63, d: 0.16, rest: 0.18},
-      {f: 293.66, d: 0.28, rest: 0.35},
-      {f: 392.00, d: 0.35, rest: 0.46}
-    ],
-    // 3. 絵合わせ: おめでとうクリスマス (We Wish You a Merry Christmas) - 楽しい3拍子
-    memory: [
-      {f: 293.66, d: 0.22, rest: 0.26},
-      {f: 392.00, d: 0.22, rest: 0.26},
-      {f: 392.00, d: 0.13, rest: 0.15},
-      {f: 440.00, d: 0.13, rest: 0.15},
-      {f: 392.00, d: 0.13, rest: 0.15},
-      {f: 369.99, d: 0.13, rest: 0.15},
-      {f: 329.63, d: 0.22, rest: 0.26},
-      {f: 329.63, d: 0.22, rest: 0.26},
-      {f: 329.63, d: 0.22, rest: 0.26},
-      {f: 440.00, d: 0.22, rest: 0.26},
-      {f: 440.00, d: 0.13, rest: 0.15},
-      {f: 493.88, d: 0.13, rest: 0.15},
-      {f: 440.00, d: 0.13, rest: 0.15},
-      {f: 392.00, d: 0.13, rest: 0.15},
-      {f: 369.99, d: 0.22, rest: 0.26},
-      {f: 293.66, d: 0.22, rest: 0.26},
-      {f: 293.66, d: 0.22, rest: 0.26},
-      {f: 493.88, d: 0.22, rest: 0.26},
-      {f: 493.88, d: 0.13, rest: 0.15},
-      {f: 523.25, d: 0.13, rest: 0.15},
-      {f: 493.88, d: 0.13, rest: 0.15},
-      {f: 440.00, d: 0.13, rest: 0.15},
-      {f: 392.00, d: 0.22, rest: 0.26},
-      {f: 329.63, d: 0.22, rest: 0.26},
-      {f: 293.66, d: 0.13, rest: 0.15},
-      {f: 293.66, d: 0.13, rest: 0.15},
-      {f: 329.63, d: 0.22, rest: 0.26},
-      {f: 440.00, d: 0.22, rest: 0.26},
-      {f: 369.99, d: 0.22, rest: 0.26},
-      {f: 392.00, d: 0.50, rest: 0.65}
-    ],
-    // 4. えんとつタップ: 赤鼻のトナカイ (Rudolph the Red-Nosed Reindeer) - コミカル＆リズミカル
-    chimney: [
-      {f: 392.00, d: 0.14, rest: 0.18},
-      {f: 440.00, d: 0.14, rest: 0.18},
-      {f: 392.00, d: 0.14, rest: 0.18},
-      {f: 329.63, d: 0.24, rest: 0.28},
-      {f: 523.25, d: 0.18, rest: 0.22},
-      {f: 440.00, d: 0.18, rest: 0.22},
-      {f: 392.00, d: 0.35, rest: 0.44},
-      {f: 392.00, d: 0.14, rest: 0.18},
-      {f: 440.00, d: 0.14, rest: 0.18},
-      {f: 392.00, d: 0.14, rest: 0.18},
-      {f: 440.00, d: 0.14, rest: 0.18},
-      {f: 392.00, d: 0.18, rest: 0.22},
-      {f: 523.25, d: 0.22, rest: 0.26},
-      {f: 493.88, d: 0.40, rest: 0.50},
-      {f: 349.23, d: 0.14, rest: 0.18},
-      {f: 392.00, d: 0.14, rest: 0.18},
-      {f: 349.23, d: 0.14, rest: 0.18},
-      {f: 293.66, d: 0.24, rest: 0.28},
-      {f: 493.88, d: 0.18, rest: 0.22},
-      {f: 440.00, d: 0.18, rest: 0.22},
-      {f: 392.00, d: 0.35, rest: 0.44},
-      {f: 392.00, d: 0.14, rest: 0.18},
-      {f: 440.00, d: 0.14, rest: 0.18},
-      {f: 392.00, d: 0.14, rest: 0.18},
-      {f: 440.00, d: 0.14, rest: 0.18},
-      {f: 392.00, d: 0.18, rest: 0.22},
-      {f: 440.00, d: 0.22, rest: 0.26},
-      {f: 329.63, d: 0.40, rest: 0.50}
-    ],
-    // 5. スクラッチ: もろびとこぞりて (Joy to the World) - 祝福感＆ワクワク
-    scratch: [
-      {f: 523.25, d: 0.30, rest: 0.38},
-      {f: 493.88, d: 0.22, rest: 0.26},
-      {f: 440.00, d: 0.22, rest: 0.26},
-      {f: 392.00, d: 0.40, rest: 0.48},
-      {f: 349.23, d: 0.18, rest: 0.22},
-      {f: 329.63, d: 0.18, rest: 0.22},
-      {f: 293.66, d: 0.18, rest: 0.22},
-      {f: 261.63, d: 0.45, rest: 0.58},
-      {f: 392.00, d: 0.22, rest: 0.26},
-      {f: 440.00, d: 0.22, rest: 0.26},
-      {f: 440.00, d: 0.22, rest: 0.26},
-      {f: 493.88, d: 0.22, rest: 0.26},
-      {f: 493.88, d: 0.22, rest: 0.26},
-      {f: 523.25, d: 0.45, rest: 0.58}
-    ],
-    // 6. リズムゲーム: あわてんぼうのサンタクロース - 軽快でノリノリ
-    rhythm: [
-      {f: 392.00, d: 0.14, rest: 0.18}, // ソ
-      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
-      {f: 261.63, d: 0.14, rest: 0.18}, // ド
-      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
-      {f: 392.00, d: 0.14, rest: 0.18}, // ソ
-      {f: 392.00, d: 0.14, rest: 0.18}, // ソ
-      {f: 392.00, d: 0.28, rest: 0.36}, // ソ
-      {f: 440.00, d: 0.14, rest: 0.18}, // ラ
-      {f: 440.00, d: 0.14, rest: 0.18}, // ラ
-      {f: 440.00, d: 0.14, rest: 0.18}, // ラ
-      {f: 440.00, d: 0.14, rest: 0.18}, // ラ
-      {f: 392.00, d: 0.35, rest: 0.44}, // ソ
-      {f: 349.23, d: 0.14, rest: 0.18}, // ファ
-      {f: 349.23, d: 0.14, rest: 0.18}, // ファ
-      {f: 349.23, d: 0.14, rest: 0.18}, // ファ
-      {f: 349.23, d: 0.14, rest: 0.18}, // ファ
-      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
-      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
-      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
-      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
-      {f: 293.66, d: 0.14, rest: 0.18}, // レ
-      {f: 293.66, d: 0.14, rest: 0.18}, // レ
-      {f: 293.66, d: 0.14, rest: 0.18}, // レ
-      {f: 293.66, d: 0.14, rest: 0.18}, // レ
-      {f: 261.63, d: 0.35, rest: 0.48}  // ド
-    ],
-    // 7. 知育パズル: サンタが街にやってくる - 楽しく頭が冴えるリズム
-    edu: [
-      {f: 392.00, d: 0.16, rest: 0.20}, // ソ
-      {f: 440.00, d: 0.16, rest: 0.20}, // ラ
-      {f: 392.00, d: 0.16, rest: 0.20}, // ソ
-      {f: 349.23, d: 0.16, rest: 0.20}, // ファ
-      {f: 329.63, d: 0.28, rest: 0.36}, // ミ
-      {f: 329.63, d: 0.28, rest: 0.36}, // ミ
-      {f: 329.63, d: 0.35, rest: 0.44}, // ミ
-      {f: 349.23, d: 0.16, rest: 0.20}, // ファ
-      {f: 392.00, d: 0.16, rest: 0.20}, // ソ
-      {f: 349.23, d: 0.16, rest: 0.20}, // ファ
-      {f: 329.63, d: 0.16, rest: 0.20}, // ミ
-      {f: 293.66, d: 0.28, rest: 0.36}, // レ
-      {f: 293.66, d: 0.28, rest: 0.36}, // レ
-      {f: 293.66, d: 0.35, rest: 0.44}, // レ
-      {f: 329.63, d: 0.16, rest: 0.20}, // ミ
-      {f: 349.23, d: 0.16, rest: 0.20}, // ファ
-      {f: 329.63, d: 0.16, rest: 0.20}, // ミ
-      {f: 293.66, d: 0.16, rest: 0.20}, // レ
-      {f: 261.63, d: 0.40, rest: 0.50}  // ド
-    ]
+  // --- High-Quality Audio File BGM System ---
+  const bgmFiles = {
+    menu: 'santa-claus-no-kiseki.mp3',
+    catch: 'bakuretsu-tonakai-race.mp3',
+    edu: 'MusMus-BGM-097.ogg',
+    letter: 'present-wo-kakaete-shiawase-na-kibun-de-kaeru-christmas-no-hi-no-theme.mp3',
+    chimney: 'MusMus-BGM-029.ogg',
+    scratch: 'MusMus-BGM-097.ogg',
+    memory: 'fuyu-no-bell-no-yo.mp3',
+    rhythm: 'fuyu-no-bell-no-yo.mp3'
   };
 
-  // --- Sound Synthesizers (Bells, Sleigh Bells, Music Box) ---
-  let noiseBuffer = null;
-  function getNoiseBuffer() {
-    if (!noiseBuffer && audioCtx) {
-      const bufferSize = Math.floor(audioCtx.sampleRate * 0.15);
-      noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = noiseBuffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
-    }
-    return noiseBuffer;
-  }
-
-  // そりの鈴 (スレイベル: シャンシャン…)
-  function playSleighBell(gainLevel = 0.035) {
-    if (!soundEnabled || !audioCtx) return;
-    try {
-      const now = audioCtx.currentTime;
-      [0, 0.032].forEach((offset, hitIdx) => {
-        const t = now + offset;
-        const vol = gainLevel * (hitIdx === 0 ? 0.7 : 1.0);
-
-        // 1. 金属鈴の共鳴 (高次非整数倍音)
-        const freqs = [2520, 3050, 3850, 4800, 5950];
-        freqs.forEach((freq, i) => {
-          const osc = audioCtx.createOscillator();
-          const g = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq + (Math.random() * 30 - 15), t);
-          g.gain.setValueAtTime(vol * 0.35, t);
-          g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12 + i * 0.012);
-          osc.connect(g);
-          g.connect(audioCtx.destination);
-          osc.start(t);
-          osc.stop(t + 0.18);
-        });
-
-        // 2. 鈴のシャラシャラ感 (バンドパスフィルタノイズ)
-        const nBuf = getNoiseBuffer();
-        if (nBuf) {
-          const noise = audioCtx.createBufferSource();
-          noise.buffer = nBuf;
-          const filter = audioCtx.createBiquadFilter();
-          filter.type = 'bandpass';
-          filter.frequency.setValueAtTime(5800, t);
-          filter.Q.setValueAtTime(3.0, t);
-
-          const noiseGain = audioCtx.createGain();
-          noiseGain.gain.setValueAtTime(vol * 0.65, t);
-          noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
-
-          noise.connect(filter);
-          filter.connect(noiseGain);
-          noiseGain.connect(audioCtx.destination);
-          noise.start(t);
-          noise.stop(t + 0.10);
-        }
-      });
-    } catch(e) {}
-  }
-
-  // 澄んだクリスマスのハンドベル・チャイム音色 (チ〜〜ン…)
-  function playBellNote(freq, dur, gainLevel = 0.048) {
-    if (!soundEnabled || !audioCtx) return;
-    try {
-      const t = audioCtx.currentTime;
-
-      // 1. 基音 (温かみと澄んだベルの丸み)
-      const osc1 = audioCtx.createOscillator();
-      const g1 = audioCtx.createGain();
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(freq, t);
-      g1.gain.setValueAtTime(gainLevel * 0.85, t);
-      g1.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(dur * 1.6, 0.9));
-      osc1.connect(g1);
-      g1.connect(audioCtx.destination);
-      osc1.start(t);
-      osc1.stop(t + Math.max(dur * 1.6, 0.9));
-
-      // 2. 2倍音 (オクターブ上の華やかさ)
-      const osc2 = audioCtx.createOscillator();
-      const g2 = audioCtx.createGain();
-      osc2.type = 'sine';
-      osc2.frequency.setValueAtTime(freq * 2, t);
-      g2.gain.setValueAtTime(gainLevel * 0.45, t);
-      g2.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(dur, 0.5));
-      osc2.connect(g2);
-      g2.connect(audioCtx.destination);
-      osc2.start(t);
-      osc2.stop(t + Math.max(dur, 0.5));
-
-      // 3. クラング倍音 (ハンドベルのチリ〜ンという金属アタック音)
-      const osc3 = audioCtx.createOscillator();
-      const g3 = audioCtx.createGain();
-      osc3.type = 'triangle';
-      osc3.frequency.setValueAtTime(freq * 2.76, t);
-      g3.gain.setValueAtTime(gainLevel * 0.35, t);
-      g3.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
-      osc3.connect(g3);
-      g3.connect(audioCtx.destination);
-      osc3.start(t);
-      osc3.stop(t + 0.30);
-    } catch(e) {}
-  }
-
-  function playMusicBoxNote(freq, dur) {
-    if (!soundEnabled || !audioCtx) return;
-    try {
-      const osc = audioCtx.createOscillator();
-      const osc2 = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-      osc2.type = 'sine';
-      osc2.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
-
-      g.gain.setValueAtTime(0.045, audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-
-      osc.connect(g);
-      osc2.connect(g);
-      g.connect(audioCtx.destination);
-
-      osc.start();
-      osc2.start();
-      osc.stop(audioCtx.currentTime + dur);
-      osc2.stop(audioCtx.currentTime + dur);
-    } catch(e) {}
-  }
-
-  // --- Sleigh Bell Rhythm for Menu (トップ画面用そりの鈴伴奏ループ) ---
-  let sleighBellTimeout = null;
-  let sleighBellPatternIndex = 0;
-  const sleighBellRhythm = [
-    {delay: 0.65, double: false},
-    {delay: 0.65, double: false},
-    {delay: 0.65, double: true},  // 軽やかにシャララン
-    {delay: 1.30, double: false}  // ゆったりとした呼吸
-  ];
-
-  function startSleighBells() {
-    if (!soundEnabled || !bgmPlaying || currentBgmTrack !== 'menu') return;
-    function loopBells() {
-      if (!soundEnabled || !bgmPlaying || currentBgmTrack !== 'menu') return;
-      const step = sleighBellRhythm[sleighBellPatternIndex];
-      playSleighBell(0.032);
-      if (step.double) {
-        setTimeout(() => {
-          if (soundEnabled && bgmPlaying && currentBgmTrack === 'menu') {
-            playSleighBell(0.024);
-          }
-        }, 130);
-      }
-      sleighBellPatternIndex = (sleighBellPatternIndex + 1) % sleighBellRhythm.length;
-      sleighBellTimeout = setTimeout(loopBells, step.delay * 1000);
-    }
-    loopBells();
-  }
-
-  function stopSleighBells() {
-    if (sleighBellTimeout) {
-      clearTimeout(sleighBellTimeout);
-      sleighBellTimeout = null;
-    }
-    sleighBellPatternIndex = 0;
-  }
+  let currentAudio = null;
+  let currentBgmTrack = 'menu';
+  let previousBgmTrack = 'menu';
+  let bgmPlaying = false;
 
   function startBGM() {
-    if (!soundEnabled || bgmPlaying) return;
-    initAudio();
-    bgmPlaying = true;
+    if (!soundEnabled) return;
+    const file = bgmFiles[currentBgmTrack] || bgmFiles.menu;
+    if (!file) return;
 
-    // トップ画面 (メニュー) の場合はそりの鈴伴奏も一緒に優しくスタート
-    if (currentBgmTrack === 'menu') {
-      startSleighBells();
-    }
-
-    function nextNote() {
-      if (!bgmPlaying || !soundEnabled) return;
-      const track = bgmTracks[currentBgmTrack] || bgmTracks.menu;
-      const n = track[currentBgmIndex];
-
-      // トップ画面とスクラッチは澄んだハンドベル音色、他はオルゴール風
-      if (currentBgmTrack === 'menu' || currentBgmTrack === 'scratch') {
-        playBellNote(n.f, n.d);
-      } else {
-        playMusicBoxNote(n.f, n.d);
+    if (currentAudio) {
+      const decodedSrc = decodeURIComponent(currentAudio.src);
+      if (decodedSrc.endsWith(file) || currentAudio.src.endsWith(file)) {
+        if (currentAudio.paused) {
+          const p = currentAudio.play();
+          if (p && p.catch) p.catch(() => {});
+        }
+        bgmPlaying = true;
+        return;
       }
-
-      currentBgmIndex = (currentBgmIndex + 1) % track.length;
-      bgmTimeout = setTimeout(nextNote, n.rest * 1000);
+      try {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      } catch(e) {}
     }
-    nextNote();
+
+    try {
+      currentAudio = new Audio(file);
+      currentAudio.loop = true;
+      currentAudio.volume = 0.50;
+      const p = currentAudio.play();
+      if (p && p.catch) p.catch(() => {});
+      bgmPlaying = true;
+    } catch(e) {}
   }
 
   function stopBGM() {
     bgmPlaying = false;
-    if (bgmTimeout) {
-      clearTimeout(bgmTimeout);
-      bgmTimeout = null;
+    if (currentAudio) {
+      try {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      } catch(e) {}
     }
-    stopSleighBells();
+  }
+
+  function pauseBGM() {
+    if (currentAudio) {
+      try { currentAudio.pause(); } catch(e) {}
+    }
   }
 
   function switchBGM(trackKey) {
-    if (currentBgmTrack === trackKey && bgmPlaying) return;
+    if (trackKey !== 'letter') {
+      previousBgmTrack = trackKey;
+    }
+    if (currentBgmTrack === trackKey && currentAudio && !currentAudio.paused) return;
     currentBgmTrack = trackKey;
-    currentBgmIndex = 0;
     stopBGM();
     if (soundEnabled) {
-      setTimeout(startBGM, 120);
+      setTimeout(startBGM, 80);
     }
   }
 
@@ -2095,9 +1766,11 @@
     initAudio();
     playTone(659.25, 'triangle', 0.2, 0.15);
     letterModal.classList.remove('hidden');
+    switchBGM('letter');
   };
   window.closeSantaLetter = function() {
     letterModal.classList.add('hidden');
+    switchBGM(activeScreen || 'menu');
   };
 
   // ========================================================
@@ -2983,29 +2656,105 @@
   const rhythmComboEl = document.getElementById('rhythm-combo');
   const rhythmFeedbackContainer = document.getElementById('rhythm-feedback-container');
 
+  // 音階周波数 (Hz)
+  const NOTE_C4 = 261.63, NOTE_D4 = 293.66, NOTE_E4 = 329.63, NOTE_F4 = 349.23, NOTE_G4 = 392.00, NOTE_A4 = 440.00, NOTE_C5 = 523.25;
+
+  // ジングルベル (Jingle Bells) の楽譜データ
+  // [lane (0=左, 1=中, 2=右), freq (音程), beats (拍長)]
+  const jingleBellsScore = [
+    // 1小節目: ミ ミ ミー
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 2 },
+    // 2小節目: ミ ミ ミー
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 2 },
+    // 3小節目: ミ ソ ド レ
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 2, freq: NOTE_G4, beats: 1 },
+    { lane: 0, freq: NOTE_C4, beats: 1 },
+    { lane: 0, freq: NOTE_D4, beats: 1 },
+    // 4小節目: ミーーー
+    { lane: 1, freq: NOTE_E4, beats: 3 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    // 5小節目: ファ ファ ファ ファ
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    // 6小節目: ファ ミ ミ ミ
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    // 7小節目: レ レ ミ レ
+    { lane: 0, freq: NOTE_D4, beats: 1 },
+    { lane: 0, freq: NOTE_D4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 0, freq: NOTE_D4, beats: 1 },
+    // 8小節目: ソーーー
+    { lane: 2, freq: NOTE_G4, beats: 3 },
+    { lane: 2, freq: NOTE_G4, beats: 1 },
+    // 9小節目: ミ ミ ミー
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 2 },
+    // 10小節目: ミ ミ ミー
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 2 },
+    // 11小節目: ミ ソ ド レ
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 2, freq: NOTE_G4, beats: 1 },
+    { lane: 0, freq: NOTE_C4, beats: 1 },
+    { lane: 0, freq: NOTE_D4, beats: 1 },
+    // 12小節目: ミーーー
+    { lane: 1, freq: NOTE_E4, beats: 3 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    // 13小節目: ファ ファ ファ ファ
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    // 14小節目: ファ ミ ミ ミ
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    { lane: 1, freq: NOTE_E4, beats: 1 },
+    // 15小節目: ソ ソ ファ レ
+    { lane: 2, freq: NOTE_G4, beats: 1 },
+    { lane: 2, freq: NOTE_G4, beats: 1 },
+    { lane: 0, freq: NOTE_F4, beats: 1 },
+    { lane: 0, freq: NOTE_D4, beats: 1 },
+    // 16小節目: ドーーー (フィニッシュ！)
+    { lane: 1, freq: NOTE_C5, beats: 4 }
+  ];
+
   const rhythmConfigs = {
     easy: {
-      speed: 210, // px per second
-      bpm: 110,
-      noteCount: 22,
-      hitWindow: { perfect: 100, great: 200, good: 320 }
+      speed: 220,
+      bpm: 105,
+      noteCount: 26, // 8小節
+      hitWindow: { perfect: 110, great: 220, good: 340 }
     },
     normal: {
       speed: 310,
-      bpm: 125,
-      noteCount: 38,
-      hitWindow: { perfect: 85, great: 170, good: 280 }
+      bpm: 120,
+      noteCount: jingleBellsScore.length, // フルサビ 50音符
+      hitWindow: { perfect: 90, great: 180, good: 290 }
     },
     hard: {
-      speed: 430,
-      bpm: 140,
-      noteCount: 56,
-      hitWindow: { perfect: 70, great: 140, good: 240 }
+      speed: 410,
+      bpm: 132,
+      noteCount: jingleBellsScore.length,
+      hitWindow: { perfect: 75, great: 150, good: 250 }
     }
   };
 
   const rhythmIcons = ['🔔', '⭐', '🎄', '🎁', '🦌', '⛄'];
-  const laneFreqs = [523.25, 659.25, 783.99]; // ド, ミ, ソ
+  const laneDefaultFreqs = [NOTE_C4, NOTE_E4, NOTE_G4];
+  const lastLaneTapTime = [0, 0, 0];
 
   window.setRhythmDifficulty = function(diff) {
     rhythmDifficulty = diff;
@@ -3034,23 +2783,25 @@
     const cfg = rhythmConfigs[rhythmDifficulty];
     const stageH = rhythmStage.clientHeight || 380;
     const judgeY = stageH - 68; // gold line position from top
-    const fallDuration = (judgeY / cfg.speed) * 1000; // time in ms from top to judge line
+    const fallDuration = (judgeY / cfg.speed) * 1000;
 
     rhythmNotes = [];
-    const beatInterval = (60 / cfg.bpm) * 1000;
-    let currentBeatTime = 1200; // initial lead-in ms
+    const beatMs = (60 / cfg.bpm) * 1000;
+    let currentBeatTime = 1200; // lead-in ms
 
-    for (let i = 0; i < cfg.noteCount; i++) {
-      let lane = Math.floor(Math.random() * 3);
-      if (rhythmDifficulty === 'hard' && i % 4 === 0 && Math.random() < 0.4) {
-        // Double notes in hard
-        const lane2 = (lane + 1 + Math.floor(Math.random() * 2)) % 3;
-        rhythmNotes.push(createNoteObj(lane2, currentBeatTime, fallDuration, judgeY));
+    const count = Math.min(cfg.noteCount, jingleBellsScore.length);
+    for (let i = 0; i < count; i++) {
+      const item = jingleBellsScore[i];
+      let lane = item.lane;
+
+      // Hardモードでの装飾・和音 (2か所同時押し)
+      if (rhythmDifficulty === 'hard' && (i % 6 === 2) && item.beats >= 2) {
+        const lane2 = (lane + 2) % 3;
+        rhythmNotes.push(createNoteObj(lane2, currentBeatTime, fallDuration, judgeY, item.freq * 1.25));
       }
-      rhythmNotes.push(createNoteObj(lane, currentBeatTime, fallDuration, judgeY));
 
-      const step = (rhythmDifficulty === 'easy' ? 2 : (rhythmDifficulty === 'normal' ? 1.5 : 1));
-      currentBeatTime += beatInterval * step;
+      rhythmNotes.push(createNoteObj(lane, currentBeatTime, fallDuration, judgeY, item.freq));
+      currentBeatTime += beatMs * item.beats;
     }
 
     rhythmStartTime = performance.now();
@@ -3058,7 +2809,7 @@
     rhythmLoop();
   };
 
-  function createNoteObj(lane, hitTargetMs, fallDuration, judgeY) {
+  function createNoteObj(lane, hitTargetMs, fallDuration, judgeY, freq) {
     const laneEl = document.getElementById(`rhythm-lane-${lane}`);
     const noteEl = document.createElement('div');
     noteEl.className = 'rhythm-note';
@@ -3068,6 +2819,7 @@
 
     return {
       lane,
+      freq: freq || laneDefaultFreqs[lane],
       hitTargetMs,
       fallDuration,
       judgeY,
@@ -3090,7 +2842,6 @@
       if (note.hit) continue;
 
       const timeUntilHit = note.hitTargetMs - elapsed;
-      // y = judgeY - (timeUntilHit / 1000) * speed
       const y = note.judgeY - (timeUntilHit / 1000) * cfg.speed;
 
       if (y >= -60 && y <= note.judgeY + 70) {
@@ -3125,6 +2876,14 @@
   function triggerRhythmHit(lane) {
     if (!rhythmRunning) return;
     const now = performance.now();
+
+    // 同一レーンの短時間（100ms未満）の重複タップはカット（チャタリング防止）
+    // 別レーンは lastLaneTapTime が独立しているため2か所同時タップは完全に認識！
+    if (now - lastLaneTapTime[lane] < 100) {
+      return;
+    }
+    lastLaneTapTime[lane] = now;
+
     const elapsed = now - rhythmStartTime;
     const cfg = rhythmConfigs[rhythmDifficulty];
 
@@ -3134,10 +2893,6 @@
       targetEl.classList.add('pressed');
       setTimeout(() => targetEl.classList.remove('pressed'), 120);
     }
-
-    // Play crisp bell sound
-    playBellNote(laneFreqs[lane], 0.16, 0.12);
-    playSleighBell(0.025);
 
     // Find closest unhit note in this lane
     let closestNote = null;
@@ -3153,6 +2908,11 @@
         }
       }
     }
+
+    // タップ音: ノーツがある時はその曲の音程を演奏！
+    const playFreq = closestNote ? closestNote.freq : laneDefaultFreqs[lane];
+    playBellNote(playFreq, 0.22, 0.16);
+    playSleighBell(0.025);
 
     if (closestNote && minDiff <= cfg.hitWindow.good) {
       closestNote.hit = true;
@@ -3198,7 +2958,7 @@
     updateNicknameUI();
 
     let rank = 'ベルのお手伝い 🔔';
-    if (rhythmScore >= 6000) rank = 'リズムマスター 👑';
+    if (rhythmScore >= 6000) rank = 'ジングルベル・マスター 👑';
     else if (rhythmScore >= 3500) rank = 'ベルの達人 🌟';
     else if (rhythmScore >= 1800) rank = 'トナカイのたいこ 🦌';
 
@@ -3210,17 +2970,21 @@
     playFanfare();
   }
 
-  // Rhythm Input Handlers (Touch & Keyboard)
+  // Rhythm Input Handlers (Touch & Keyboard - Double-tap safe, Multi-touch preserved)
   [0, 1, 2].forEach(lane => {
     const targetEl = document.getElementById(`rtarget-${lane}`);
     if (targetEl) {
-      const handleTap = (e) => {
+      targetEl.addEventListener('touchstart', (e) => {
         e.preventDefault();
         initAudio();
         triggerRhythmHit(lane);
-      };
-      targetEl.addEventListener('touchstart', handleTap, { passive: false });
-      targetEl.addEventListener('mousedown', handleTap);
+      }, { passive: false });
+
+      targetEl.addEventListener('mousedown', (e) => {
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+        initAudio();
+        triggerRhythmHit(lane);
+      });
     }
   });
 

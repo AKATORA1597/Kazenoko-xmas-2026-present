@@ -174,25 +174,25 @@
       font-weight: 800;
     }
 
-    /* 4 Game Cards Grid */
+    /* 6 Game Cards Grid */
     .games-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
       max-width: 380px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .game-card {
       background: rgba(27, 67, 50, 0.9);
       border: 2px solid #ffd700;
-      border-radius: 20px;
-      padding: 14px 10px;
+      border-radius: 18px;
+      padding: 10px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      box-shadow: 0 5px 14px rgba(0,0,0,0.35);
       transition: transform 0.15s, background 0.15s;
     }
     .game-card:nth-child(even) {
@@ -203,20 +203,21 @@
       filter: brightness(1.1);
     }
     .game-icon {
-      font-size: 38px;
-      margin-bottom: 6px;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+      font-size: 32px;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
     }
     .game-name {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
       color: #fff;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
+      line-height: 1.25;
     }
     .game-badge {
-      font-size: 10px;
+      font-size: 9.5px;
       background: rgba(0, 0, 0, 0.25);
-      padding: 2px 8px;
+      padding: 1px 7px;
       border-radius: 10px;
       color: #ffd700;
       border: 1px solid rgba(255, 215, 0, 0.3);
@@ -657,6 +658,184 @@
       pointer-events: none;
       z-index: 45;
     }
+
+    /* --- GAME 5: RHYTHM GAME STYLES --- */
+    .rhythm-stage {
+      position: relative;
+      width: 100%;
+      max-width: 330px;
+      height: 380px;
+      background: linear-gradient(180deg, #09121d 0%, #172a3a 70%, #0d1b2a 100%);
+      border: 3px solid #ffd700;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 8px 25px rgba(0,0,0,0.5);
+      margin: 8px 0;
+      display: flex;
+    }
+    .rhythm-lane {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      border-right: 1px dashed rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+    }
+    .rhythm-lane:last-child {
+      border-right: none;
+    }
+    .rhythm-judge-line {
+      position: absolute;
+      bottom: 68px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #ffd700;
+      box-shadow: 0 0 10px #ffd700, 0 0 20px rgba(255, 215, 0, 0.8);
+      z-index: 5;
+      pointer-events: none;
+    }
+    .rhythm-target {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 3px solid #ffd700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      transition: transform 0.08s, background 0.08s;
+    }
+    .rhythm-target:active, .rhythm-target.pressed {
+      transform: translateX(-50%) scale(0.92);
+      background: rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 15px #ffd700;
+    }
+    .rhythm-note {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffd700, #e67e22);
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
+      z-index: 4;
+      pointer-events: none;
+    }
+    .rhythm-feedback {
+      position: absolute;
+      top: 35%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 900;
+      pointer-events: none;
+      z-index: 15;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      animation: judgePop 0.45s ease-out forwards;
+    }
+    @keyframes judgePop {
+      0% { opacity: 0; transform: scale(0.6); }
+      50% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 0; transform: scale(1) translateY(-15px); }
+    }
+    .rhythm-combo-box {
+      font-size: 14px;
+      font-weight: 900;
+      color: #ffd700;
+    }
+
+    /* --- GAME 6: EDUCATIONAL PUZZLE STYLES --- */
+    .edu-card {
+      width: 100%;
+      max-width: 340px;
+      background: #fff9ea;
+      border: 3px solid #ffd700;
+      border-radius: 20px;
+      padding: 14px 16px;
+      color: #333;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      margin: 8px 0;
+    }
+    .edu-q-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #c0392b;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .edu-stage {
+      background: #fff;
+      border: 2px dashed #e0c598;
+      border-radius: 14px;
+      min-height: 110px;
+      max-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px;
+      margin-bottom: 12px;
+      font-size: 32px;
+    }
+    .edu-choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+    }
+    .edu-choice-btn {
+      background: #27ae60;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 6px;
+      cursor: pointer;
+      border-bottom: 4px solid #1e8449;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      transition: transform 0.1s;
+      touch-action: manipulation;
+    }
+    .edu-choice-btn:active {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+    .edu-choice-btn.correct {
+      background: #f1c40f !important;
+      color: #8b4513 !important;
+      border-bottom-color: #d4ac0d !important;
+      animation: popIn 0.3s ease-out;
+    }
+    .edu-choice-btn.wrong {
+      background: #e74c3c !important;
+      border-bottom-color: #c0392b !important;
+      animation: shake 0.3s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
   </style>
 </head>
 <body>
@@ -676,7 +855,7 @@
     <h1 class="portal-title">クリスマス<br>ミニゲームランド</h1>
     <div class="portal-subtitle">あそびたいゲームをえらんでね！✨</div>
 
-    <!-- 4 Games Grid -->
+    <!-- 6 Games Grid -->
     <div class="games-grid">
       <!-- Game 1 -->
       <div class="game-card" onclick="openGame('catch')">
@@ -696,7 +875,19 @@
         <div class="game-name">えんとつから<br>ヒョコッ！</div>
         <div class="game-badge">もぐらたたき風</div>
       </div>
-      <!-- Game 4 -->
+      <!-- Game 4: Rhythm Game -->
+      <div class="game-card" onclick="openGame('rhythm')">
+        <div class="game-icon">🔔</div>
+        <div class="game-name">サンタの<br>ベルリズム</div>
+        <div class="game-badge">おんがくゲーム</div>
+      </div>
+      <!-- Game 5: Educational Game -->
+      <div class="game-card" onclick="openGame('edu')">
+        <div class="game-icon">🧩</div>
+        <div class="game-name">サンタの<br>おてつだい</div>
+        <div class="game-badge">クイズ＆パズル</div>
+      </div>
+      <!-- Game 6 -->
       <div class="game-card" onclick="openGame('scratch')">
         <div class="game-icon">✨</div>
         <div class="game-name">あかとらサンタの<br>スクラッチ</div>
@@ -881,7 +1072,127 @@
 
     <div style="display: flex; gap: 10px; margin-top: 10px;">
       <button class="btn btn-green btn-small" onclick="resetScratch()">もう1枚けずる 🪙</button>
-      <button class="btn btn-gold btn-small" onclick="openSantaLetter()">🎅 手紙をよむ</button>
+      <button class="btn btn-small" style="background:#57606f; border-bottom-color:#2f3542;" onclick="backToMenu()">メニューにもどる 🏠</button>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 5: RHYTHM GAME ================= -->
+  <div id="rhythm-screen" class="view-screen hidden">
+    <h2 style="font-size: 22px; margin-bottom: 2px;">🔔 サンタのベルリズム</h2>
+    <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">音楽に合わせて落ちてくるベルをタップ！🎶</div>
+
+    <div style="display: flex; justify-content: space-between; width: 100%; max-width: 320px; font-size: 14px; font-weight: 800; margin-bottom: 4px;">
+      <div class="hud-chip">スコア: <span id="rhythm-score" style="color:#ffd700;">0</span></div>
+      <div class="hud-chip rhythm-combo-box">コンボ: <span id="rhythm-combo" style="color:#ff7675;">0</span></div>
+    </div>
+
+    <!-- 3 Lanes Stage -->
+    <div class="rhythm-stage" id="rhythm-stage">
+      <div class="rhythm-lane" id="rhythm-lane-0">
+        <div class="rhythm-target" id="rtarget-0" data-lane="0">🔔</div>
+      </div>
+      <div class="rhythm-lane" id="rhythm-lane-1">
+        <div class="rhythm-target" id="rtarget-1" data-lane="1">⭐</div>
+      </div>
+      <div class="rhythm-lane" id="rhythm-lane-2">
+        <div class="rhythm-target" id="rtarget-2" data-lane="2">🔔</div>
+      </div>
+      <div class="rhythm-judge-line"></div>
+      <div id="rhythm-feedback-container"></div>
+    </div>
+
+    <!-- Rhythm Start Overlay -->
+    <div id="rhythm-start-overlay" class="view-screen" style="background: rgba(13,27,42,0.94);">
+      <h2 style="font-size: 24px; margin-bottom: 8px;">🔔 サンタのベルリズム</h2>
+      <p style="font-size: 13px; color: #ffd700; margin-bottom: 12px; line-height: 1.6;">
+        クリスマスの曲に合わせて、金色のラインに<br>
+        ベルが重なったらタイミングよくタップ！✨
+      </p>
+
+      <div style="width: 100%; max-width: 280px; margin-bottom: 14px;">
+        <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">むずかしさをえらんでね</div>
+        <div class="diff-tabs">
+          <button class="diff-tab active" data-rhythmdiff="easy" onclick="setRhythmDifficulty('easy')">🐥 かんたん</button>
+          <button class="diff-tab" data-rhythmdiff="normal" onclick="setRhythmDifficulty('normal')">🦌 ふつう</button>
+          <button class="diff-tab" data-rhythmdiff="hard" onclick="setRhythmDifficulty('hard')">🎅 むずかしい</button>
+        </div>
+      </div>
+
+      <button class="btn btn-green" onclick="startRhythmGame()">スタート！ 🎵</button>
+    </div>
+
+    <!-- Rhythm Result Overlay -->
+    <div id="rhythm-result-overlay" class="view-screen hidden" style="background: rgba(13,27,42,0.95);">
+      <h2 style="font-size: 22px;">🎉 えんそうしゅうりょう！</h2>
+      <div id="rhythm-result-rank" style="font-size: 22px; color: #ffd700; margin: 6px 0; font-weight: 900;"></div>
+      <div class="sub-result-card">
+        <div style="font-size: 12px;">スコア</div>
+        <div id="rhythm-final-score" class="sub-result-score">0</div>
+        <div style="font-size: 12px; margin-top: 4px;">さいだいコンボ: <b id="rhythm-final-maxcombo" style="color:#ff7675;">0</b></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 250px;">
+        <button class="btn btn-gold btn-small" onclick="openSantaLetter()">🎅 あかとらサンタの手紙</button>
+        <button class="btn btn-green btn-small" onclick="startRhythmGame()">もう一回あそぶ 🔄</button>
+        <button class="btn btn-small" style="background:#57606f; border-bottom-color:#2f3542;" onclick="backToMenu()">メニューにもどる 🏠</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 6: EDUCATIONAL PUZZLE ================= -->
+  <div id="edu-screen" class="view-screen hidden">
+    <h2 style="font-size: 22px; margin-bottom: 2px;">🧩 サンタのおてつだい</h2>
+    <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">あたまをつかってクリスマスクイズに挑戦！💡</div>
+
+    <div style="display: flex; justify-content: space-between; width: 100%; max-width: 320px; font-size: 14px; font-weight: 800; margin-bottom: 4px;">
+      <div class="hud-chip">⏰ のこり: <span id="edu-time">40</span>秒</div>
+      <div class="hud-chip">せいかい: <span id="edu-score" style="color:#ffd700;">0</span>もん</div>
+    </div>
+
+    <!-- Puzzle Card Container -->
+    <div class="edu-card">
+      <div class="edu-q-title" id="edu-question-text">もんだいをよみこみ中...</div>
+      <div class="edu-stage" id="edu-stage">
+        <!-- Visual quiz items -->
+      </div>
+      <div class="edu-choices" id="edu-choices">
+        <!-- Choice buttons -->
+      </div>
+    </div>
+
+    <!-- Edu Start Overlay -->
+    <div id="edu-start-overlay" class="view-screen" style="background: rgba(45,25,12,0.94);">
+      <h2 style="font-size: 24px; margin-bottom: 8px;">🧩 サンタのおてつだい</h2>
+      <p style="font-size: 13px; color: #ffd700; margin-bottom: 12px; line-height: 1.6;">
+        かずの数え上げ、足し算、仲間わけ、大きさくらべ！<br>
+        サンタさんのお手伝いクイズをといていこう！✨
+      </p>
+
+      <div style="width: 100%; max-width: 280px; margin-bottom: 14px;">
+        <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">むずかしさをえらんでね</div>
+        <div class="diff-tabs">
+          <button class="diff-tab active" data-edudiff="easy" onclick="setEduDifficulty('easy')">🐥 かんたん</button>
+          <button class="diff-tab" data-edudiff="normal" onclick="setEduDifficulty('normal')">🦌 ふつう</button>
+          <button class="diff-tab" data-edudiff="hard" onclick="setEduDifficulty('hard')">🎅 むずかしい</button>
+        </div>
+      </div>
+
+      <button class="btn btn-green" onclick="startEduGame()">スタート！ 💡</button>
+    </div>
+
+    <!-- Edu Result Overlay -->
+    <div id="edu-result-overlay" class="view-screen hidden" style="background: rgba(45,25,12,0.95);">
+      <h2 style="font-size: 22px;">🎉 タイムアップ！</h2>
+      <div id="edu-result-rank" style="font-size: 22px; color: #ffd700; margin: 6px 0; font-weight: 900;"></div>
+      <div class="sub-result-card">
+        <div style="font-size: 12px;">せいかい数</div>
+        <div id="edu-final-score" class="sub-result-score">0</div>
+        <div style="font-size: 12px; margin-top: 4px;">せいかい率: <b id="edu-final-rate">100%</b></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 250px;">
+        <button class="btn btn-gold btn-small" onclick="openSantaLetter()">🎅 あかとらサンタの手紙</button>
+        <button class="btn btn-green btn-small" onclick="startEduGame()">もう一回あそぶ 🔄</button>
+        <button class="btn btn-small" style="background:#57606f; border-bottom-color:#2f3542;" onclick="backToMenu()">メニューにもどる 🏠</button>
+      </div>
     </div>
   </div>
 
@@ -1129,6 +1440,56 @@
       {f: 493.88, d: 0.22, rest: 0.26},
       {f: 493.88, d: 0.22, rest: 0.26},
       {f: 523.25, d: 0.45, rest: 0.58}
+    ],
+    // 6. リズムゲーム: あわてんぼうのサンタクロース - 軽快でノリノリ
+    rhythm: [
+      {f: 392.00, d: 0.14, rest: 0.18}, // ソ
+      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
+      {f: 261.63, d: 0.14, rest: 0.18}, // ド
+      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
+      {f: 392.00, d: 0.14, rest: 0.18}, // ソ
+      {f: 392.00, d: 0.14, rest: 0.18}, // ソ
+      {f: 392.00, d: 0.28, rest: 0.36}, // ソ
+      {f: 440.00, d: 0.14, rest: 0.18}, // ラ
+      {f: 440.00, d: 0.14, rest: 0.18}, // ラ
+      {f: 440.00, d: 0.14, rest: 0.18}, // ラ
+      {f: 440.00, d: 0.14, rest: 0.18}, // ラ
+      {f: 392.00, d: 0.35, rest: 0.44}, // ソ
+      {f: 349.23, d: 0.14, rest: 0.18}, // ファ
+      {f: 349.23, d: 0.14, rest: 0.18}, // ファ
+      {f: 349.23, d: 0.14, rest: 0.18}, // ファ
+      {f: 349.23, d: 0.14, rest: 0.18}, // ファ
+      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
+      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
+      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
+      {f: 329.63, d: 0.14, rest: 0.18}, // ミ
+      {f: 293.66, d: 0.14, rest: 0.18}, // レ
+      {f: 293.66, d: 0.14, rest: 0.18}, // レ
+      {f: 293.66, d: 0.14, rest: 0.18}, // レ
+      {f: 293.66, d: 0.14, rest: 0.18}, // レ
+      {f: 261.63, d: 0.35, rest: 0.48}  // ド
+    ],
+    // 7. 知育パズル: サンタが街にやってくる - 楽しく頭が冴えるリズム
+    edu: [
+      {f: 392.00, d: 0.16, rest: 0.20}, // ソ
+      {f: 440.00, d: 0.16, rest: 0.20}, // ラ
+      {f: 392.00, d: 0.16, rest: 0.20}, // ソ
+      {f: 349.23, d: 0.16, rest: 0.20}, // ファ
+      {f: 329.63, d: 0.28, rest: 0.36}, // ミ
+      {f: 329.63, d: 0.28, rest: 0.36}, // ミ
+      {f: 329.63, d: 0.35, rest: 0.44}, // ミ
+      {f: 349.23, d: 0.16, rest: 0.20}, // ファ
+      {f: 392.00, d: 0.16, rest: 0.20}, // ソ
+      {f: 349.23, d: 0.16, rest: 0.20}, // ファ
+      {f: 329.63, d: 0.16, rest: 0.20}, // ミ
+      {f: 293.66, d: 0.28, rest: 0.36}, // レ
+      {f: 293.66, d: 0.28, rest: 0.36}, // レ
+      {f: 293.66, d: 0.35, rest: 0.44}, // レ
+      {f: 329.63, d: 0.16, rest: 0.20}, // ミ
+      {f: 349.23, d: 0.16, rest: 0.20}, // ファ
+      {f: 329.63, d: 0.16, rest: 0.20}, // ミ
+      {f: 293.66, d: 0.16, rest: 0.20}, // レ
+      {f: 261.63, d: 0.40, rest: 0.50}  // ド
     ]
   };
 
@@ -1460,6 +1821,18 @@
       resetScratch();
       activeScreen = 'scratch';
       switchBGM('scratch');
+    } else if (gameName === 'rhythm') {
+      document.getElementById('rhythm-screen').classList.remove('hidden');
+      document.getElementById('rhythm-start-overlay').classList.remove('hidden');
+      document.getElementById('rhythm-result-overlay').classList.add('hidden');
+      activeScreen = 'rhythm';
+      switchBGM('rhythm');
+    } else if (gameName === 'edu') {
+      document.getElementById('edu-screen').classList.remove('hidden');
+      document.getElementById('edu-start-overlay').classList.remove('hidden');
+      document.getElementById('edu-result-overlay').classList.add('hidden');
+      activeScreen = 'edu';
+      switchBGM('edu');
     }
   };
 
@@ -1467,6 +1840,8 @@
     initAudio();
     stopCatchGame();
     stopChimneyGame();
+    stopRhythmGame();
+    stopEduGame();
     document.querySelectorAll('.view-screen').forEach(s => s.classList.add('hidden'));
     document.getElementById('menu-screen').classList.remove('hidden');
     homeBtn.style.visibility = 'hidden';
@@ -2343,16 +2718,11 @@
     }
   };
 
-  let scratchDrawn = 0;
   function scratchAt(x, y) {
     sctx.globalCompositeOperation = 'destination-out';
     sctx.beginPath();
     sctx.arc(x, y, 22, 0, Math.PI * 2);
     sctx.fill();
-    scratchDrawn++;
-    if (scratchDrawn > 25) {
-      unlockSantaLetter();
-    }
   }
 
   const getScratchPos = (e) => {
@@ -2381,6 +2751,764 @@
     }
   }, { passive: true });
   window.addEventListener('touchend', () => isScratching = false);
+
+  // ========================================================
+  // GAME 5: RHYTHM GAME IMPLEMENTATION
+  // ========================================================
+  let rhythmRunning = false;
+  let rhythmScore = 0;
+  let rhythmCombo = 0;
+  let rhythmMaxCombo = 0;
+  let rhythmDifficulty = 'easy';
+  let rhythmNotes = [];
+  let rhythmStartTime = 0;
+  let rhythmAnimId = null;
+  const rhythmStage = document.getElementById('rhythm-stage');
+  const rhythmScoreEl = document.getElementById('rhythm-score');
+  const rhythmComboEl = document.getElementById('rhythm-combo');
+  const rhythmFeedbackContainer = document.getElementById('rhythm-feedback-container');
+
+  const rhythmConfigs = {
+    easy: {
+      speed: 210, // px per second
+      bpm: 110,
+      noteCount: 22,
+      hitWindow: { perfect: 100, great: 200, good: 320 }
+    },
+    normal: {
+      speed: 310,
+      bpm: 125,
+      noteCount: 38,
+      hitWindow: { perfect: 85, great: 170, good: 280 }
+    },
+    hard: {
+      speed: 430,
+      bpm: 140,
+      noteCount: 56,
+      hitWindow: { perfect: 70, great: 140, good: 240 }
+    }
+  };
+
+  const rhythmIcons = ['🔔', '⭐', '🎄', '🎁', '🦌', '⛄'];
+  const laneFreqs = [523.25, 659.25, 783.99]; // ド, ミ, ソ
+
+  window.setRhythmDifficulty = function(diff) {
+    rhythmDifficulty = diff;
+    document.querySelectorAll('[data-rhythmdiff]').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.rhythmdiff === diff);
+    });
+    playTone(550, 'triangle', 0.08, 0.1);
+  };
+
+  window.startRhythmGame = function() {
+    initAudio();
+    stopRhythmGame();
+
+    rhythmScore = 0;
+    rhythmCombo = 0;
+    rhythmMaxCombo = 0;
+    rhythmScoreEl.textContent = '0';
+    rhythmComboEl.textContent = '0';
+    document.getElementById('rhythm-start-overlay').classList.add('hidden');
+    document.getElementById('rhythm-result-overlay').classList.add('hidden');
+    rhythmFeedbackContainer.innerHTML = '';
+
+    // Clear old notes from stage
+    document.querySelectorAll('.rhythm-note').forEach(n => n.remove());
+
+    const cfg = rhythmConfigs[rhythmDifficulty];
+    const stageH = rhythmStage.clientHeight || 380;
+    const judgeY = stageH - 68; // gold line position from top
+    const fallDuration = (judgeY / cfg.speed) * 1000; // time in ms from top to judge line
+
+    rhythmNotes = [];
+    const beatInterval = (60 / cfg.bpm) * 1000;
+    let currentBeatTime = 1200; // initial lead-in ms
+
+    for (let i = 0; i < cfg.noteCount; i++) {
+      let lane = Math.floor(Math.random() * 3);
+      if (rhythmDifficulty === 'hard' && i % 4 === 0 && Math.random() < 0.4) {
+        // Double notes in hard
+        const lane2 = (lane + 1 + Math.floor(Math.random() * 2)) % 3;
+        rhythmNotes.push(createNoteObj(lane2, currentBeatTime, fallDuration, judgeY));
+      }
+      rhythmNotes.push(createNoteObj(lane, currentBeatTime, fallDuration, judgeY));
+
+      const step = (rhythmDifficulty === 'easy' ? 2 : (rhythmDifficulty === 'normal' ? 1.5 : 1));
+      currentBeatTime += beatInterval * step;
+    }
+
+    rhythmStartTime = performance.now();
+    rhythmRunning = true;
+    rhythmLoop();
+  };
+
+  function createNoteObj(lane, hitTargetMs, fallDuration, judgeY) {
+    const laneEl = document.getElementById(`rhythm-lane-${lane}`);
+    const noteEl = document.createElement('div');
+    noteEl.className = 'rhythm-note';
+    noteEl.textContent = rhythmIcons[lane % rhythmIcons.length];
+    noteEl.style.top = '-60px';
+    laneEl.appendChild(noteEl);
+
+    return {
+      lane,
+      hitTargetMs,
+      fallDuration,
+      judgeY,
+      el: noteEl,
+      hit: false,
+      missed: false
+    };
+  }
+
+  function rhythmLoop() {
+    if (!rhythmRunning) return;
+    const now = performance.now();
+    const elapsed = now - rhythmStartTime;
+    const cfg = rhythmConfigs[rhythmDifficulty];
+
+    let allDone = true;
+
+    for (let i = 0; i < rhythmNotes.length; i++) {
+      const note = rhythmNotes[i];
+      if (note.hit) continue;
+
+      const timeUntilHit = note.hitTargetMs - elapsed;
+      // y = judgeY - (timeUntilHit / 1000) * speed
+      const y = note.judgeY - (timeUntilHit / 1000) * cfg.speed;
+
+      if (y >= -60 && y <= note.judgeY + 70) {
+        note.el.style.top = `${y}px`;
+        note.el.style.display = 'flex';
+      } else if (y > note.judgeY + 70) {
+        note.el.style.display = 'none';
+      }
+
+      // Check Miss (passed judge line beyond good window)
+      if (!note.missed && elapsed > note.hitTargetMs + cfg.hitWindow.good) {
+        note.missed = true;
+        rhythmCombo = 0;
+        rhythmComboEl.textContent = '0';
+        showRhythmFeedback('MISS', '#a4b0be');
+        note.el.style.opacity = '0.3';
+      }
+
+      if (!note.hit && !note.missed) {
+        allDone = false;
+      }
+    }
+
+    if (allDone && elapsed > rhythmNotes[rhythmNotes.length - 1].hitTargetMs + 1000) {
+      endRhythmGame();
+      return;
+    }
+
+    rhythmAnimId = requestAnimationFrame(rhythmLoop);
+  }
+
+  function triggerRhythmHit(lane) {
+    if (!rhythmRunning) return;
+    const now = performance.now();
+    const elapsed = now - rhythmStartTime;
+    const cfg = rhythmConfigs[rhythmDifficulty];
+
+    // Animate target button
+    const targetEl = document.getElementById(`rtarget-${lane}`);
+    if (targetEl) {
+      targetEl.classList.add('pressed');
+      setTimeout(() => targetEl.classList.remove('pressed'), 120);
+    }
+
+    // Play crisp bell sound
+    playBellNote(laneFreqs[lane], 0.16, 0.12);
+    playSleighBell(0.025);
+
+    // Find closest unhit note in this lane
+    let closestNote = null;
+    let minDiff = 999999;
+
+    for (let i = 0; i < rhythmNotes.length; i++) {
+      const note = rhythmNotes[i];
+      if (note.lane === lane && !note.hit && !note.missed) {
+        const diff = Math.abs(elapsed - note.hitTargetMs);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestNote = note;
+        }
+      }
+    }
+
+    if (closestNote && minDiff <= cfg.hitWindow.good) {
+      closestNote.hit = true;
+      closestNote.el.remove();
+
+      rhythmCombo++;
+      if (rhythmCombo > rhythmMaxCombo) rhythmMaxCombo = rhythmCombo;
+      rhythmComboEl.textContent = rhythmCombo;
+
+      if (minDiff <= cfg.hitWindow.perfect) {
+        rhythmScore += 200 + Math.min(rhythmCombo * 10, 100);
+        showRhythmFeedback('✨ PERFECT! ✨', '#ffd700');
+      } else if (minDiff <= cfg.hitWindow.great) {
+        rhythmScore += 120 + Math.min(rhythmCombo * 5, 50);
+        showRhythmFeedback('👍 GREAT!', '#2ecc71');
+      } else {
+        rhythmScore += 60;
+        showRhythmFeedback('😊 GOOD', '#3498db');
+      }
+      rhythmScoreEl.textContent = rhythmScore;
+    }
+  }
+
+  function showRhythmFeedback(text, color) {
+    rhythmFeedbackContainer.innerHTML = '';
+    const fb = document.createElement('div');
+    fb.className = 'rhythm-feedback';
+    fb.style.color = color;
+    fb.textContent = text;
+    rhythmFeedbackContainer.appendChild(fb);
+    setTimeout(() => fb.remove(), 450);
+  }
+
+  window.stopRhythmGame = function() {
+    rhythmRunning = false;
+    if (rhythmAnimId) cancelAnimationFrame(rhythmAnimId);
+    document.querySelectorAll('.rhythm-note').forEach(n => n.remove());
+  };
+
+  function endRhythmGame() {
+    stopRhythmGame();
+    unlockSantaLetter();
+
+    let rank = 'ベルのお手伝い 🔔';
+    if (rhythmScore >= 6000) rank = 'リズムマスター 👑';
+    else if (rhythmScore >= 3500) rank = 'ベルの達人 🌟';
+    else if (rhythmScore >= 1800) rank = 'トナカイのたいこ 🦌';
+
+    document.getElementById('rhythm-result-rank').textContent = rank;
+    document.getElementById('rhythm-final-score').textContent = rhythmScore;
+    document.getElementById('rhythm-final-maxcombo').textContent = `${rhythmMaxCombo}回`;
+    document.getElementById('rhythm-result-overlay').classList.remove('hidden');
+    launchConfetti();
+    playFanfare();
+  }
+
+  // Rhythm Input Handlers (Touch & Keyboard)
+  [0, 1, 2].forEach(lane => {
+    const targetEl = document.getElementById(`rtarget-${lane}`);
+    if (targetEl) {
+      const handleTap = (e) => {
+        e.preventDefault();
+        initAudio();
+        triggerRhythmHit(lane);
+      };
+      targetEl.addEventListener('touchstart', handleTap, { passive: false });
+      targetEl.addEventListener('mousedown', handleTap);
+    }
+  });
+
+  // Keyboard controls for rhythm (D, F, J or Left, Down, Right or 1, 2, 3)
+  window.addEventListener('keydown', (e) => {
+    if (activeScreen !== 'rhythm' || !rhythmRunning) return;
+    if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowLeft' || e.key === '1') {
+      triggerRhythmHit(0);
+    } else if (e.key === 'f' || e.key === 'F' || e.key === 'ArrowDown' || e.key === '2') {
+      triggerRhythmHit(1);
+    } else if (e.key === 'j' || e.key === 'J' || e.key === 'ArrowRight' || e.key === '3') {
+      triggerRhythmHit(2);
+    }
+  });
+
+  // ========================================================
+  // GAME 6: EDUCATIONAL PUZZLE IMPLEMENTATION
+  // ========================================================
+  let eduRunning = false;
+  let eduScore = 0;
+  let eduTotalAnswered = 0;
+  let eduTime = 40;
+  let eduTimer = null;
+  let eduDifficulty = 'easy';
+  let currentEduAnswer = null;
+  let eduLock = false;
+
+  const eduQuestionEl = document.getElementById('edu-question-text');
+  const eduStageEl = document.getElementById('edu-stage');
+  const eduChoicesEl = document.getElementById('edu-choices');
+  const eduScoreEl = document.getElementById('edu-score');
+  const eduTimeEl = document.getElementById('edu-time');
+
+  window.setEduDifficulty = function(diff) {
+    eduDifficulty = diff;
+    document.querySelectorAll('[data-edudiff]').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.edudiff === diff);
+    });
+    playTone(550, 'triangle', 0.08, 0.1);
+  };
+
+  window.startEduGame = function() {
+    initAudio();
+    stopEduGame();
+
+    eduScore = 0;
+    eduTotalAnswered = 0;
+    eduTime = 40;
+    eduScoreEl.textContent = '0';
+    eduTimeEl.textContent = '40';
+    document.getElementById('edu-start-overlay').classList.add('hidden');
+    document.getElementById('edu-result-overlay').classList.add('hidden');
+    eduRunning = true;
+
+    nextEduQuestion();
+
+    eduTimer = setInterval(() => {
+      eduTime--;
+      eduTimeEl.textContent = eduTime;
+      if (eduTime <= 5 && eduTime > 0) playTone(440, 'triangle', 0.1, 0.12);
+      if (eduTime <= 0) endEduGame();
+    }, 1000);
+  };
+
+  window.stopEduGame = function() {
+    eduRunning = false;
+    clearInterval(eduTimer);
+  };
+
+  function nextEduQuestion() {
+    if (!eduRunning) return;
+    eduLock = false;
+
+    // Pick question types based on difficulty
+    let types = ['math', 'count', 'odd', 'pattern'];
+    if (eduDifficulty === 'easy') {
+      types = ['math', 'count', 'odd', 'pattern', 'size'];
+    } else if (eduDifficulty === 'normal') {
+      types = ['math', 'math', 'count', 'odd', 'pattern'];
+    } else {
+      types = ['math', 'math', 'pattern', 'odd', 'count'];
+    }
+    const chosenType = types[Math.floor(Math.random() * types.length)];
+
+    eduStageEl.innerHTML = '';
+    eduChoicesEl.innerHTML = '';
+
+    if (chosenType === 'math') {
+      genMathQuestion();
+    } else if (chosenType === 'count') {
+      genCountQuestion();
+    } else if (chosenType === 'odd') {
+      genOddQuestion();
+    } else if (chosenType === 'pattern') {
+      genPatternQuestion();
+    } else {
+      genSizeQuestion();
+    }
+  }
+
+  // Question 1: Math Questions (小学生向けの楽しい計算パズル)
+  function genMathQuestion() {
+    let qText = '', visualText = '', ans = 0;
+
+    if (eduDifficulty === 'easy') {
+      // --- かんたん: 小1〜小2の基本 ---
+      const roll = Math.random();
+      if (roll < 0.5) {
+        // 1桁〜簡単な足し算
+        const a = 3 + Math.floor(Math.random() * 6); // 3〜8
+        const b = 2 + Math.floor(Math.random() * 6); // 2〜7
+        ans = a + b;
+        qText = `🎅 赤いプレゼントが ${a}こ、青いプレゼントが ${b}こ。あわせると何こ？`;
+        visualText = `${a} ＋ ${b} ＝ ？`;
+      } else {
+        // 1桁の引き算
+        const a = 6 + Math.floor(Math.random() * 8); // 6〜13
+        const b = 2 + Math.floor(Math.random() * 5); // 2〜6
+        ans = a - b;
+        qText = `🧦 クッキーが ${a}まい。${b}まい食べると、のこりは何まい？`;
+        visualText = `${a} － ${b} ＝ ？`;
+      }
+    } else if (eduDifficulty === 'normal') {
+      // --- ふつう: 小3〜小4の基本 ---
+      const roll = Math.random();
+      if (roll < 0.4) {
+        // 九九 (小2〜小3)
+        const a = 3 + Math.floor(Math.random() * 7); // 3〜9
+        const b = 3 + Math.floor(Math.random() * 7); // 3〜9
+        ans = a * b;
+        qText = `🎁 1つのソリに ${a}こずつ。${b}つのソリでプレゼントは何こ？`;
+        visualText = `${a} × ${b} ＝ ？`;
+      } else if (roll < 0.7) {
+        // 2桁の足し算・引き算
+        const isAdd = Math.random() < 0.5;
+        if (isAdd) {
+          const a = 15 + Math.floor(Math.random() * 25);
+          const b = 12 + Math.floor(Math.random() * 20);
+          ans = a + b;
+          qText = `🎄 星の飾りが ${a}こと ${b}こ。あわせると何こ？`;
+          visualText = `${a} ＋ ${b} ＝ ？`;
+        } else {
+          const a = 35 + Math.floor(Math.random() * 30);
+          const b = 12 + Math.floor(Math.random() * 18);
+          ans = a - b;
+          qText = `❄️ 雪だるまが ${a}こありました。${b}ことけると、のこりは何こ？`;
+          visualText = `${a} － ${b} ＝ ？`;
+        }
+      } else {
+        // 簡単な割り算 (小3〜小4)
+        const divisor = 2 + Math.floor(Math.random() * 5); // 2〜6
+        ans = 3 + Math.floor(Math.random() * 7); // 3〜9
+        const dividend = divisor * ans;
+        qText = `🍰 ケーキが ${dividend}こ。${divisor}人で同じ数ずつ分けると1人何こ？`;
+        visualText = `${dividend} ÷ ${divisor} ＝ ？`;
+      }
+    } else {
+      // --- むずかしい: 小5〜小6レベル (四則混合・3桁) ---
+      const roll = Math.random();
+      if (roll < 0.35) {
+        // かけ算優先の計算 (小4〜小5)
+        const a = 10 + Math.floor(Math.random() * 15);
+        const b = 3 + Math.floor(Math.random() * 5);
+        const c = 2 + Math.floor(Math.random() * 5);
+        ans = a + b * c;
+        qText = 'かけ算を先にけいさんしてね！';
+        visualText = `${a} ＋ ${b} × ${c} ＝ ？`;
+      } else if (roll < 0.65) {
+        // カッコのある計算 (小4〜小5)
+        const a = 5 + Math.floor(Math.random() * 10);
+        const b = 3 + Math.floor(Math.random() * 7);
+        const c = 2 + Math.floor(Math.random() * 4);
+        ans = (a + b) * c;
+        qText = '（かっこ）の中から先にけいさんしよう！';
+        visualText = `(${a} ＋ ${b}) × ${c} ＝ ？`;
+      } else {
+        // 3桁の足し算・引き算 (小3〜小4)
+        const isAdd = Math.random() < 0.5;
+        if (isAdd) {
+          const a = 120 + Math.floor(Math.random() * 150);
+          const b = 130 + Math.floor(Math.random() * 140);
+          ans = a + b;
+          qText = '大きな数のたし算！';
+          visualText = `${a} ＋ ${b} ＝ ？`;
+        } else {
+          const a = 400 + Math.floor(Math.random() * 300);
+          const b = 120 + Math.floor(Math.random() * 180);
+          ans = a - b;
+          qText = '大きな数のひき算！';
+          visualText = `${a} － ${b} ＝ ？`;
+        }
+      }
+    }
+
+    eduQuestionEl.textContent = qText;
+
+    const visual = document.createElement('div');
+    visual.style.fontSize = '24px';
+    visual.style.fontWeight = '900';
+    visual.style.color = '#c0392b';
+    visual.style.lineHeight = '1.4';
+    visual.textContent = visualText;
+    eduStageEl.appendChild(visual);
+
+    currentEduAnswer = `${ans}`;
+    const choices = new Set([currentEduAnswer]);
+    while (choices.size < 4) {
+      const offset = (Math.random() < 0.5 ? -1 : 1) * (1 + Math.floor(Math.random() * 5));
+      const fake = Math.max(1, ans + offset);
+      choices.add(`${fake}`);
+    }
+    renderEduChoices([...choices].sort(() => Math.random() - 0.5));
+  }
+
+  // Question 2: Pattern & Word Questions (子ども向け数列・アナグラム)
+  function genPatternQuestion() {
+    let qText = '', seqText = '', ans = '';
+
+    if (eduDifficulty === 'easy') {
+      // かんたん: 2飛び・10飛び
+      const step = (Math.random() < 0.5 ? 2 : 10);
+      const s1 = step, s2 = step * 2, s3 = step * 3, s4 = step * 4;
+      ans = `${step * 5}`;
+      qText = '【 ？ 】にはいる数字はどれかな？';
+      seqText = `${s1},  ${s2},  ${s3},  ${s4},  【 ？ 】`;
+    } else if (eduDifficulty === 'normal') {
+      // ふつう: 5飛び、減る数列
+      const roll = Math.random();
+      if (roll < 0.5) {
+        const s1 = 5, s2 = 10, s3 = 15, s4 = 20;
+        ans = '25';
+        qText = '5ずつ増えているよ！【 ？ 】は？';
+        seqText = `${s1},  ${s2},  ${s3},  ${s4},  【 ？ 】`;
+      } else {
+        const s1 = 30, s2 = 25, s3 = 20, s4 = 15;
+        ans = '10';
+        qText = '5ずつ減っているよ！【 ？ 】は？';
+        seqText = `${s1},  ${s2},  ${s3},  ${s4},  【 ？ 】`;
+      }
+    } else {
+      // むずかしい: 2倍になる数列 または ひらめきアナグラム言葉パズル
+      const roll = Math.random();
+      if (roll < 0.5) {
+        const start = 2 + Math.floor(Math.random() * 2);
+        const s1 = start, s2 = start * 2, s3 = start * 4, s4 = start * 8;
+        ans = `${start * 16}`;
+        qText = '2倍ずつ増えているよ！【 ？ 】は？';
+        seqText = `${s1},  ${s2},  ${s3},  ${s4},  【 ？ 】`;
+      } else {
+        // 楽しいクリスマス言葉アナグラム！
+        const anagrams = [
+          { scrambled: 'ト・イ・ナ・カ', correct: 'トナカイ' },
+          { scrambled: 'レ・ゼ・プ・ン・ト', correct: 'プレゼント' },
+          { scrambled: 'ス・ク・マ・リ・ス', correct: 'クリスマス' },
+          { scrambled: 'ン・サ・タ', correct: 'サンタ' },
+          { scrambled: 'ツ・リ・ー', correct: 'ツリー' }
+        ];
+        const a = anagrams[Math.floor(Math.random() * anagrams.length)];
+        qText = '文字をならびかえると、何の言葉になる？';
+        seqText = `『 ${a.scrambled} 』`;
+        ans = a.correct;
+      }
+    }
+
+    eduQuestionEl.textContent = qText;
+
+    const visual = document.createElement('div');
+    visual.style.fontSize = '21px';
+    visual.style.fontWeight = '900';
+    visual.style.color = '#c0392b';
+    visual.style.letterSpacing = '1px';
+    visual.textContent = seqText;
+    eduStageEl.appendChild(visual);
+
+    currentEduAnswer = ans;
+    const choices = new Set([currentEduAnswer]);
+
+    if (!isNaN(parseInt(ans, 10))) {
+      const numAns = parseInt(ans, 10);
+      while (choices.size < 4) {
+        const offset = (Math.random() < 0.5 ? -1 : 1) * (1 + Math.floor(Math.random() * 4));
+        choices.add(`${Math.max(1, numAns + offset)}`);
+      }
+    } else {
+      const fakes = ['クリスマス', 'トナカイ', 'プレゼント', 'サンタ', 'ツリー', 'ケーキ'];
+      fakes.forEach(f => { if (choices.size < 4) choices.add(f); });
+    }
+    renderEduChoices([...choices].sort(() => Math.random() - 0.5));
+  }
+
+  // Question 3: Count items (Observation & Speed)
+  function genCountQuestion() {
+    const items = ['🎁', '⭐', '🎄', '🦌', '⛄', '🍰'];
+    const targetIcon = items[Math.floor(Math.random() * items.length)];
+    const otherItems = items.filter(x => x !== targetIcon);
+
+    let targetCount = 0;
+    let distractorCount = 0;
+
+    if (eduDifficulty === 'easy') {
+      targetCount = 3 + Math.floor(Math.random() * 4); // 3〜6
+      distractorCount = 1 + Math.floor(Math.random() * 2);
+    } else if (eduDifficulty === 'normal') {
+      targetCount = 6 + Math.floor(Math.random() * 5); // 6〜10
+      distractorCount = 4 + Math.floor(Math.random() * 3);
+    } else {
+      targetCount = 10 + Math.floor(Math.random() * 5); // 10〜14
+      distractorCount = 7 + Math.floor(Math.random() * 4);
+    }
+
+    eduQuestionEl.textContent = `【${targetIcon}】はぜんぶで何こあるかな？`;
+
+    const all = [];
+    for (let i = 0; i < targetCount; i++) all.push(targetIcon);
+    for (let i = 0; i < distractorCount; i++) {
+      all.push(otherItems[i % otherItems.length]);
+    }
+    all.sort(() => Math.random() - 0.5);
+
+    eduStageEl.style.fontSize = (eduDifficulty === 'hard' ? '24px' : '28px');
+    all.forEach(icon => {
+      const span = document.createElement('span');
+      span.textContent = icon;
+      span.style.animation = 'popIn 0.25s ease-out';
+      eduStageEl.appendChild(span);
+    });
+
+    currentEduAnswer = `${targetCount}こ`;
+    const choices = new Set([currentEduAnswer]);
+    while (choices.size < 4) {
+      const offset = (Math.random() < 0.5 ? -1 : 1) * (1 + Math.floor(Math.random() * 3));
+      const fake = Math.max(1, targetCount + offset);
+      choices.add(`${fake}こ`);
+    }
+    renderEduChoices([...choices].sort(() => Math.random() - 0.5));
+  }
+
+  // Question 4: Find the Odd one out
+  function genOddQuestion() {
+    let qText = 'ひとつだけ【なかまはずれ】はどれ？';
+    let itemsToDisplay = [];
+    let correct = '';
+
+    if (eduDifficulty === 'easy') {
+      const groups = [
+        { list: ['🧤', '🧦', '🧣'], odd: '👕' },
+        { list: ['🍰', '🍪', '🍬'], odd: '✏️' },
+        { list: ['🎄', '🔔', '⭐'], odd: '🍉' },
+        { list: ['⛄', '❄️', '🧊'], odd: '🌻' }
+      ];
+      const g = groups[Math.floor(Math.random() * groups.length)];
+      correct = g.odd;
+      itemsToDisplay = [...g.list, g.odd].sort(() => Math.random() - 0.5);
+
+      itemsToDisplay.forEach(icon => {
+        const span = document.createElement('span');
+        span.textContent = icon;
+        span.style.fontSize = '38px';
+        eduStageEl.appendChild(span);
+      });
+      currentEduAnswer = correct;
+      renderEduChoices(itemsToDisplay);
+    } else if (eduDifficulty === 'normal') {
+      qText = '【偶数（2でわれる数）】ではない仲間はずれは？';
+      const evens = [12, 24, 38, 46, 52, 64].sort(() => Math.random() - 0.5).slice(0, 3);
+      const odd = [15, 27, 39, 43, 51][Math.floor(Math.random() * 5)];
+      correct = `${odd}`;
+      itemsToDisplay = [...evens, odd].map(n => `${n}`).sort(() => Math.random() - 0.5);
+
+      const visual = document.createElement('div');
+      visual.style.fontSize = '26px';
+      visual.style.fontWeight = '900';
+      visual.style.color = '#c0392b';
+      visual.textContent = itemsToDisplay.join('   ');
+      eduStageEl.appendChild(visual);
+
+      currentEduAnswer = correct;
+      renderEduChoices(itemsToDisplay);
+    } else {
+      qText = '【3の倍数（3のだん）】ではない仲間はずれは？';
+      const mults = [12, 18, 24, 27, 33, 36].sort(() => Math.random() - 0.5).slice(0, 3);
+      const notMult = [14, 20, 26, 32, 35][Math.floor(Math.random() * 5)];
+      correct = `${notMult}`;
+      itemsToDisplay = [...mults, notMult].map(n => `${n}`).sort(() => Math.random() - 0.5);
+
+      const visual = document.createElement('div');
+      visual.style.fontSize = '26px';
+      visual.style.fontWeight = '900';
+      visual.style.color = '#c0392b';
+      visual.textContent = itemsToDisplay.join('   ');
+      eduStageEl.appendChild(visual);
+
+      currentEduAnswer = correct;
+      renderEduChoices(itemsToDisplay);
+    }
+
+    eduQuestionEl.textContent = qText;
+  }
+
+  // Question 5: Compare sizes
+  function genSizeQuestion() {
+    const icons = ['🎁', '🎄', '⛄', '⭐', '🔔'];
+    const icon = icons[Math.floor(Math.random() * icons.length)];
+    const askBigger = Math.random() < 0.5;
+
+    eduQuestionEl.textContent = askBigger ? 'いちばん【おおきい】のはどれ？' : 'いちばん【ちいさい】のはどれ？';
+
+    const sizes = [
+      { label: 'A', scale: 0.6, px: '24px' },
+      { label: 'B', scale: 1.0, px: '38px' },
+      { label: 'C', scale: 1.5, px: '54px' }
+    ];
+    sizes.sort(() => Math.random() - 0.5);
+
+    sizes.forEach(s => {
+      const wrap = document.createElement('div');
+      wrap.style.display = 'flex';
+      wrap.style.flexDirection = 'column';
+      wrap.style.alignItems = 'center';
+      wrap.style.gap = '4px';
+
+      const item = document.createElement('span');
+      item.textContent = icon;
+      item.style.fontSize = s.px;
+
+      const lbl = document.createElement('span');
+      lbl.textContent = s.label;
+      lbl.style.fontSize = '14px';
+      lbl.style.fontWeight = '900';
+      lbl.style.color = '#c0392b';
+
+      wrap.appendChild(item);
+      wrap.appendChild(lbl);
+      eduStageEl.appendChild(wrap);
+    });
+
+    let correctItem = sizes[0];
+    for (let i = 1; i < sizes.length; i++) {
+      if (askBigger && sizes[i].scale > correctItem.scale) correctItem = sizes[i];
+      if (!askBigger && sizes[i].scale < correctItem.scale) correctItem = sizes[i];
+    }
+    currentEduAnswer = correctItem.label;
+    renderEduChoices(['A', 'B', 'C']);
+  }
+
+  function renderEduChoices(choiceArray) {
+    eduChoicesEl.innerHTML = '';
+    choiceArray.forEach(choiceText => {
+      const btn = document.createElement('button');
+      btn.className = 'edu-choice-btn';
+      btn.textContent = choiceText;
+      btn.addEventListener('click', () => handleEduAnswer(btn, choiceText));
+      eduChoicesEl.appendChild(btn);
+    });
+  }
+
+  function handleEduAnswer(btn, chosen) {
+    if (eduLock || !eduRunning) return;
+    initAudio();
+
+    if (chosen === currentEduAnswer) {
+      eduLock = true;
+      eduScore++;
+      eduTotalAnswered++;
+      eduScoreEl.textContent = eduScore;
+      btn.classList.add('correct');
+      playSoundSuccess();
+
+      // Show checkmark on stage
+      const check = document.createElement('div');
+      check.style.position = 'absolute';
+      check.style.fontSize = '50px';
+      check.style.color = '#e74c3c';
+      check.style.fontWeight = '900';
+      check.style.animation = 'popIn 0.3s ease-out';
+      check.textContent = '💮 せいかい！';
+      eduStageEl.appendChild(check);
+
+      setTimeout(nextEduQuestion, 450);
+    } else {
+      eduTotalAnswered++;
+      btn.classList.add('wrong');
+      playSoundBad();
+      setTimeout(() => btn.classList.remove('wrong'), 350);
+    }
+  }
+
+  function endEduGame() {
+    stopEduGame();
+    unlockSantaLetter();
+
+    const rate = eduTotalAnswered > 0 ? Math.round((eduScore / eduTotalAnswered) * 100) : 100;
+    let rank = 'おてつだいの見習い 💡';
+    if (eduScore >= 12) rank = 'おてつだいマスター 👑';
+    else if (eduScore >= 8) rank = 'ひらめきマスター 🌟';
+    else if (eduScore >= 4) rank = 'あたまのたいそう 🦌';
+
+    document.getElementById('edu-result-rank').textContent = rank;
+    document.getElementById('edu-final-score').textContent = `${eduScore}もん`;
+    document.getElementById('edu-final-rate').textContent = `${rate}%`;
+    document.getElementById('edu-result-overlay').classList.remove('hidden');
+    launchConfetti();
+    playFanfare();
+  }
 
   // Initialize Letter Lock State
   checkLetterUnlocked();

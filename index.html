@@ -578,6 +578,144 @@
       cursor: pointer;
     }
 
+    /* --- NICKNAME WELCOME MODAL --- */
+    #nickname-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 20, 30, 0.94);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.35s ease-out, visibility 0.35s ease-out;
+    }
+    #nickname-modal.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .nickname-card {
+      background: linear-gradient(135deg, #1b382b 0%, #0d2818 100%);
+      border: 3px solid #ffd700;
+      border-radius: 24px;
+      padding: 26px 20px 22px;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7), 0 0 25px rgba(255,215,0,0.3);
+      color: #fff;
+      animation: popIn 0.35s ease-out;
+    }
+    .nickname-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #ffd700;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .nickname-sub {
+      font-size: 13px;
+      color: #e0f2fe;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .nickname-input-box {
+      width: 100%;
+      max-width: 240px;
+      padding: 12px 14px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      border: 2px solid #ffd700;
+      border-radius: 14px;
+      outline: none;
+      background: #fff;
+      color: #2c3e50;
+      margin-bottom: 14px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+    .nickname-input-box:focus {
+      border-color: #ff7675;
+      box-shadow: 0 0 12px rgba(255,118,117,0.7);
+    }
+    .nickname-btn {
+      width: 100%;
+      max-width: 240px;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(192,57,43,0.5);
+      transition: transform 0.1s, box-shadow 0.1s;
+      margin-bottom: 10px;
+    }
+    .nickname-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 6px rgba(192,57,43,0.4);
+    }
+    .nickname-skip-btn {
+      background: none;
+      border: none;
+      color: #bdc3c7;
+      font-size: 12px;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 6px 10px;
+    }
+
+    /* --- SANTA SPEECH BUBBLE & RESULT BANNER --- */
+    .santa-bubble {
+      position: absolute;
+      bottom: 16px;
+      left: 12px;
+      right: 12px;
+      background: #ffffff;
+      border: 3px solid #e74c3c;
+      border-radius: 16px;
+      padding: 10px 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 25;
+      animation: popIn 0.25s ease-out;
+      pointer-events: none;
+    }
+    .santa-bubble-avatar {
+      font-size: 32px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .santa-bubble-text {
+      color: #2c3e50;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.4;
+      text-align: left;
+    }
+    .santa-result-banner {
+      background: rgba(255, 255, 255, 0.12);
+      border: 2px dashed #ffd700;
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      width: 90%;
+      max-width: 290px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
     /* --- RESULT MODAL (Shared) --- */
     .sub-result-card {
       background: rgba(255, 255, 255, 0.1);
@@ -841,6 +979,23 @@
 <body>
 
 <div id="game-container">
+  <!-- ================= WELCOME NICKNAME MODAL (Memory-only, no reload persistence) ================= -->
+  <div id="nickname-modal">
+    <div class="nickname-card">
+      <div style="font-size: 42px; margin-bottom: 4px; animation: bounce 1.2s infinite alternate;">🎅🎁✨</div>
+      <div class="nickname-title">サンタのまちへ ようこそ！</div>
+      <div class="nickname-sub">
+        あなたのおなまえ（あだな）をおしえてね！<br>
+        サンタさんがなまえをよんでくれるよ！
+      </div>
+      <form id="nickname-form" onsubmit="event.preventDefault(); submitNickname();" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+        <input type="text" id="nickname-input" class="nickname-input-box" maxlength="8" placeholder="例: たろう、さっちゃん" autocomplete="off" />
+        <button type="submit" id="nickname-submit-btn" class="nickname-btn">あそびはじめる！ 🚀</button>
+        <button type="button" class="nickname-skip-btn" onclick="submitNickname(true)">なまえを入れずにあそぶ</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Shared Top Navigation Bar -->
   <div class="top-bar">
     <button id="home-btn" class="icon-btn" title="メニューへもどる" style="visibility: hidden;">🏠</button>
@@ -852,6 +1007,7 @@
   <!-- ================= SCREEN 0: PORTAL MENU ================= -->
   <div id="menu-screen" class="view-screen">
     <div class="portal-banner">🎄 あかとらサンタからのプレゼント 🎄</div>
+    <div id="user-greeting-badge" style="display: none; background: rgba(255,215,0,0.18); border: 1.5px solid #ffd700; border-radius: 20px; padding: 4px 14px; font-size: 13px; font-weight: 800; margin-bottom: 8px; color: #ffd700;">ようこそ、<span id="player-name-display">おともだち</span>！✨</div>
     <h1 class="portal-title">クリスマス<br>ミニゲームランド</h1>
     <div class="portal-subtitle">あそびたいゲームをえらんでね！✨</div>
 
@@ -948,6 +1104,7 @@
       <h2 style="font-size: 22px;">🎉 タイムアップ！</h2>
       <div id="catch-result-rank" style="font-size: 22px; color: #ffd700; margin: 6px 0; font-weight: 900;"></div>
       <div class="sub-result-card">
+        <div id="catch-player-label" style="font-size: 13px; font-weight: 900; color: #ffd700; margin-bottom: 6px;">おともだち の スコア</div>
         <div style="font-size: 12px;">スコア</div>
         <div id="catch-final-score" class="sub-result-score">0</div>
         <div style="font-size: 12px; margin-top: 4px;">キャッチ数: <b id="catch-final-count">0</b>こ</div>
@@ -985,6 +1142,7 @@
     <div id="memory-result-overlay" class="view-screen hidden" style="background: rgba(45,10,12,0.94);">
       <h2 style="font-size: 24px; color: #ffd700;">🎉 ぜんぶそろった！</h2>
       <div class="sub-result-card">
+        <div id="memory-player-label" style="font-size: 13px; font-weight: 900; color: #ffd700; margin-bottom: 6px;">おともだち の きろく</div>
         <div style="font-size: 13px;">かかった回数</div>
         <div id="memory-final-flips" class="sub-result-score">0回</div>
         <div id="memory-rank" style="font-size: 14px; font-weight: bold; margin-top: 4px; color: #2ecc71;">きおく力マスター！✨</div>
@@ -1046,6 +1204,7 @@
       <h2 style="font-size: 22px;">🎉 タイムアップ！</h2>
       <div id="chimney-rank" style="font-size: 22px; color: #ffd700; margin: 6px 0; font-weight: 900;"></div>
       <div class="sub-result-card">
+        <div id="chimney-player-label" style="font-size: 13px; font-weight: 900; color: #ffd700; margin-bottom: 6px;">おともだち の スコア</div>
         <div style="font-size: 12px;">スコア</div>
         <div id="chimney-final-score" class="sub-result-score">0</div>
       </div>
@@ -1126,6 +1285,7 @@
       <h2 style="font-size: 22px;">🎉 えんそうしゅうりょう！</h2>
       <div id="rhythm-result-rank" style="font-size: 22px; color: #ffd700; margin: 6px 0; font-weight: 900;"></div>
       <div class="sub-result-card">
+        <div id="rhythm-player-label" style="font-size: 13px; font-weight: 900; color: #ffd700; margin-bottom: 6px;">おともだち の スコア</div>
         <div style="font-size: 12px;">スコア</div>
         <div id="rhythm-final-score" class="sub-result-score">0</div>
         <div style="font-size: 12px; margin-top: 4px;">さいだいコンボ: <b id="rhythm-final-maxcombo" style="color:#ff7675;">0</b></div>
@@ -1144,7 +1304,7 @@
     <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">あたまをつかってクリスマスクイズに挑戦！💡</div>
 
     <div style="display: flex; justify-content: space-between; width: 100%; max-width: 320px; font-size: 14px; font-weight: 800; margin-bottom: 4px;">
-      <div class="hud-chip">⏰ のこり: <span id="edu-time">40</span>秒</div>
+      <div class="hud-chip">⏰ のこり: <span id="edu-time">60</span>秒</div>
       <div class="hud-chip">せいかい: <span id="edu-score" style="color:#ffd700;">0</span>もん</div>
     </div>
 
@@ -1163,7 +1323,7 @@
     <div id="edu-start-overlay" class="view-screen" style="background: rgba(45,25,12,0.94);">
       <h2 style="font-size: 24px; margin-bottom: 8px;">🧩 サンタのおてつだい</h2>
       <p style="font-size: 13px; color: #ffd700; margin-bottom: 12px; line-height: 1.6;">
-        かずの数え上げ、足し算、仲間わけ、大きさくらべ！<br>
+        計算、言葉パズル、なぞなぞ、時計、色まぜ！<br>
         サンタさんのお手伝いクイズをといていこう！✨
       </p>
 
@@ -1184,9 +1344,18 @@
       <h2 style="font-size: 22px;">🎉 タイムアップ！</h2>
       <div id="edu-result-rank" style="font-size: 22px; color: #ffd700; margin: 6px 0; font-weight: 900;"></div>
       <div class="sub-result-card">
+        <div id="edu-player-label" style="font-size: 13px; font-weight: 900; color: #ffd700; margin-bottom: 6px;">おともだち の おてつだい結果</div>
         <div style="font-size: 12px;">せいかい数</div>
         <div id="edu-final-score" class="sub-result-score">0</div>
         <div style="font-size: 12px; margin-top: 4px;">せいかい率: <b id="edu-final-rate">100%</b></div>
+      </div>
+
+      <!-- サンタからの感謝メッセージ -->
+      <div id="edu-santa-thankyou-card" class="santa-result-banner">
+        <div style="font-size: 30px; flex-shrink: 0;">🎅</div>
+        <div id="edu-santa-thankyou-text" style="font-size: 13px; line-height: 1.5; color: #fff; font-weight: 800;">
+          おともだちのおかげで本当に助かったよ！ありがとう！
+        </div>
       </div>
       <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 250px;">
         <button class="btn btn-gold btn-small" onclick="openSantaLetter()">🎅 あかとらサンタの手紙</button>
@@ -1221,6 +1390,49 @@
 
 <script>
 (() => {
+  // --- Nickname & Privacy Management (Memory-only: NEVER stored in localStorage/Cookie, completely reset on reload) ---
+  let userNickname = 'おともだち';
+
+  function updateNicknameUI() {
+    const nameDisplayEl = document.getElementById('player-name-display');
+    const greetingEl = document.getElementById('user-greeting-badge');
+    if (nameDisplayEl) nameDisplayEl.textContent = userNickname;
+    if (greetingEl) greetingEl.style.display = 'inline-block';
+
+    const labels = [
+      { id: 'catch-player-label', text: `${userNickname} の スコア` },
+      { id: 'memory-player-label', text: `${userNickname} の きろく` },
+      { id: 'chimney-player-label', text: `${userNickname} の スコア` },
+      { id: 'rhythm-player-label', text: `${userNickname} の スコア` },
+      { id: 'edu-player-label', text: `${userNickname} の おてつだい結果` }
+    ];
+    labels.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el) el.textContent = item.text;
+    });
+  }
+
+  window.submitNickname = function(isSkip = false) {
+    initAudio();
+    const input = document.getElementById('nickname-input');
+    const rawVal = input ? input.value.trim() : '';
+    if (!isSkip && rawVal.length > 0) {
+      userNickname = rawVal.replace(/[<>'"&]/g, '').slice(0, 8);
+    } else {
+      userNickname = 'おともだち';
+    }
+    updateNicknameUI();
+
+    const modal = document.getElementById('nickname-modal');
+    if (modal) modal.classList.add('hidden');
+
+    // ユーザー操作タップでBGMスタート（ブラウザ自動再生制限を自然にクリア）
+    if (soundEnabled && !bgmPlaying) {
+      startBGM();
+    }
+    playBellNote(659.25, 0.2, 0.12);
+  };
+
   // --- Audio Synthesizer (Shared Web Audio) ---
   let audioCtx = null;
   let soundEnabled = true;
@@ -1971,6 +2183,7 @@
   function endCatchGame() {
     stopCatchGame();
     unlockSantaLetter();
+    updateNicknameUI();
     let rank = 'サンタのお手伝い 🎁';
     if (catchScore >= 3500) rank = 'クリスマス・マスター 👑';
     else if (catchScore >= 2400) rank = 'プレゼントの達人 🌟';
@@ -2414,6 +2627,7 @@
 
           if (matchedPairs === totalPairsToMatch) {
             unlockSantaLetter();
+            updateNicknameUI();
             setTimeout(() => {
               document.getElementById('memory-final-flips').textContent = `${memFlips}回`;
               document.getElementById('memory-result-overlay').classList.remove('hidden');
@@ -2632,6 +2846,7 @@
   function endChimneyGame() {
     stopChimneyGame();
     unlockSantaLetter();
+    updateNicknameUI();
 
     let rank = 'えんとつのお手伝い 🏠';
     if (chimneyScore >= 2400) rank = 'えんとつマスター 👑';
@@ -2980,6 +3195,7 @@
   function endRhythmGame() {
     stopRhythmGame();
     unlockSantaLetter();
+    updateNicknameUI();
 
     let rank = 'ベルのお手伝い 🔔';
     if (rhythmScore >= 6000) rank = 'リズムマスター 👑';
@@ -3052,12 +3268,13 @@
 
     eduScore = 0;
     eduTotalAnswered = 0;
-    eduTime = 40;
+    eduTime = 60; // 制限時間を60秒に延長！
     eduScoreEl.textContent = '0';
-    eduTimeEl.textContent = '40';
+    eduTimeEl.textContent = '60';
     document.getElementById('edu-start-overlay').classList.add('hidden');
     document.getElementById('edu-result-overlay').classList.add('hidden');
     eduRunning = true;
+    lastEduType = '';
 
     nextEduQuestion();
 
@@ -3074,106 +3291,103 @@
     clearInterval(eduTimer);
   };
 
+  let lastEduType = '';
+
   function nextEduQuestion() {
     if (!eduRunning) return;
     eduLock = false;
 
-    // Pick question types based on difficulty
-    let types = ['math', 'count', 'odd', 'pattern'];
+    // 多彩な問題ジャンル（9種類）から難易度に合わせて選択＆連続出題を防止！
+    let availableTypes = [];
     if (eduDifficulty === 'easy') {
-      types = ['math', 'count', 'odd', 'pattern', 'size'];
+      availableTypes = ['math', 'word', 'riddle', 'count', 'odd', 'clock', 'color', 'size'];
     } else if (eduDifficulty === 'normal') {
-      types = ['math', 'math', 'count', 'odd', 'pattern'];
+      availableTypes = ['math', 'word', 'riddle', 'count', 'odd', 'clock', 'color', 'blocks'];
     } else {
-      types = ['math', 'math', 'pattern', 'odd', 'count'];
+      availableTypes = ['math', 'word', 'riddle', 'count', 'odd', 'clock', 'blocks', 'pattern'];
     }
-    const chosenType = types[Math.floor(Math.random() * types.length)];
+
+    // 直前と同じ問題タイプが出ないようにフィルタリング
+    const filtered = availableTypes.filter(t => t !== lastEduType);
+    const chosenType = filtered[Math.floor(Math.random() * filtered.length)] || availableTypes[0];
+    lastEduType = chosenType;
 
     eduStageEl.innerHTML = '';
     eduChoicesEl.innerHTML = '';
 
-    if (chosenType === 'math') {
-      genMathQuestion();
-    } else if (chosenType === 'count') {
-      genCountQuestion();
-    } else if (chosenType === 'odd') {
-      genOddQuestion();
-    } else if (chosenType === 'pattern') {
-      genPatternQuestion();
-    } else {
-      genSizeQuestion();
-    }
+    if (chosenType === 'math') genMathQuestion();
+    else if (chosenType === 'word') genWordQuestion();
+    else if (chosenType === 'riddle') genRiddleQuestion();
+    else if (chosenType === 'clock') genClockQuestion();
+    else if (chosenType === 'color') genColorQuestion();
+    else if (chosenType === 'count') genCountQuestion();
+    else if (chosenType === 'odd') genOddQuestion();
+    else if (chosenType === 'blocks') genBlocksQuestion();
+    else genSizeQuestion();
   }
 
-  // Question 1: Math Questions (小学生向けの楽しい計算パズル)
+  // --- ジャンル1: 計算・算数パズル ---
   function genMathQuestion() {
     let qText = '', visualText = '', ans = 0;
 
     if (eduDifficulty === 'easy') {
-      // --- かんたん: 小1〜小2の基本 ---
       const roll = Math.random();
-      if (roll < 0.5) {
-        // 1桁〜簡単な足し算
-        const a = 3 + Math.floor(Math.random() * 6); // 3〜8
-        const b = 2 + Math.floor(Math.random() * 6); // 2〜7
+      if (roll < 0.35) {
+        // 1桁の足し算
+        const a = 3 + Math.floor(Math.random() * 6);
+        const b = 2 + Math.floor(Math.random() * 6);
         ans = a + b;
         qText = `🎅 赤いプレゼントが ${a}こ、青いプレゼントが ${b}こ。あわせると何こ？`;
         visualText = `${a} ＋ ${b} ＝ ？`;
-      } else {
+      } else if (roll < 0.7) {
         // 1桁の引き算
-        const a = 6 + Math.floor(Math.random() * 8); // 6〜13
-        const b = 2 + Math.floor(Math.random() * 5); // 2〜6
+        const a = 6 + Math.floor(Math.random() * 7);
+        const b = 2 + Math.floor(Math.random() * 5);
         ans = a - b;
         qText = `🧦 クッキーが ${a}まい。${b}まい食べると、のこりは何まい？`;
         visualText = `${a} － ${b} ＝ ？`;
+      } else {
+        // お金クイズ（10円玉）
+        const coins = 3 + Math.floor(Math.random() * 6);
+        ans = coins * 10;
+        qText = `🪙 10円玉が ${coins}まいあるよ。ぜんぶで何円かな？`;
+        visualText = `10円 × ${coins}まい ＝ ？ 円`;
       }
     } else if (eduDifficulty === 'normal') {
-      // --- ふつう: 小3〜小4の基本 ---
       const roll = Math.random();
-      if (roll < 0.4) {
-        // 九九 (小2〜小3)
-        const a = 3 + Math.floor(Math.random() * 7); // 3〜9
-        const b = 3 + Math.floor(Math.random() * 7); // 3〜9
+      if (roll < 0.35) {
+        // 九九
+        const a = 3 + Math.floor(Math.random() * 7);
+        const b = 3 + Math.floor(Math.random() * 7);
         ans = a * b;
         qText = `🎁 1つのソリに ${a}こずつ。${b}つのソリでプレゼントは何こ？`;
         visualText = `${a} × ${b} ＝ ？`;
-      } else if (roll < 0.7) {
-        // 2桁の足し算・引き算
-        const isAdd = Math.random() < 0.5;
-        if (isAdd) {
-          const a = 15 + Math.floor(Math.random() * 25);
-          const b = 12 + Math.floor(Math.random() * 20);
-          ans = a + b;
-          qText = `🎄 星の飾りが ${a}こと ${b}こ。あわせると何こ？`;
-          visualText = `${a} ＋ ${b} ＝ ？`;
-        } else {
-          const a = 35 + Math.floor(Math.random() * 30);
-          const b = 12 + Math.floor(Math.random() * 18);
-          ans = a - b;
-          qText = `❄️ 雪だるまが ${a}こありました。${b}ことけると、のこりは何こ？`;
-          visualText = `${a} － ${b} ＝ ？`;
-        }
-      } else {
-        // 簡単な割り算 (小3〜小4)
-        const divisor = 2 + Math.floor(Math.random() * 5); // 2〜6
-        ans = 3 + Math.floor(Math.random() * 7); // 3〜9
+      } else if (roll < 0.65) {
+        // 割り算
+        const divisor = 2 + Math.floor(Math.random() * 5);
+        ans = 3 + Math.floor(Math.random() * 7);
         const dividend = divisor * ans;
         qText = `🍰 ケーキが ${dividend}こ。${divisor}人で同じ数ずつ分けると1人何こ？`;
         visualText = `${dividend} ÷ ${divisor} ＝ ？`;
+      } else {
+        // お金クイズ（100円玉と10円玉）
+        const hundreds = 1 + Math.floor(Math.random() * 4);
+        const tens = 2 + Math.floor(Math.random() * 6);
+        ans = hundreds * 100 + tens * 10;
+        qText = `🪙 100円玉が ${hundreds}まい、10円玉が ${tens}まい。あわせて何円？`;
+        visualText = `${hundreds * 100}円 ＋ ${tens * 10}円 ＝ ？ 円`;
       }
     } else {
-      // --- むずかしい: 小5〜小6レベル (四則混合・3桁) ---
+      // むずかしい（四則混合・カッコ計算）
       const roll = Math.random();
-      if (roll < 0.35) {
-        // かけ算優先の計算 (小4〜小5)
+      if (roll < 0.4) {
         const a = 10 + Math.floor(Math.random() * 15);
         const b = 3 + Math.floor(Math.random() * 5);
         const c = 2 + Math.floor(Math.random() * 5);
         ans = a + b * c;
         qText = 'かけ算を先にけいさんしてね！';
         visualText = `${a} ＋ ${b} × ${c} ＝ ？`;
-      } else if (roll < 0.65) {
-        // カッコのある計算 (小4〜小5)
+      } else if (roll < 0.75) {
         const a = 5 + Math.floor(Math.random() * 10);
         const b = 3 + Math.floor(Math.random() * 7);
         const c = 2 + Math.floor(Math.random() * 4);
@@ -3181,21 +3395,11 @@
         qText = '（かっこ）の中から先にけいさんしよう！';
         visualText = `(${a} ＋ ${b}) × ${c} ＝ ？`;
       } else {
-        // 3桁の足し算・引き算 (小3〜小4)
-        const isAdd = Math.random() < 0.5;
-        if (isAdd) {
-          const a = 120 + Math.floor(Math.random() * 150);
-          const b = 130 + Math.floor(Math.random() * 140);
-          ans = a + b;
-          qText = '大きな数のたし算！';
-          visualText = `${a} ＋ ${b} ＝ ？`;
-        } else {
-          const a = 400 + Math.floor(Math.random() * 300);
-          const b = 120 + Math.floor(Math.random() * 180);
-          ans = a - b;
-          qText = '大きな数のひき算！';
-          visualText = `${a} － ${b} ＝ ？`;
-        }
+        const a = 150 + Math.floor(Math.random() * 150);
+        const b = 120 + Math.floor(Math.random() * 130);
+        ans = a + b;
+        qText = '大きな数のたし算！';
+        visualText = `${a} ＋ ${b} ＝ ？`;
       }
     }
 
@@ -3219,19 +3423,255 @@
     renderEduChoices([...choices].sort(() => Math.random() - 0.5));
   }
 
-  // Question 2: Pattern & Word Questions (子ども向け数列・アナグラム)
+  // --- ジャンル2: ひらめき言葉パズル（アナグラム・言葉あそび） ---
+  function genWordQuestion() {
+    let qText = '', visualText = '', ans = '';
+
+    if (eduDifficulty === 'easy') {
+      // かんたん: 「た」ぬき言葉パズル（「た」をぜんぶ消すと？）
+      const tanukiList = [
+        { q: 'さ・た・ん・た・た', ans: 'サンタ' },
+        { q: 'つ・た・り・た・ー', ans: 'ツリー' },
+        { q: 'そ・た・り・た', ans: 'ソリ' },
+        { q: 'ゆ・た・き・た', ans: '雪' },
+        { q: 'べ・た・る・た', ans: 'ベル' }
+      ];
+      const item = tanukiList[Math.floor(Math.random() * tanukiList.length)];
+      qText = '【 た 】をぜんぶ消すと、何の言葉になるかな？';
+      visualText = `『 ${item.q} 』`;
+      ans = item.ans;
+    } else if (eduDifficulty === 'normal') {
+      // ふつう: 5〜7文字の並べ替え
+      const list = [
+        { scrambled: 'と・な・か・い・の・そ・り', correct: 'トナカイのソリ' },
+        { scrambled: 'く・り・す・ま・す・け・ー・き', correct: 'クリスマスケーキ' },
+        { scrambled: 'じ・ん・ぐ・る・べ・る', correct: 'ジングルベル' },
+        { scrambled: 'あ・か・と・ら・さ・ん・た', correct: 'あかとらサンタ' },
+        { scrambled: 'ゆ・き・だ・る・ま・さ・ん', correct: 'ゆきだるま' },
+        { scrambled: 'ほ・し・ぞ・ら・の・よ・る', correct: '星空の夜' }
+      ];
+      const a = list[Math.floor(Math.random() * list.length)];
+      qText = '文字をならびかえると、何の言葉になる？';
+      visualText = `『 ${a.scrambled} 』`;
+      ans = a.correct;
+    } else {
+      // むずかしい: 巧妙なアナグラム＆謎解き言葉パズル（小学生が知っている親しみやすい言葉）
+      const roll = Math.random();
+      if (roll < 0.65) {
+        // 巧妙なアナグラム（子どもたちが全員知っているクリスマスワード！）
+        const hardAnagrams = [
+          { scrambled: 'す・ま・り・ー・く・け・す・き', correct: 'クリスマスケーキ' },
+          { scrambled: 'つ・ま・り・ー・く・す・す・り', correct: 'クリスマスツリー' },
+          { scrambled: 'み・ょ・る・ね・し・ー・い・ん', correct: 'イルミネーション' },
+          { scrambled: 'そ・な・り・か・と・の・い', correct: 'トナカイのソリ' },
+          { scrambled: 'ら・と・ん・さ・か・あ・た', correct: 'あかとらサンタ' },
+          { scrambled: 'る・ん・べ・じ・ぐ・る', correct: 'ジングルベル' },
+          { scrambled: 'す・り・ー・め・ま・く・す・り', correct: 'メリークリスマス' },
+          { scrambled: 'ぜ・ん・ぷ・と・れ', correct: 'プレゼント' },
+          { scrambled: 'る・き・ま・ゆ・だ', correct: 'ゆきだるま' },
+          { scrambled: 'と・わ・す・く・ま・い・り・ほ・す', correct: 'ホワイトクリスマス' }
+        ];
+        const a = hardAnagrams[Math.floor(Math.random() * hardAnagrams.length)];
+        qText = '文字をならびかえて言葉をみつけよう！';
+        visualText = `『 ${a.scrambled} 』`;
+        ans = a.correct;
+      } else {
+        // 謎解き暗号
+        const puzzles = [
+          { q: '「ク リ ス マ ス」の【真ん中の文字】は？', visual: 'ク リ [ ス ] マ ス', ans: 'ス' },
+          { q: '「ト ナ カ イ」の【2番目の文字】は？', visual: 'ト [ ナ ] カ イ', ans: 'ナ' },
+          { q: '「サ ン タ」を後ろから読むと？', visual: 'サ ン タ ◀', ans: 'タンサ' },
+          { q: '『た』ぬき暗号！「た」をぜんぶ消すと？', visual: 'さ・た・ん・た・た・く・た・ろ・た・ー・た・す', ans: 'サンタクロース' }
+        ];
+        const p = puzzles[Math.floor(Math.random() * puzzles.length)];
+        qText = p.q;
+        visualText = p.visual;
+        ans = p.ans;
+      }
+    }
+
+    eduQuestionEl.textContent = qText;
+
+    const visual = document.createElement('div');
+    visual.style.fontSize = '21px';
+    visual.style.fontWeight = '900';
+    visual.style.color = '#c0392b';
+    visual.style.letterSpacing = '1px';
+    visual.textContent = visualText;
+    eduStageEl.appendChild(visual);
+
+    currentEduAnswer = ans;
+    const choices = new Set([currentEduAnswer]);
+    const wordPool = [
+      'クリスマスケーキ', 'クリスマスツリー', 'イルミネーション', 'トナカイのソリ',
+      'あかとらサンタ', 'ジングルベル', 'メリークリスマス', 'プレゼント', 'ゆきだるま',
+      'ホワイトクリスマス', 'サンタクロース', 'ツリー', 'ソリ', '雪', 'ス', 'ナ', 'ク', 'マ', 'タンサ', 'サンタ'
+    ];
+    wordPool.forEach(w => { if (choices.size < 4 && w !== ans) choices.add(w); });
+    renderEduChoices([...choices].sort(() => Math.random() - 0.5));
+  }
+
+  // --- ジャンル3: クリスマスなぞなぞ・ひらめき ---
+  function genRiddleQuestion() {
+    const riddles = [
+      {
+        q: '寒くなると空から降ってきて、手のひらにのせると溶けちゃう冷たいものは？',
+        ans: '❄️ ゆき',
+        choices: ['❄️ ゆき', '🧊 こおり', '🍦 アイス', '🌧️ あめ']
+      },
+      {
+        q: '夜空を飛んでサンタさんのソリをひっぱる、大きな角がある動物は？',
+        ans: '🦌 トナカイ',
+        choices: ['🦌 トナカイ', '🐴 うま', '🐕 いぬ', '🐻 くま']
+      },
+      {
+        q: 'プレゼントを入れてもらうために、クリスマスの夜に用意するものは？',
+        ans: '🧦 くつした',
+        choices: ['🧦 くつした', '🧤 てぶくろ', '🎒 かばん', '👒 ぼうし']
+      },
+      {
+        q: 'チリンチリン、シャンシャンシャンと心地よい音を鳴らす楽器は？',
+        ans: '🔔 ベル（鈴）',
+        choices: ['🔔 ベル（鈴）', '🥁 たいこ', '🎺 トランペット', '🎹 ピアノ']
+      },
+      {
+        q: 'クリスマスツリーの一番てっぺんに飾るキラキラのものは？',
+        ans: '⭐ お星さま',
+        choices: ['⭐ お星さま', '🍎 りんご', '🎀 リボン', '⛄ ゆきだるま']
+      },
+      {
+        q: '赤い服を着て、白いおひげを生やした、プレゼントを届けてくれる人は？',
+        ans: '🎅 サンタクロース',
+        choices: ['🎅 サンタクロース', '👮 おまわりさん', '🧙 まほうつかい', '👨‍🍳 コックさん']
+      },
+      {
+        q: '玄関のドアに飾る、丸い輪っかの形をしたクリスマスの飾りは？',
+        ans: '🎀 リース',
+        choices: ['🎀 リース', '🎄 ツリー', '🕯️ キャンドル', '🧦 くつした']
+      },
+      {
+        q: '火をつけるとあたたかい光で部屋を照らしてくれる、ろうそくの別名は？',
+        ans: '🕯️ キャンドル',
+        choices: ['🕯️ キャンドル', '🔦 かいちゅう電灯', '🏮 ちょうちん', '💡 でんきゅう']
+      }
+    ];
+
+    const r = riddles[Math.floor(Math.random() * riddles.length)];
+    eduQuestionEl.textContent = 'クリスマスなぞなぞ！';
+
+    const visual = document.createElement('div');
+    visual.style.fontSize = '16px';
+    visual.style.fontWeight = '800';
+    visual.style.color = '#333';
+    visual.style.lineHeight = '1.6';
+    visual.textContent = r.q;
+    eduStageEl.appendChild(visual);
+
+    currentEduAnswer = r.ans;
+    renderEduChoices([...r.choices].sort(() => Math.random() - 0.5));
+  }
+
+  // --- ジャンル4: 時計・時間クイズ ---
+  function genClockQuestion() {
+    let qText = '', visualText = '', ans = '', choices = [];
+
+    if (eduDifficulty === 'easy') {
+      const hour = 1 + Math.floor(Math.random() * 11);
+      qText = '時計のじかんクイズ！いま何時かな？';
+      visualText = `短いはり：【 ${hour} 】\n長いはり：【 12 】`;
+      ans = `${hour}時`;
+      choices = [`${hour}時`, `${(hour % 12) + 1}時`, `${hour === 1 ? 12 : hour - 1}時`, `${(hour + 3) % 12 || 12}時`];
+    } else {
+      const hour = 1 + Math.floor(Math.random() * 11);
+      const isHalf = Math.random() < 0.5;
+      if (isHalf) {
+        qText = 'いま何時何分かな？';
+        visualText = `短いはり：【 ${hour}と${(hour % 12) + 1}の間 】\n長いはり：【 6 】`;
+        ans = `${hour}時30分`;
+        choices = [`${hour}時30分`, `${hour}時`, `${(hour % 12) + 1}時30分`, `${hour}時15分`];
+      } else {
+        const after = 1 + Math.floor(Math.random() * 3);
+        const ansH = (hour + after) % 12 || 12;
+        qText = `いまは【 ${hour}時 】です。${after}時間後は何時？`;
+        visualText = `${hour}時 ＋ ${after}時間 ＝ ？`;
+        ans = `${ansH}時`;
+        choices = [`${ansH}時`, `${ansH + 1}時`, `${ansH === 1 ? 12 : ansH - 1}時`, `${ansH + 2}時`];
+      }
+    }
+
+    eduQuestionEl.textContent = qText;
+
+    const visual = document.createElement('div');
+    visual.style.fontSize = '20px';
+    visual.style.fontWeight = '900';
+    visual.style.color = '#c0392b';
+    visual.style.whiteSpace = 'pre-line';
+    visual.style.lineHeight = '1.5';
+    visual.textContent = visualText;
+    eduStageEl.appendChild(visual);
+
+    currentEduAnswer = ans;
+    renderEduChoices([...new Set(choices)].sort(() => Math.random() - 0.5));
+  }
+
+  // --- ジャンル5: 色まぜクイズ（色彩知育） ---
+  function genColorQuestion() {
+    const colorMixes = [
+      { c1: 'あか 🔴', c2: 'きいろ 🟡', ans: 'オレンジ 🟠', fakes: ['みどり 🟢', 'むらさき 🟣', 'ピンク 🌸'] },
+      { c1: 'あお 🔵', c2: 'きいろ 🟡', ans: 'みどり 🟢', fakes: ['オレンジ 🟠', 'むらさき 🟣', 'くろ ⚫'] },
+      { c1: 'あか 🔴', c2: 'しろ ⚪', ans: 'ピンク 🌸', fakes: ['みずいろ 💧', 'きいろ 🟡', 'はいいろ 🐘'] },
+      { c1: 'あか 🔴', c2: 'あお 🔵', ans: 'むらさき 🟣', fakes: ['みどり 🟢', 'ちゃいろ 🟤', 'オレンジ 🟠'] },
+      { c1: 'くろ ⚫', c2: 'しろ ⚪', ans: 'はいいろ 🐘', fakes: ['みずいろ 💧', 'ピンク 🌸', 'きいろ 🟡'] }
+    ];
+
+    const c = colorMixes[Math.floor(Math.random() * colorMixes.length)];
+    eduQuestionEl.textContent = '色をまぜると何色になるかな？';
+
+    const visual = document.createElement('div');
+    visual.style.fontSize = '24px';
+    visual.style.fontWeight = '900';
+    visual.style.color = '#c0392b';
+    visual.textContent = `${c.c1} ＋ ${c.c2} ＝ ？`;
+    eduStageEl.appendChild(visual);
+
+    currentEduAnswer = c.ans;
+    renderEduChoices([c.ans, ...c.fakes].sort(() => Math.random() - 0.5));
+  }
+
+  // --- ジャンル6: つみき・空間認識クイズ ---
+  function genBlocksQuestion() {
+    const patterns = [
+      { text: '手前に2こ、奥に2こ並んでいるよ', ans: '4こ', choices: ['4こ', '3こ', '5こ', '6こ'], display: '🎁 🎁\n🎁 🎁' },
+      { text: '1だん目に3こ、上に1このっているよ', ans: '4こ', choices: ['4こ', '3こ', '5こ', '6こ'], display: '　🎁\n🎁 🎁 🎁' },
+      { text: '1だん目に4こ、2だん目に1このっているよ', ans: '5こ', choices: ['5こ', '4こ', '6こ', '7こ'], display: '　 🎁\n🎁 🎁 🎁 🎁' },
+      { text: '立方体（たて2こ × よこ2こ × たかさ2こ）', ans: '8こ', choices: ['8こ', '6こ', '7こ', '9こ'], display: '🎁 🎁 🎁 🎁\n🎁 🎁 🎁 🎁' }
+    ];
+
+    const p = patterns[Math.floor(Math.random() * patterns.length)];
+    eduQuestionEl.textContent = 'プレゼントの箱はぜんぶで何こあるかな？';
+
+    const visual = document.createElement('div');
+    visual.style.fontSize = '26px';
+    visual.style.lineHeight = '1.4';
+    visual.style.whiteSpace = 'pre-line';
+    visual.textContent = p.display;
+    eduStageEl.appendChild(visual);
+
+    currentEduAnswer = p.ans;
+    renderEduChoices([...p.choices].sort(() => Math.random() - 0.5));
+  }
+
+  // --- ジャンル7: 数列・規則性クイズ ---
   function genPatternQuestion() {
     let qText = '', seqText = '', ans = '';
 
     if (eduDifficulty === 'easy') {
-      // かんたん: 2飛び・10飛び
       const step = (Math.random() < 0.5 ? 2 : 10);
       const s1 = step, s2 = step * 2, s3 = step * 3, s4 = step * 4;
       ans = `${step * 5}`;
       qText = '【 ？ 】にはいる数字はどれかな？';
       seqText = `${s1},  ${s2},  ${s3},  ${s4},  【 ？ 】`;
-    } else if (eduDifficulty === 'normal') {
-      // ふつう: 5飛び、減る数列
+    } else {
       const roll = Math.random();
       if (roll < 0.5) {
         const s1 = 5, s2 = 10, s3 = 15, s4 = 20;
@@ -3243,29 +3683,6 @@
         ans = '10';
         qText = '5ずつ減っているよ！【 ？ 】は？';
         seqText = `${s1},  ${s2},  ${s3},  ${s4},  【 ？ 】`;
-      }
-    } else {
-      // むずかしい: 2倍になる数列 または ひらめきアナグラム言葉パズル
-      const roll = Math.random();
-      if (roll < 0.5) {
-        const start = 2 + Math.floor(Math.random() * 2);
-        const s1 = start, s2 = start * 2, s3 = start * 4, s4 = start * 8;
-        ans = `${start * 16}`;
-        qText = '2倍ずつ増えているよ！【 ？ 】は？';
-        seqText = `${s1},  ${s2},  ${s3},  ${s4},  【 ？ 】`;
-      } else {
-        // 楽しいクリスマス言葉アナグラム！
-        const anagrams = [
-          { scrambled: 'ト・イ・ナ・カ', correct: 'トナカイ' },
-          { scrambled: 'レ・ゼ・プ・ン・ト', correct: 'プレゼント' },
-          { scrambled: 'ス・ク・マ・リ・ス', correct: 'クリスマス' },
-          { scrambled: 'ン・サ・タ', correct: 'サンタ' },
-          { scrambled: 'ツ・リ・ー', correct: 'ツリー' }
-        ];
-        const a = anagrams[Math.floor(Math.random() * anagrams.length)];
-        qText = '文字をならびかえると、何の言葉になる？';
-        seqText = `『 ${a.scrambled} 』`;
-        ans = a.correct;
       }
     }
 
@@ -3280,22 +3697,16 @@
     eduStageEl.appendChild(visual);
 
     currentEduAnswer = ans;
-    const choices = new Set([currentEduAnswer]);
-
-    if (!isNaN(parseInt(ans, 10))) {
-      const numAns = parseInt(ans, 10);
-      while (choices.size < 4) {
-        const offset = (Math.random() < 0.5 ? -1 : 1) * (1 + Math.floor(Math.random() * 4));
-        choices.add(`${Math.max(1, numAns + offset)}`);
-      }
-    } else {
-      const fakes = ['クリスマス', 'トナカイ', 'プレゼント', 'サンタ', 'ツリー', 'ケーキ'];
-      fakes.forEach(f => { if (choices.size < 4) choices.add(f); });
+    const numAns = parseInt(ans, 10);
+    const choices = new Set([ans]);
+    while (choices.size < 4) {
+      const offset = (Math.random() < 0.5 ? -1 : 1) * (1 + Math.floor(Math.random() * 4));
+      choices.add(`${Math.max(1, numAns + offset)}`);
     }
     renderEduChoices([...choices].sort(() => Math.random() - 0.5));
   }
 
-  // Question 3: Count items (Observation & Speed)
+  // --- ジャンル8: 数え上げ（観察力） ---
   function genCountQuestion() {
     const items = ['🎁', '⭐', '🎄', '🦌', '⛄', '🍰'];
     const targetIcon = items[Math.floor(Math.random() * items.length)];
@@ -3342,7 +3753,7 @@
     renderEduChoices([...choices].sort(() => Math.random() - 0.5));
   }
 
-  // Question 4: Find the Odd one out
+  // --- ジャンル9: 仲間はずれ ---
   function genOddQuestion() {
     let qText = 'ひとつだけ【なかまはずれ】はどれ？';
     let itemsToDisplay = [];
@@ -3404,7 +3815,7 @@
     eduQuestionEl.textContent = qText;
   }
 
-  // Question 5: Compare sizes
+  // --- ジャンル10: 大きさ比べ ---
   function genSizeQuestion() {
     const icons = ['🎁', '🎄', '⛄', '⭐', '🔔'];
     const icon = icons[Math.floor(Math.random() * icons.length)];
@@ -3473,17 +3884,38 @@
       btn.classList.add('correct');
       playSoundSuccess();
 
-      // Show checkmark on stage
+      // サンタの褒め言葉コメント（正解時にランダムでフキダシ表示）
+      const santaPraises = [
+        `${userNickname}、ありがとう！大助かりじゃ！🎅`,
+        `さすが${userNickname}！すごいひらめき！✨`,
+        `${userNickname}のおかげで準備がはかどるよ！🛷`,
+        `その調子じゃ、${userNickname}！すばらしい！🌟`,
+        `${userNickname}、ナイスアシストじゃ！🎁`
+      ];
+      const praiseMsg = santaPraises[Math.floor(Math.random() * santaPraises.length)];
+
+      // サンタのフキダシをステージに表示
+      const bubble = document.createElement('div');
+      bubble.className = 'santa-bubble';
+      bubble.innerHTML = `
+        <div class="santa-bubble-avatar">🎅</div>
+        <div class="santa-bubble-text">${praiseMsg}</div>
+      `;
+      eduStageEl.appendChild(bubble);
+
+      // せいかいマーク
       const check = document.createElement('div');
       check.style.position = 'absolute';
-      check.style.fontSize = '50px';
+      check.style.top = '14%';
+      check.style.fontSize = '38px';
       check.style.color = '#e74c3c';
       check.style.fontWeight = '900';
+      check.style.textShadow = '0 2px 8px rgba(255,255,255,0.85)';
       check.style.animation = 'popIn 0.3s ease-out';
       check.textContent = '💮 せいかい！';
       eduStageEl.appendChild(check);
 
-      setTimeout(nextEduQuestion, 450);
+      setTimeout(nextEduQuestion, 700);
     } else {
       eduTotalAnswered++;
       btn.classList.add('wrong');
@@ -3495,16 +3927,30 @@
   function endEduGame() {
     stopEduGame();
     unlockSantaLetter();
+    updateNicknameUI();
 
     const rate = eduTotalAnswered > 0 ? Math.round((eduScore / eduTotalAnswered) * 100) : 100;
     let rank = 'おてつだいの見習い 💡';
-    if (eduScore >= 12) rank = 'おてつだいマスター 👑';
-    else if (eduScore >= 8) rank = 'ひらめきマスター 🌟';
-    else if (eduScore >= 4) rank = 'あたまのたいそう 🦌';
+    if (eduScore >= 16) rank = 'おてつだいマスター 👑';
+    else if (eduScore >= 10) rank = 'ひらめきマスター 🌟';
+    else if (eduScore >= 5) rank = 'あたまのたいそう 🦌';
 
     document.getElementById('edu-result-rank').textContent = rank;
     document.getElementById('edu-final-score').textContent = `${eduScore}もん`;
     document.getElementById('edu-final-rate').textContent = `${rate}%`;
+
+    // サンタからの感謝メッセージを設定
+    let santaThankYou = '';
+    if (eduScore >= 12) {
+      santaThankYou = `「${userNickname}のおかげで、プレゼントの準備がぜんぶ終わったよ！最高のパートナーじゃ、本当にありがとう！」`;
+    } else if (eduScore >= 6) {
+      santaThankYou = `「${userNickname}がたくさん手伝ってくれたから大助かりじゃ！本当にありがとう！」`;
+    } else {
+      santaThankYou = `「${userNickname}、いっしょに一生懸命手伝ってくれてうれしかったよ！ありがとう！」`;
+    }
+    const thankYouEl = document.getElementById('edu-santa-thankyou-text');
+    if (thankYouEl) thankYouEl.textContent = santaThankYou;
+
     document.getElementById('edu-result-overlay').classList.remove('hidden');
     launchConfetti();
     playFanfare();

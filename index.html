@@ -1008,7 +1008,7 @@
         サンタさんがなまえをよんでくれるよ！
       </div>
       <form id="nickname-form" onsubmit="event.preventDefault(); submitNickname();" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-        <input type="text" id="nickname-input" class="nickname-input-box" maxlength="8" placeholder="例: たろう、さっちゃん" autocomplete="off" />
+        <input type="text" id="nickname-input" class="nickname-input-box" maxlength="8" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
         <button type="submit" id="nickname-submit-btn" class="nickname-btn">あそびはじめる！ 🚀</button>
         <button type="button" class="nickname-skip-btn" onclick="submitNickname(true)">なまえを入れずにあそぶ</button>
       </form>

@@ -1414,59 +1414,106 @@
 
 <script>
 (() => {
-  // --- Nickname & Privacy Management (Memory-only: NEVER stored in localStorage/Cookie, completely reset on reload) ---
-  let userNickname = 'おともだち';
-
-  function updateNicknameUI() {
-    const nameDisplayEl = document.getElementById('player-name-display');
-    const greetingEl = document.getElementById('user-greeting-badge');
-    if (nameDisplayEl) nameDisplayEl.textContent = userNickname;
-    if (greetingEl) greetingEl.style.display = 'inline-block';
-
-    const labels = [
-      { id: 'catch-player-label', text: `${userNickname} の スコア` },
-      { id: 'memory-player-label', text: `${userNickname} の きろく` },
-      { id: 'chimney-player-label', text: `${userNickname} の スコア` },
-      { id: 'rhythm-player-label', text: `${userNickname} の スコア` },
-      { id: 'edu-player-label', text: `${userNickname} の おてつだい結果` }
-    ];
-    labels.forEach(item => {
-      const el = document.getElementById(item.id);
-      if (el) el.textContent = item.text;
-    });
-  }
-
-  window.submitNickname = function(isSkip = false) {
-    initAudio();
-    const input = document.getElementById('nickname-input');
-    const rawVal = input ? input.value.trim() : '';
-    if (!isSkip && rawVal.length > 0) {
-      userNickname = rawVal.replace(/[<>'"&]/g, '').slice(0, 8);
-    } else {
-      userNickname = 'おともだち';
-    }
-    updateNicknameUI();
-
-    const modal = document.getElementById('nickname-modal');
-    if (modal) modal.classList.add('hidden');
-
-    // ユーザー操作タップでBGMスタート（ブラウザ自動再生制限を自然にクリア）
-    if (soundEnabled && !bgmPlaying) {
-      startBGM();
-    }
-    playBellNote(659.25, 0.2, 0.12);
-  };
-
-  // --- Audio Synthesizer (Shared Web Audio) ---
+  // --- Audio State & Preloading ---
   let audioCtx = null;
   let soundEnabled = true;
+  let bgmPlaying = false;
+  let currentAudio = null;
+  let currentBgmTrack = 'menu';
+  let previousBgmTrack = 'menu';
+
+  const bgmFiles = {
+    menu: 'santa-claus-no-kiseki.mp3',
+    catch: 'bakuretsu-tonakai-race.mp3',
+    edu: 'MusMus-BGM-097.ogg',
+    letter: 'present-wo-kakaete-shiawase-na-kibun-de-kaeru-christmas-no-hi-no-theme.mp3',
+    chimney: 'MusMus-BGM-029.ogg',
+    scratch: 'MusMus-BGM-097.ogg',
+    memory: 'fuyu-no-bell-no-yo.mp3',
+    rhythm: 'fuyu-no-bell-no-yo.mp3'
+  };
+
+  // メニュー画面用音源を事前生成（ロード待機遅延ゼロ化）
+  let preloadedMenuAudio = null;
+  try {
+    preloadedMenuAudio = new Audio(bgmFiles.menu);
+    preloadedMenuAudio.loop = true;
+    preloadedMenuAudio.volume = 0.50;
+  } catch(e) {}
 
   function initAudio() {
     if (!audioCtx) {
       const AudioClass = window.AudioContext || window.webkitAudioContext;
-      audioCtx = new AudioClass();
+      if (AudioClass) audioCtx = new AudioClass();
     }
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function startBGM() {
+    if (!soundEnabled) return;
+    initAudio();
+
+    const file = bgmFiles[currentBgmTrack] || bgmFiles.menu;
+    if (!file) return;
+
+    if (currentAudio) {
+      const decodedSrc = decodeURIComponent(currentAudio.src);
+      if (decodedSrc.endsWith(file) || currentAudio.src.endsWith(file)) {
+        if (currentAudio.paused) {
+          const p = currentAudio.play();
+          if (p && p.catch) p.catch(() => {});
+        }
+        bgmPlaying = true;
+        return;
+      }
+      try {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      } catch(e) {}
+    }
+
+    try {
+      if (currentBgmTrack === 'menu' && preloadedMenuAudio) {
+        currentAudio = preloadedMenuAudio;
+      } else {
+        currentAudio = new Audio(file);
+        currentAudio.loop = true;
+        currentAudio.volume = 0.50;
+      }
+      const p = currentAudio.play();
+      if (p && p.catch) p.catch(() => {});
+      bgmPlaying = true;
+    } catch(e) {}
+  }
+
+  function stopBGM() {
+    bgmPlaying = false;
+    if (currentAudio) {
+      try {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      } catch(e) {}
+    }
+  }
+
+  function pauseBGM() {
+    if (currentAudio) {
+      try { currentAudio.pause(); } catch(e) {}
+    }
+  }
+
+  function switchBGM(trackKey) {
+    if (trackKey !== 'letter') {
+      previousBgmTrack = trackKey;
+    }
+    if (currentBgmTrack === trackKey && currentAudio && !currentAudio.paused) return;
+    currentBgmTrack = trackKey;
+    stopBGM();
+    if (soundEnabled) {
+      setTimeout(startBGM, 60);
+    }
   }
 
   function playTone(freq, type = 'sine', duration = 0.1, gain = 0.15) {
@@ -1517,80 +1564,165 @@
     }, 1800);
   }
 
-  // --- High-Quality Audio File BGM System ---
-  const bgmFiles = {
-    menu: 'santa-claus-no-kiseki.mp3',
-    catch: 'bakuretsu-tonakai-race.mp3',
-    edu: 'MusMus-BGM-097.ogg',
-    letter: 'present-wo-kakaete-shiawase-na-kibun-de-kaeru-christmas-no-hi-no-theme.mp3',
-    chimney: 'MusMus-BGM-029.ogg',
-    scratch: 'MusMus-BGM-097.ogg',
-    memory: 'fuyu-no-bell-no-yo.mp3',
-    rhythm: 'fuyu-no-bell-no-yo.mp3'
-  };
-
-  let currentAudio = null;
-  let currentBgmTrack = 'menu';
-  let previousBgmTrack = 'menu';
-  let bgmPlaying = false;
-
-  function startBGM() {
-    if (!soundEnabled) return;
-    const file = bgmFiles[currentBgmTrack] || bgmFiles.menu;
-    if (!file) return;
-
-    if (currentAudio) {
-      const decodedSrc = decodeURIComponent(currentAudio.src);
-      if (decodedSrc.endsWith(file) || currentAudio.src.endsWith(file)) {
-        if (currentAudio.paused) {
-          const p = currentAudio.play();
-          if (p && p.catch) p.catch(() => {});
-        }
-        bgmPlaying = true;
-        return;
+  // --- Sound Effects (Handbell & Sleigh Bells) ---
+  let noiseBuffer = null;
+  function getNoiseBuffer() {
+    if (!noiseBuffer && audioCtx) {
+      const bufferSize = Math.floor(audioCtx.sampleRate * 0.15);
+      noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
       }
-      try {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-      } catch(e) {}
     }
+    return noiseBuffer;
+  }
 
+  // そりの鈴 (スレイベル: シャンシャン…)
+  function playSleighBell(gainLevel = 0.035) {
+    if (!soundEnabled || !audioCtx) return;
     try {
-      currentAudio = new Audio(file);
-      currentAudio.loop = true;
-      currentAudio.volume = 0.50;
-      const p = currentAudio.play();
-      if (p && p.catch) p.catch(() => {});
-      bgmPlaying = true;
+      const now = audioCtx.currentTime;
+      [0, 0.032].forEach((offset, hitIdx) => {
+        const t = now + offset;
+        const vol = gainLevel * (hitIdx === 0 ? 0.7 : 1.0);
+
+        // 1. 金属鈴の共鳴
+        const freqs = [2520, 3050, 3850, 4800, 5950];
+        freqs.forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq + (Math.random() * 30 - 15), t);
+          g.gain.setValueAtTime(vol * 0.35, t);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12 + i * 0.012);
+          osc.connect(g);
+          g.connect(audioCtx.destination);
+          osc.start(t);
+          osc.stop(t + 0.18);
+        });
+
+        // 2. 鈴のシャラシャラ感 (バンドパスフィルタノイズ)
+        const nBuf = getNoiseBuffer();
+        if (nBuf) {
+          const noise = audioCtx.createBufferSource();
+          noise.buffer = nBuf;
+          const filter = audioCtx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(5800, t);
+          filter.Q.setValueAtTime(3.0, t);
+
+          const noiseGain = audioCtx.createGain();
+          noiseGain.gain.setValueAtTime(vol * 0.65, t);
+          noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+
+          noise.connect(filter);
+          filter.connect(noiseGain);
+          noiseGain.connect(audioCtx.destination);
+          noise.start(t);
+          noise.stop(t + 0.10);
+        }
+      });
     } catch(e) {}
   }
 
-  function stopBGM() {
-    bgmPlaying = false;
-    if (currentAudio) {
-      try {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-      } catch(e) {}
-    }
+  // 澄んだクリスマスのハンドベル・チャイム音色 (チ〜〜ン…)
+  function playBellNote(freq, dur, gainLevel = 0.048) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+      const t = audioCtx.currentTime;
+
+      // 1. 基音 (温かみと澄んだベルの丸み)
+      const osc1 = audioCtx.createOscillator();
+      const g1 = audioCtx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(freq, t);
+      g1.gain.setValueAtTime(gainLevel * 0.85, t);
+      g1.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(dur * 1.6, 0.9));
+      osc1.connect(g1);
+      g1.connect(audioCtx.destination);
+      osc1.start(t);
+      osc1.stop(t + Math.max(dur * 1.6, 0.9));
+
+      // 2. 2倍音 (オクターブ上の華やかさ)
+      const osc2 = audioCtx.createOscillator();
+      const g2 = audioCtx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(freq * 2, t);
+      g2.gain.setValueAtTime(gainLevel * 0.45, t);
+      g2.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(dur, 0.5));
+      osc2.connect(g2);
+      g2.connect(audioCtx.destination);
+      osc2.start(t);
+      osc2.stop(t + Math.max(dur, 0.5));
+
+      // 3. クラング倍音 (ハンドベルのチリ〜ンという金属アタック音)
+      const osc3 = audioCtx.createOscillator();
+      const g3 = audioCtx.createGain();
+      osc3.type = 'triangle';
+      osc3.frequency.setValueAtTime(freq * 2.76, t);
+      g3.gain.setValueAtTime(gainLevel * 0.35, t);
+      g3.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+      osc3.connect(g3);
+      g3.connect(audioCtx.destination);
+      osc3.start(t);
+      osc3.stop(t + 0.30);
+    } catch(e) {}
   }
 
-  function pauseBGM() {
-    if (currentAudio) {
-      try { currentAudio.pause(); } catch(e) {}
-    }
+  // --- Nickname & Privacy Management (Memory-only: NEVER stored in localStorage/Cookie, completely reset on reload) ---
+  let userNickname = 'おともだち';
+
+  function updateNicknameUI() {
+    const nameDisplayEl = document.getElementById('player-name-display');
+    const greetingEl = document.getElementById('user-greeting-badge');
+    if (nameDisplayEl) nameDisplayEl.textContent = userNickname;
+    if (greetingEl) greetingEl.style.display = 'inline-block';
+
+    const labels = [
+      { id: 'catch-player-label', text: `${userNickname} の スコア` },
+      { id: 'memory-player-label', text: `${userNickname} の きろく` },
+      { id: 'chimney-player-label', text: `${userNickname} の スコア` },
+      { id: 'rhythm-player-label', text: `${userNickname} の スコア` },
+      { id: 'edu-player-label', text: `${userNickname} の おてつだい結果` }
+    ];
+    labels.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el) el.textContent = item.text;
+    });
   }
 
-  function switchBGM(trackKey) {
-    if (trackKey !== 'letter') {
-      previousBgmTrack = trackKey;
+  window.submitNickname = function(isSkip = false) {
+    initAudio();
+    const input = document.getElementById('nickname-input');
+    const rawVal = input ? input.value.trim() : '';
+    if (!isSkip && rawVal.length > 0) {
+      userNickname = rawVal.replace(/[<>'"&]/g, '').slice(0, 8);
+    } else {
+      userNickname = 'おともだち';
     }
-    if (currentBgmTrack === trackKey && currentAudio && !currentAudio.paused) return;
-    currentBgmTrack = trackKey;
-    stopBGM();
+    updateNicknameUI();
+
+    const modal = document.getElementById('nickname-modal');
+    if (modal) modal.classList.add('hidden');
+
+    // 決定時に即座にBGMスタート
     if (soundEnabled) {
-      setTimeout(startBGM, 80);
+      startBGM();
     }
+    playBellNote(659.25, 0.2, 0.12);
+  };
+
+  // あだ名入力欄に文字を入力した瞬間にも即座にBGMを開始！
+  const nicknameInput = document.getElementById('nickname-input');
+  if (nicknameInput) {
+    const triggerStartAudio = () => {
+      initAudio();
+      if (soundEnabled && (!currentAudio || currentAudio.paused)) {
+        startBGM();
+      }
+    };
+    nicknameInput.addEventListener('input', triggerStartAudio);
   }
 
   // Sound Toggle Button
@@ -1674,7 +1806,7 @@
   let activeScreen = 'menu';
   const homeBtn = document.getElementById('home-btn');
 
-  window.openGame = function(gameName) {
+  function openGame(gameName) {
     initAudio();
     playBellNote(659.25, 0.15, 0.08);
     document.querySelectorAll('.view-screen').forEach(s => s.classList.add('hidden'));
@@ -1717,9 +1849,10 @@
       activeScreen = 'edu';
       switchBGM('edu');
     }
-  };
+  }
+  window.openGame = openGame;
 
-  window.backToMenu = function() {
+  function backToMenu() {
     initAudio();
     stopCatchGame();
     stopChimneyGame();
@@ -1730,8 +1863,26 @@
     homeBtn.style.visibility = 'hidden';
     activeScreen = 'menu';
     switchBGM('menu');
-  };
+  }
+  window.backToMenu = backToMenu;
   homeBtn.addEventListener('click', backToMenu);
+
+  // Expose global handlers to window
+  window.openGame = openGame;
+  window.backToMenu = backToMenu;
+  window.startCatchGame = startCatchGame;
+  window.stopCatchGame = stopCatchGame;
+  window.initMemoryGame = initMemoryGame;
+  window.startChimneyGame = startChimneyGame;
+  window.stopChimneyGame = stopChimneyGame;
+  window.resetScratch = resetScratch;
+  window.startRhythmGame = startRhythmGame;
+  window.stopRhythmGame = stopRhythmGame;
+  window.startEduGame = startEduGame;
+  window.stopEduGame = stopEduGame;
+  window.openSantaLetter = openSantaLetter;
+  window.closeSantaLetter = closeSantaLetter;
+
 
   // --- Akatora Santa Letter Lock / Unlock System ---
   let letterUnlocked = false;
@@ -1761,17 +1912,20 @@
 
   // Akatora Santa Letter Modal
   const letterModal = document.getElementById('letter-modal');
-  window.openSantaLetter = function() {
+  function openSantaLetter() {
     unlockSantaLetter();
     initAudio();
     playTone(659.25, 'triangle', 0.2, 0.15);
     letterModal.classList.remove('hidden');
     switchBGM('letter');
-  };
-  window.closeSantaLetter = function() {
+  }
+  window.openSantaLetter = openSantaLetter;
+
+  function closeSantaLetter() {
     letterModal.classList.add('hidden');
     switchBGM(activeScreen || 'menu');
-  };
+  }
+  window.closeSantaLetter = closeSantaLetter;
 
   // ========================================================
   // GAME 1: PRESENT CATCH IMPLEMENTATION
@@ -1821,7 +1975,7 @@
     });
   }
 
-  window.startCatchGame = function() {
+  function startCatchGame() {
     initAudio();
     catchRunning = true;
     catchScore = 0;
@@ -2234,7 +2388,8 @@
     initMemoryGame();
   };
 
-  window.initMemoryGame = function() {
+  function initMemoryGame() {
+    window.initMemoryGame = initMemoryGame;
     memoryGrid.innerHTML = '';
     document.getElementById('memory-result-overlay').classList.add('hidden');
     matchedPairs = 0;
@@ -2398,7 +2553,8 @@
     }
   }
 
-  window.startChimneyGame = function() {
+  function startChimneyGame() {
+    window.startChimneyGame = startChimneyGame;
     initAudio();
     chimneyScore = 0;
     chimneyTime = 30;
@@ -2573,7 +2729,8 @@
 
   let lastScratchIdx = -1;
 
-  window.resetScratch = function() {
+  function resetScratch() {
+    window.resetScratch = resetScratch;
     initAudio();
 
     // Pick a new outcome different from last time
@@ -2764,7 +2921,8 @@
     playTone(550, 'triangle', 0.08, 0.1);
   };
 
-  window.startRhythmGame = function() {
+  function startRhythmGame() {
+    window.startRhythmGame = startRhythmGame;
     initAudio();
     stopRhythmGame();
 
@@ -2946,7 +3104,8 @@
     setTimeout(() => fb.remove(), 450);
   }
 
-  window.stopRhythmGame = function() {
+  function stopRhythmGame() {
+    window.stopRhythmGame = stopRhythmGame;
     rhythmRunning = false;
     if (rhythmAnimId) cancelAnimationFrame(rhythmAnimId);
     document.querySelectorAll('.rhythm-note').forEach(n => n.remove());
@@ -3026,7 +3185,8 @@
     playTone(550, 'triangle', 0.08, 0.1);
   };
 
-  window.startEduGame = function() {
+  function startEduGame() {
+    window.startEduGame = startEduGame;
     initAudio();
     stopEduGame();
 
@@ -3050,7 +3210,8 @@
     }, 1000);
   };
 
-  window.stopEduGame = function() {
+  function stopEduGame() {
+    window.stopEduGame = stopEduGame;
     eduRunning = false;
     clearInterval(eduTimer);
   };

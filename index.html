@@ -943,15 +943,29 @@
       border: 2px dashed #e0c598;
       border-radius: 14px;
       min-height: 110px;
-      max-height: 140px;
+      max-height: 145px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 10px;
-      padding: 10px;
+      gap: 8px;
+      padding: 8px 10px;
       margin-bottom: 12px;
-      font-size: 32px;
+      font-size: 30px;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .edu-stage .count-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      gap: 3px 6px;
+      width: 100%;
+      height: 100%;
+      line-height: 1.15;
     }
     .edu-choices {
       display: grid;
@@ -1265,7 +1279,7 @@
     <div style="font-size: 13px; color: #ffd700; font-weight: 800; margin-bottom: 6px;">🎵 えんそう曲：ジングルベル 🔔</div>
 
     <div style="display: flex; justify-content: space-between; width: 100%; max-width: 320px; font-size: 14px; font-weight: 800; margin-bottom: 4px;">
-      <div class="hud-chip">スコア: <span id="rhythm-score" style="color:#ffd700;">0</span></div>
+      <div class="hud-chip">スコア: <span id="rhythm-score" style="color:#ffd700;">0</span> / <span id="rhythm-max-score" style="font-size:11px; opacity:0.85;">10,000</span></div>
       <div class="hud-chip rhythm-combo-box">コンボ: <span id="rhythm-combo" style="color:#ff7675;">0</span></div>
     </div>
 
@@ -1307,12 +1321,20 @@
     <!-- Rhythm Result Overlay -->
     <div id="rhythm-result-overlay" class="view-screen hidden" style="background: rgba(13,27,42,0.95);">
       <h2 style="font-size: 22px;">🎉 えんそうしゅうりょう！</h2>
-      <div id="rhythm-result-rank" style="font-size: 22px; color: #ffd700; margin: 6px 0; font-weight: 900;"></div>
+      <div id="rhythm-fullcombo-badge" style="display: none; font-size: 20px; font-weight: 900; color: #ffd700; text-shadow: 0 0 14px rgba(255,215,0,0.85); margin: 2px 0 6px 0; animation: popIn 0.4s ease;">🌟 FULL COMBO! 🌟</div>
+      <div id="rhythm-result-rank" style="font-size: 22px; color: #ffd700; margin: 4px 0; font-weight: 900;"></div>
       <div class="sub-result-card">
         <div id="rhythm-player-label" style="font-size: 13px; font-weight: 900; color: #ffd700; margin-bottom: 6px;">おともだち の スコア</div>
         <div style="font-size: 12px;">スコア</div>
         <div id="rhythm-final-score" class="sub-result-score">0</div>
-        <div style="font-size: 12px; margin-top: 4px;">さいだいコンボ: <b id="rhythm-final-maxcombo" style="color:#ff7675;">0</b></div>
+        <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">（満点: <span id="rhythm-result-maxscore">10,000</span> 点）</div>
+        <div style="font-size: 12px; margin-top: 6px;">さいだいコンボ: <b id="rhythm-final-maxcombo" style="color:#ff7675;">0</b></div>
+        <div id="rhythm-stats-breakdown" style="display: flex; justify-content: center; gap: 8px; font-size: 11px; margin-top: 8px; color: #e2e8f0; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 6px;">
+          <span>PERFECT: <b id="rhythm-stat-perfect" style="color:#ffd700;">0</b></span>
+          <span>GREAT: <b id="rhythm-stat-great" style="color:#2ecc71;">0</b></span>
+          <span>GOOD: <b id="rhythm-stat-good" style="color:#3498db;">0</b></span>
+          <span>MISS: <b id="rhythm-stat-miss" style="color:#a4b0be;">0</b></span>
+        </div>
       </div>
       <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 250px;">
         <button class="btn btn-gold btn-small" onclick="openSantaLetter()">🎅 あかとらサンタの手紙</button>
@@ -1438,7 +1460,7 @@
   try {
     preloadedMenuAudio = new Audio(bgmFiles.menu);
     preloadedMenuAudio.loop = true;
-    preloadedMenuAudio.volume = 0.50;
+    preloadedMenuAudio.volume = 0.22;
   } catch(e) {}
 
   function initAudio() {
@@ -1480,7 +1502,7 @@
       } else {
         currentAudio = new Audio(file);
         currentAudio.loop = true;
-        currentAudio.volume = 0.50;
+        currentAudio.volume = 0.22;
       }
       const p = currentAudio.play();
       if (p && p.catch) p.catch(() => {});
@@ -1516,7 +1538,7 @@
     }
   }
 
-  function playTone(freq, type = 'sine', duration = 0.1, gain = 0.15) {
+  function playTone(freq, type = 'sine', duration = 0.1, gain = 0.32) {
     if (!soundEnabled || !audioCtx) return;
     try {
       const osc = audioCtx.createOscillator();
@@ -1534,15 +1556,15 @@
 
   function playSoundSuccess() {
     initAudio();
-    playTone(523.25, 'triangle', 0.08, 0.2);
-    setTimeout(() => playTone(659.25, 'triangle', 0.12, 0.2), 65);
-    setTimeout(() => playTone(783.99, 'triangle', 0.15, 0.2), 130);
+    playTone(523.25, 'triangle', 0.08, 0.36);
+    setTimeout(() => playTone(659.25, 'triangle', 0.12, 0.36), 65);
+    setTimeout(() => playTone(783.99, 'triangle', 0.15, 0.36), 130);
   }
 
   function playSoundBad() {
     initAudio();
-    playTone(220, 'sawtooth', 0.15, 0.12);
-    setTimeout(() => playTone(175, 'sawtooth', 0.2, 0.12), 100);
+    playTone(220, 'sawtooth', 0.15, 0.28);
+    setTimeout(() => playTone(175, 'sawtooth', 0.2, 0.28), 100);
   }
 
   function playFanfare() {
@@ -1557,7 +1579,7 @@
       {f: 783.99, d: 0.50, delay: 920}
     ];
     melody.forEach(item => {
-      setTimeout(() => playTone(item.f, 'triangle', item.d, 0.25), item.delay);
+      setTimeout(() => playTone(item.f, 'triangle', item.d, 0.45), item.delay);
     });
     setTimeout(() => {
       if (soundEnabled) startBGM();
@@ -1579,7 +1601,7 @@
   }
 
   // そりの鈴 (スレイベル: シャンシャン…)
-  function playSleighBell(gainLevel = 0.035) {
+  function playSleighBell(gainLevel = 0.08) {
     if (!soundEnabled || !audioCtx) return;
     try {
       const now = audioCtx.currentTime;
@@ -1627,7 +1649,7 @@
   }
 
   // 澄んだクリスマスのハンドベル・チャイム音色 (チ〜〜ン…)
-  function playBellNote(freq, dur, gainLevel = 0.048) {
+  function playBellNote(freq, dur, gainLevel = 0.18) {
     if (!soundEnabled || !audioCtx) return;
     try {
       const t = audioCtx.currentTime;
@@ -1710,7 +1732,7 @@
     if (soundEnabled) {
       startBGM();
     }
-    playBellNote(659.25, 0.2, 0.12);
+    playBellNote(659.25, 0.25, 0.25);
   };
 
   // あだ名入力欄に文字を入力した瞬間にも即座にBGMを開始！
@@ -1808,7 +1830,7 @@
 
   function openGame(gameName) {
     initAudio();
-    playBellNote(659.25, 0.15, 0.08);
+    playBellNote(659.25, 0.20, 0.24);
     document.querySelectorAll('.view-screen').forEach(s => s.classList.add('hidden'));
     homeBtn.style.visibility = 'visible';
 
@@ -1854,6 +1876,7 @@
 
   function backToMenu() {
     initAudio();
+    playBellNote(523.25, 0.15, 0.20);
     stopCatchGame();
     stopChimneyGame();
     stopRhythmGame();
@@ -1915,7 +1938,7 @@
   function openSantaLetter() {
     unlockSantaLetter();
     initAudio();
-    playTone(659.25, 'triangle', 0.2, 0.15);
+    playTone(659.25, 'triangle', 0.2, 0.32);
     letterModal.classList.remove('hidden');
     switchBGM('letter');
   }
@@ -1959,7 +1982,7 @@
     document.querySelectorAll('.diff-tab').forEach(t => {
       t.classList.toggle('active', t.dataset.diff === diff);
     });
-    playTone(600, 'triangle', 0.08, 0.1);
+    playTone(600, 'triangle', 0.08, 0.24);
   };
 
   function addCatchText(text, x, y, color = '#ffd700', size = 20) {
@@ -1997,7 +2020,7 @@
     catchTimer = setInterval(() => {
       catchTime--;
       document.getElementById('catch-time').textContent = catchTime;
-      if (catchTime <= 5 && catchTime > 0) playTone(440, 'triangle', 0.1, 0.12);
+      if (catchTime <= 5 && catchTime > 0) playTone(440, 'triangle', 0.12, 0.28);
       if (catchTime <= 0) endCatchGame();
     }, 1000);
   };
@@ -2384,7 +2407,7 @@
     document.querySelectorAll('.memory-diff-tab').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.memdiff === diff);
     });
-    playTone(550, 'triangle', 0.08, 0.1);
+    playTone(550, 'triangle', 0.08, 0.24);
     initMemoryGame();
   };
 
@@ -2432,7 +2455,7 @@
   function onCardClick(card, icon) {
     if (memLock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
     initAudio();
-    playTone(500, 'triangle', 0.08, 0.15);
+    playTone(500, 'triangle', 0.08, 0.30);
 
     card.classList.add('flipped');
     flippedCards.push({ card, icon });
@@ -2529,7 +2552,7 @@
     document.querySelectorAll('[data-chimstartdiff]').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.chimstartdiff === diff);
     });
-    playTone(550, 'triangle', 0.08, 0.1);
+    playTone(550, 'triangle', 0.08, 0.24);
   };
 
   function initChimneyGrid() {
@@ -2579,7 +2602,7 @@
     chimneyTimer = setInterval(() => {
       chimneyTime--;
       document.getElementById('chimney-time').textContent = chimneyTime;
-      if (chimneyTime <= 5 && chimneyTime > 0) playTone(440, 'triangle', 0.1, 0.12);
+      if (chimneyTime <= 5 && chimneyTime > 0) playTone(440, 'triangle', 0.12, 0.28);
       if (chimneyTime <= 0) endChimneyGame();
     }, 1000);
 
@@ -2732,6 +2755,7 @@
   function resetScratch() {
     window.resetScratch = resetScratch;
     initAudio();
+    playSleighBell(0.08);
 
     // Pick a new outcome different from last time
     let idx = Math.floor(Math.random() * scratchOutcomes.length);
@@ -2890,22 +2914,25 @@
 
   const rhythmConfigs = {
     easy: {
-      speed: 220,
+      maxScore: 10000,
+      speed: 230,
       bpm: 105,
       noteCount: 26, // 8小節
-      hitWindow: { perfect: 110, great: 220, good: 340 }
+      hitWindow: { perfect: 100, great: 200, good: 300 }
     },
     normal: {
-      speed: 310,
+      maxScore: 20000,
+      speed: 330,
       bpm: 120,
       noteCount: jingleBellsScore.length, // フルサビ 50音符
-      hitWindow: { perfect: 90, great: 180, good: 290 }
+      hitWindow: { perfect: 80, great: 160, good: 250 }
     },
     hard: {
-      speed: 410,
-      bpm: 132,
-      noteCount: jingleBellsScore.length,
-      hitWindow: { perfect: 75, great: 150, good: 250 }
+      maxScore: 30000,
+      speed: 560, // 高速落下！
+      bpm: 150,   // 疾走感あふれるハイテンポ！
+      noteCount: 80, // 大量の同時押し＆裏拍連打
+      hitWindow: { perfect: 50, great: 100, good: 160 } // シビア判定
     }
   };
 
@@ -2913,12 +2940,24 @@
   const laneDefaultFreqs = [NOTE_C4, NOTE_E4, NOTE_G4];
   const lastLaneTapTime = [0, 0, 0];
 
+  let rhythmTotalNotes = 0;
+  let rhythmPerfectCount = 0;
+  let rhythmGreatCount = 0;
+  let rhythmGoodCount = 0;
+  let rhythmMissCount = 0;
+  let rhythmHitCount = 0;
+  let rhythmNoteBasePoints = 0;
+  let rhythmNoteComboBonus = 0;
+
   window.setRhythmDifficulty = function(diff) {
     rhythmDifficulty = diff;
     document.querySelectorAll('[data-rhythmdiff]').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.rhythmdiff === diff);
     });
-    playTone(550, 'triangle', 0.08, 0.1);
+    playTone(550, 'triangle', 0.08, 0.24);
+    const cfg = rhythmConfigs[diff];
+    const maxScoreEl = document.getElementById('rhythm-max-score');
+    if (maxScoreEl) maxScoreEl.textContent = cfg.maxScore.toLocaleString();
   };
 
   function startRhythmGame() {
@@ -2926,11 +2965,22 @@
     initAudio();
     stopRhythmGame();
 
+    const cfg = rhythmConfigs[rhythmDifficulty];
+
     rhythmScore = 0;
     rhythmCombo = 0;
     rhythmMaxCombo = 0;
+    rhythmPerfectCount = 0;
+    rhythmGreatCount = 0;
+    rhythmGoodCount = 0;
+    rhythmMissCount = 0;
+    rhythmHitCount = 0;
+
     rhythmScoreEl.textContent = '0';
     rhythmComboEl.textContent = '0';
+    const maxScoreEl = document.getElementById('rhythm-max-score');
+    if (maxScoreEl) maxScoreEl.textContent = cfg.maxScore.toLocaleString();
+
     document.getElementById('rhythm-start-overlay').classList.add('hidden');
     document.getElementById('rhythm-result-overlay').classList.add('hidden');
     rhythmFeedbackContainer.innerHTML = '';
@@ -2938,7 +2988,6 @@
     // Clear old notes from stage
     document.querySelectorAll('.rhythm-note').forEach(n => n.remove());
 
-    const cfg = rhythmConfigs[rhythmDifficulty];
     const stageH = rhythmStage.clientHeight || 380;
     const judgeY = stageH - 68; // gold line position from top
     const fallDuration = (judgeY / cfg.speed) * 1000;
@@ -2952,8 +3001,26 @@
       const item = jingleBellsScore[i];
       let lane = item.lane;
 
-      // Hardモードでの装飾・和音 (2か所同時押し)
-      if (rhythmDifficulty === 'hard' && (i % 6 === 2) && item.beats >= 2) {
+      // Hardモード: 難易度超アップ！和音（2箇所同時押し）＆裏拍ノーツ（連打トリル）をふんだんに投入
+      if (rhythmDifficulty === 'hard') {
+        // 1. 和音（2か所同時押し）: 小節頭やフレーズの決めポーズで同時タップ
+        const isChordNote = (i % 3 === 0) || (item.beats >= 2) || (i === 12 || i === 16 || i === 24 || i === 38 || i === 42 || i === 49);
+        if (isChordNote) {
+          const lane2 = (lane + 1 + (i % 2)) % 3;
+          rhythmNotes.push(createNoteObj(lane2, currentBeatTime, fallDuration, judgeY, item.freq * 1.25));
+        }
+
+        // 2. 裏拍ノーツ（高速連打トリル）: 伸ばす音符（beats >= 2）の半拍裏にタップ音符を挿入
+        if (item.beats >= 2) {
+          const laneOff = (lane + 2) % 3;
+          rhythmNotes.push(createNoteObj(laneOff, currentBeatTime + beatMs * 0.5, fallDuration, judgeY, item.freq * 1.12));
+          if (item.beats >= 3) {
+            const laneOff2 = (lane + 1) % 3;
+            rhythmNotes.push(createNoteObj(laneOff2, currentBeatTime + beatMs * 1.0, fallDuration, judgeY, item.freq * 0.9));
+          }
+        }
+      } else if (rhythmDifficulty === 'normal' && (i % 8 === 4) && item.beats >= 2) {
+        // Normalモード: たまに同時押し
         const lane2 = (lane + 2) % 3;
         rhythmNotes.push(createNoteObj(lane2, currentBeatTime, fallDuration, judgeY, item.freq * 1.25));
       }
@@ -2961,6 +3028,15 @@
       rhythmNotes.push(createNoteObj(lane, currentBeatTime, fallDuration, judgeY, item.freq));
       currentBeatTime += beatMs * item.beats;
     }
+
+    // hitTargetMs 順にソート
+    rhythmNotes.sort((a, b) => a.hitTargetMs - b.hitTargetMs);
+    rhythmTotalNotes = rhythmNotes.length;
+
+    // 各ノーツの配点計算 (上限得点にピッタリ到達するアーケード式計算)
+    rhythmNoteBasePoints = Math.floor((cfg.maxScore * 0.85) / rhythmTotalNotes);
+    const maxComboSum = (rhythmTotalNotes * (rhythmTotalNotes + 1)) / 2;
+    rhythmNoteComboBonus = Math.max(1, Math.floor((cfg.maxScore * 0.15) / maxComboSum));
 
     rhythmStartTime = performance.now();
     rhythmRunning = true;
@@ -3012,6 +3088,7 @@
       // Check Miss (passed judge line beyond good window)
       if (!note.missed && elapsed > note.hitTargetMs + cfg.hitWindow.good) {
         note.missed = true;
+        rhythmMissCount++;
         rhythmCombo = 0;
         rhythmComboEl.textContent = '0';
         showRhythmFeedback('MISS', '#a4b0be');
@@ -3069,28 +3146,36 @@
 
     // タップ音: ノーツがある時はその曲の音程を演奏！
     const playFreq = closestNote ? closestNote.freq : laneDefaultFreqs[lane];
-    playBellNote(playFreq, 0.22, 0.16);
-    playSleighBell(0.025);
+    playBellNote(playFreq, 0.26, 0.36);
+    playSleighBell(0.08);
 
     if (closestNote && minDiff <= cfg.hitWindow.good) {
       closestNote.hit = true;
       closestNote.el.remove();
+      rhythmHitCount++;
 
       rhythmCombo++;
       if (rhythmCombo > rhythmMaxCombo) rhythmMaxCombo = rhythmCombo;
       rhythmComboEl.textContent = rhythmCombo;
 
       if (minDiff <= cfg.hitWindow.perfect) {
-        rhythmScore += 200 + Math.min(rhythmCombo * 10, 100);
+        rhythmPerfectCount++;
+        const pts = rhythmNoteBasePoints + (rhythmCombo * rhythmNoteComboBonus);
+        rhythmScore += pts;
         showRhythmFeedback('✨ PERFECT! ✨', '#ffd700');
       } else if (minDiff <= cfg.hitWindow.great) {
-        rhythmScore += 120 + Math.min(rhythmCombo * 5, 50);
+        rhythmGreatCount++;
+        const pts = Math.floor(rhythmNoteBasePoints * 0.70) + Math.floor(rhythmCombo * rhythmNoteComboBonus * 0.50);
+        rhythmScore += pts;
         showRhythmFeedback('👍 GREAT!', '#2ecc71');
       } else {
-        rhythmScore += 60;
+        rhythmGoodCount++;
+        const pts = Math.floor(rhythmNoteBasePoints * 0.40);
+        rhythmScore += pts;
         showRhythmFeedback('😊 GOOD', '#3498db');
       }
-      rhythmScoreEl.textContent = rhythmScore;
+      rhythmScore = Math.min(cfg.maxScore, rhythmScore);
+      rhythmScoreEl.textContent = rhythmScore.toLocaleString();
     }
   }
 
@@ -3116,16 +3201,84 @@
     unlockSantaLetter();
     updateNicknameUI();
 
-    let rank = 'ベルのお手伝い 🔔';
-    if (rhythmScore >= 6000) rank = 'ジングルベル・マスター 👑';
-    else if (rhythmScore >= 3500) rank = 'ベルの達人 🌟';
-    else if (rhythmScore >= 1800) rank = 'トナカイのたいこ 🦌';
+    const cfg = rhythmConfigs[rhythmDifficulty];
 
-    document.getElementById('rhythm-result-rank').textContent = rank;
-    document.getElementById('rhythm-final-score').textContent = rhythmScore;
-    document.getElementById('rhythm-final-maxcombo').textContent = `${rhythmMaxCombo}回`;
+    // 全PERFECTフルコンボ時は理論値上限にピッタリ合わせる
+    if (rhythmHitCount === rhythmTotalNotes && rhythmMissCount === 0 && rhythmPerfectCount === rhythmTotalNotes && rhythmTotalNotes > 0) {
+      rhythmScore = cfg.maxScore;
+    }
+
+    const rate = rhythmTotalNotes > 0 ? (rhythmScore / cfg.maxScore) : 0;
+    let rank = '';
+    let rankColor = '#ffd700';
+
+    if (rate >= 0.95) {
+      rank = '👑 ジングルベル・マスター (SS)';
+      rankColor = '#ffd700';
+    } else if (rate >= 0.85) {
+      rank = '🌟 ベルの達人 (S)';
+      rankColor = '#2ecc71';
+    } else if (rate >= 0.70) {
+      rank = '🦌 トナカイのリズム隊 (A)';
+      rankColor = '#3498db';
+    } else if (rate >= 0.50) {
+      rank = '🔔 ベルのお手伝い (B)';
+      rankColor = '#e67e22';
+    } else {
+      rank = '⛄ リズムの見習い (C)';
+      rankColor = '#95a5a6';
+    }
+
+    // フルコンボ判定
+    const isFullCombo = (rhythmMissCount === 0 && rhythmHitCount === rhythmTotalNotes && rhythmTotalNotes > 0);
+    const isAllPerfect = (isFullCombo && rhythmPerfectCount === rhythmTotalNotes);
+
+    const badgeEl = document.getElementById('rhythm-fullcombo-badge');
+    if (badgeEl) {
+      if (isAllPerfect) {
+        badgeEl.textContent = '👑 ALL PERFECT!! 👑';
+        badgeEl.style.display = 'block';
+        badgeEl.style.color = '#ff9ff3';
+      } else if (isFullCombo) {
+        badgeEl.textContent = '🌟 FULL COMBO!! 🌟';
+        badgeEl.style.display = 'block';
+        badgeEl.style.color = '#ffd700';
+      } else {
+        badgeEl.style.display = 'none';
+      }
+    }
+
+    const rankEl = document.getElementById('rhythm-result-rank');
+    if (rankEl) {
+      rankEl.textContent = rank;
+      rankEl.style.color = rankColor;
+    }
+
+    document.getElementById('rhythm-final-score').textContent = rhythmScore.toLocaleString();
+    const maxScoreResultEl = document.getElementById('rhythm-result-maxscore');
+    if (maxScoreResultEl) maxScoreResultEl.textContent = cfg.maxScore.toLocaleString();
+
+    document.getElementById('rhythm-final-maxcombo').textContent = `${rhythmMaxCombo}回 (全${rhythmTotalNotes}ノーツ)`;
+
+    // 判定内訳を表示
+    const pEl = document.getElementById('rhythm-stat-perfect');
+    const grEl = document.getElementById('rhythm-stat-great');
+    const gdEl = document.getElementById('rhythm-stat-good');
+    const mEl = document.getElementById('rhythm-stat-miss');
+    if (pEl) pEl.textContent = rhythmPerfectCount;
+    if (grEl) grEl.textContent = rhythmGreatCount;
+    if (gdEl) gdEl.textContent = rhythmGoodCount;
+    if (mEl) mEl.textContent = rhythmMissCount;
+
     document.getElementById('rhythm-result-overlay').classList.remove('hidden');
-    launchConfetti();
+
+    if (isFullCombo) {
+      launchConfetti();
+      setTimeout(launchConfetti, 350);
+      playSleighBell(0.12);
+    } else {
+      launchConfetti();
+    }
     playFanfare();
   }
 
@@ -3182,7 +3335,7 @@
     document.querySelectorAll('[data-edudiff]').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.edudiff === diff);
     });
-    playTone(550, 'triangle', 0.08, 0.1);
+    playTone(550, 'triangle', 0.08, 0.24);
   };
 
   function startEduGame() {
@@ -3205,7 +3358,7 @@
     eduTimer = setInterval(() => {
       eduTime--;
       eduTimeEl.textContent = eduTime;
-      if (eduTime <= 5 && eduTime > 0) playTone(440, 'triangle', 0.1, 0.12);
+      if (eduTime <= 5 && eduTime > 0) playTone(440, 'triangle', 0.12, 0.28);
       if (eduTime <= 0) endEduGame();
     }, 1000);
   };
@@ -3350,90 +3503,95 @@
 
   // --- ジャンル2: ひらめき言葉パズル（アナグラム・言葉あそび） ---
   function genWordQuestion() {
-    let qText = '', visualText = '', ans = '';
+    let qText = '', visualText = '', ans = '', choices = [];
 
     if (eduDifficulty === 'easy') {
       // かんたん: 「た」ぬき言葉パズル（「た」をぜんぶ消すと？）
       const tanukiList = [
-        { q: 'さ・た・ん・た・た', ans: 'サンタ' },
-        { q: 'つ・た・り・た・ー', ans: 'ツリー' },
-        { q: 'そ・た・り・た', ans: 'ソリ' },
-        { q: 'ゆ・た・き・た', ans: '雪' },
-        { q: 'べ・た・る・た', ans: 'ベル' }
+        { q: 'さ・た・ん・た・た', ans: 'サンタ', choices: ['サンタ', 'トナカイ', 'プレゼント', 'ツリー'] },
+        { q: 'つ・た・り・た・ー', ans: 'ツリー', choices: ['ツリー', 'リース', 'ベル', 'ケーキ'] },
+        { q: 'そ・た・り・た', ans: 'ソリ', choices: ['ソリ', 'ゆき', 'ベル', 'ブーツ'] },
+        { q: 'ゆ・た・き・た', ans: 'ゆき', choices: ['ゆき', 'ほし', 'あめ', 'そり'] },
+        { q: 'べ・た・る・た', ans: 'ベル', choices: ['ベル', 'ブーツ', 'ツリー', 'リース'] },
+        { q: 'け・た・ー・た・き', ans: 'ケーキ', choices: ['ケーキ', 'クッキー', 'チキン', 'キャンディ'] },
+        { q: 'ぶ・た・ー・た・つ', ans: 'ブーツ', choices: ['ブーツ', 'ぼうし', 'てぶくろ', 'くつした'] }
       ];
       const item = tanukiList[Math.floor(Math.random() * tanukiList.length)];
       qText = '【 た 】をぜんぶ消すと、何の言葉になるかな？';
       visualText = `『 ${item.q} 』`;
       ans = item.ans;
+      choices = item.choices;
     } else if (eduDifficulty === 'normal') {
-      // ふつう: 5〜7文字の並べ替え
-      const list = [
-        { scrambled: 'と・な・か・い・の・そ・り', correct: 'トナカイのソリ' },
-        { scrambled: 'く・り・す・ま・す・け・ー・き', correct: 'クリスマスケーキ' },
-        { scrambled: 'じ・ん・ぐ・る・べ・る', correct: 'ジングルベル' },
-        { scrambled: 'あ・か・と・ら・さ・ん・た', correct: 'あかとらサンタ' },
-        { scrambled: 'ゆ・き・だ・る・ま・さ・ん', correct: 'ゆきだるま' },
-        { scrambled: 'ほ・し・ぞ・ら・の・よ・る', correct: '星空の夜' }
+      // ふつう: 5〜7文字の並べ替え（完全にシャッフルされたアナグラム）
+      const normalList = [
+        { scrambled: 'そ・り・の・か・な・い・と', correct: 'トナカイのソリ', choices: ['トナカイのソリ', 'あかとらサンタ', 'ジングルベル', 'クリスマスツリー'] },
+        { scrambled: 'る・ぐ・ん・じ・る・べ', correct: 'ジングルベル', choices: ['ジングルベル', 'プレゼント', 'トナカイのソリ', 'キャンドル'] },
+        { scrambled: 'た・ん・さ・か・あ・と・ら', correct: 'あかとらサンタ', choices: ['あかとらサンタ', 'サンタクロース', 'トナカイのソリ', 'ジングルベル'] },
+        { scrambled: 'る・ま・ゆ・き・だ', correct: 'ゆきだるま', choices: ['ゆきだるま', 'プレゼント', 'キャンドル', 'オーナメント'] },
+        { scrambled: 'と・れ・ぜ・ん・ぷ', correct: 'プレゼント', choices: ['プレゼント', 'ゆきだるま', 'キャンドル', 'オーナメント'] },
+        { scrambled: 'る・ん・ど・や・き', correct: 'キャンドル', choices: ['キャンドル', 'オーナメント', 'プレゼント', 'ゆきだるま'] },
+        { scrambled: 'す・ま・り・く・す', correct: 'クリスマス', choices: ['クリスマス', 'プレゼント', 'ゆきだるま', 'ジングルベル'] },
+        { scrambled: 'す・ろ・ー・く・た・ん・さ', correct: 'サンタクロース', choices: ['サンタクロース', 'あかとらサンタ', 'トナカイのソリ', 'メリークリスマス'] }
       ];
-      const a = list[Math.floor(Math.random() * list.length)];
+      const a = normalList[Math.floor(Math.random() * normalList.length)];
       qText = '文字をならびかえると、何の言葉になる？';
       visualText = `『 ${a.scrambled} 』`;
       ans = a.correct;
+      choices = a.choices;
     } else {
       // むずかしい: 巧妙なアナグラム＆謎解き言葉パズル（小学生が知っている親しみやすい言葉）
       const roll = Math.random();
       if (roll < 0.65) {
-        // 巧妙なアナグラム（子どもたちが全員知っているクリスマスワード！）
+        // 巧妙なアナグラム（完全一致検証済み）
         const hardAnagrams = [
-          { scrambled: 'す・ま・り・ー・く・け・す・き', correct: 'クリスマスケーキ' },
-          { scrambled: 'つ・ま・り・ー・く・す・す・り', correct: 'クリスマスツリー' },
-          { scrambled: 'み・ょ・る・ね・し・ー・い・ん', correct: 'イルミネーション' },
-          { scrambled: 'そ・な・り・か・と・の・い', correct: 'トナカイのソリ' },
-          { scrambled: 'ら・と・ん・さ・か・あ・た', correct: 'あかとらサンタ' },
-          { scrambled: 'る・ん・べ・じ・ぐ・る', correct: 'ジングルベル' },
-          { scrambled: 'す・り・ー・め・ま・く・す・り', correct: 'メリークリスマス' },
-          { scrambled: 'ぜ・ん・ぷ・と・れ', correct: 'プレゼント' },
-          { scrambled: 'る・き・ま・ゆ・だ', correct: 'ゆきだるま' },
-          { scrambled: 'と・わ・す・く・ま・い・り・ほ・す', correct: 'ホワイトクリスマス' }
+          { scrambled: 'す・ま・り・ー・く・け・す・き', correct: 'クリスマスケーキ', choices: ['クリスマスケーキ', 'ホワイトクリスマス', 'イルミネーション', 'クリスマスリース'] },
+          { scrambled: 'つ・ま・り・ー・く・す・す・り', correct: 'クリスマスツリー', choices: ['クリスマスツリー', 'クリスマスリース', 'クリスマスケーキ', 'イルミネーション'] },
+          { scrambled: 'す・り・ま・ー・す・く・り・す', correct: 'クリスマスリース', choices: ['クリスマスリース', 'クリスマスツリー', 'クリスマスケーキ', 'イルミネーション'] },
+          { scrambled: 'み・ょ・る・ね・し・ー・い・ん', correct: 'イルミネーション', choices: ['イルミネーション', 'ホワイトクリスマス', 'クリスマスツリー', 'クリスマスリース'] },
+          { scrambled: 'す・り・ー・め・ま・く・す・り', correct: 'メリークリスマス', choices: ['メリークリスマス', 'ホワイトクリスマス', 'サンタクロース', 'クリスマスツリー'] },
+          { scrambled: 'と・わ・す・く・ま・い・り・ほ・す', correct: 'ホワイトクリスマス', choices: ['ホワイトクリスマス', 'メリークリスマス', 'クリスマスケーキ', 'イルミネーション'] },
+          { scrambled: 'お・ん・な・め・ー・と', correct: 'オーナメント', choices: ['オーナメント', 'キャンドル', 'プレゼント', 'クリスマスツリー'] },
+          { scrambled: 'そ・な・り・か・と・の・い', correct: 'トナカイのソリ', choices: ['トナカイのソリ', 'あかとらサンタ', 'サンタクロース', 'ジングルベル'] },
+          { scrambled: 'ら・と・ん・さ・か・あ・た', correct: 'あかとらサンタ', choices: ['あかとらサンタ', 'サンタクロース', 'トナカイのソリ', 'ジングルベル'] },
+          { scrambled: 'る・ん・べ・じ・ぐ・る', correct: 'ジングルベル', choices: ['ジングルベル', 'プレゼント', 'トナカイのソリ', 'キャンドル'] }
         ];
         const a = hardAnagrams[Math.floor(Math.random() * hardAnagrams.length)];
         qText = '文字をならびかえて言葉をみつけよう！';
         visualText = `『 ${a.scrambled} 』`;
         ans = a.correct;
+        choices = a.choices;
       } else {
         // 謎解き暗号
         const puzzles = [
-          { q: '「ク リ ス マ ス」の【真ん中の文字】は？', visual: 'ク リ [ ス ] マ ス', ans: 'ス' },
-          { q: '「ト ナ カ イ」の【2番目の文字】は？', visual: 'ト [ ナ ] カ イ', ans: 'ナ' },
-          { q: '「サ ン タ」を後ろから読むと？', visual: 'サ ン タ ◀', ans: 'タンサ' },
-          { q: '『た』ぬき暗号！「た」をぜんぶ消すと？', visual: 'さ・た・ん・た・た・く・た・ろ・た・ー・た・す', ans: 'サンタクロース' }
+          { q: '「ク リ ス マ ス」の【真ん中の文字】は？', visual: 'ク リ [ ス ] マ ス', ans: 'ス', choices: ['ス', 'リ', 'マ', 'ク'] },
+          { q: '「ト ナ カ イ」の【2番目の文字】は？', visual: 'ト [ ナ ] カ イ', ans: 'ナ', choices: ['ナ', 'ト', 'カ', 'イ'] },
+          { q: '「サ ン タ」を後ろから読むと？', visual: 'サ ン タ ◀', ans: 'タンサ', choices: ['タンサ', 'サンタ', 'サンク', 'タスク'] },
+          { q: '「ツ リ ー」を後ろから読むと？', visual: 'ツ リ ー ◀', ans: 'ーリツ', choices: ['ーリツ', 'ツリー', 'リーツ', 'ツリ'] },
+          { q: '『た』ぬき暗号！「た」をぜんぶ消すと？', visual: 'さ・た・ん・た・た・く・た・ろ・た・ー・た・す', ans: 'サンタクロース', choices: ['サンタクロース', 'あかとらサンタ', 'トナカイのソリ', 'クリスマスツリー'] }
         ];
         const p = puzzles[Math.floor(Math.random() * puzzles.length)];
         qText = p.q;
         visualText = p.visual;
         ans = p.ans;
+        choices = p.choices;
       }
     }
 
     eduQuestionEl.textContent = qText;
 
     const visual = document.createElement('div');
-    visual.style.fontSize = '21px';
+    visual.style.fontSize = visualText.length > 15 ? '18px' : '21px';
     visual.style.fontWeight = '900';
     visual.style.color = '#c0392b';
     visual.style.letterSpacing = '1px';
+    visual.style.wordBreak = 'break-all';
+    visual.style.textAlign = 'center';
+    visual.style.lineHeight = '1.4';
     visual.textContent = visualText;
     eduStageEl.appendChild(visual);
 
     currentEduAnswer = ans;
-    const choices = new Set([currentEduAnswer]);
-    const wordPool = [
-      'クリスマスケーキ', 'クリスマスツリー', 'イルミネーション', 'トナカイのソリ',
-      'あかとらサンタ', 'ジングルベル', 'メリークリスマス', 'プレゼント', 'ゆきだるま',
-      'ホワイトクリスマス', 'サンタクロース', 'ツリー', 'ソリ', '雪', 'ス', 'ナ', 'ク', 'マ', 'タンサ', 'サンタ'
-    ];
-    wordPool.forEach(w => { if (choices.size < 4 && w !== ans) choices.add(w); });
-    renderEduChoices([...choices].sort(() => Math.random() - 0.5));
+    renderEduChoices([...new Set(choices)].sort(() => Math.random() - 0.5));
   }
 
   // --- ジャンル3: クリスマスなぞなぞ・ひらめき ---
@@ -3641,14 +3799,14 @@
     let distractorCount = 0;
 
     if (eduDifficulty === 'easy') {
-      targetCount = 3 + Math.floor(Math.random() * 4); // 3〜6
-      distractorCount = 1 + Math.floor(Math.random() * 2);
+      targetCount = 3 + Math.floor(Math.random() * 3); // 3〜5
+      distractorCount = 1 + Math.floor(Math.random() * 2); // 1〜2 (合計4〜7)
     } else if (eduDifficulty === 'normal') {
-      targetCount = 6 + Math.floor(Math.random() * 5); // 6〜10
-      distractorCount = 4 + Math.floor(Math.random() * 3);
+      targetCount = 5 + Math.floor(Math.random() * 4); // 5〜8
+      distractorCount = 2 + Math.floor(Math.random() * 2); // 2〜3 (合計7〜11)
     } else {
-      targetCount = 10 + Math.floor(Math.random() * 5); // 10〜14
-      distractorCount = 7 + Math.floor(Math.random() * 4);
+      targetCount = 7 + Math.floor(Math.random() * 4); // 7〜10
+      distractorCount = 3 + Math.floor(Math.random() * 2); // 3〜4 (合計10〜14)
     }
 
     eduQuestionEl.textContent = `【${targetIcon}】はぜんぶで何こあるかな？`;
@@ -3660,20 +3818,34 @@
     }
     all.sort(() => Math.random() - 0.5);
 
-    eduStageEl.style.fontSize = (eduDifficulty === 'hard' ? '24px' : '28px');
+    // 枠内にきれいに収める専用コンテナ
+    const grid = document.createElement('div');
+    grid.className = 'count-grid';
+    const totalCount = all.length;
+    const fontSize = totalCount <= 7 ? '28px' : (totalCount <= 11 ? '23px' : '20px');
+    grid.style.fontSize = fontSize;
+
     all.forEach(icon => {
       const span = document.createElement('span');
       span.textContent = icon;
+      span.style.display = 'inline-block';
       span.style.animation = 'popIn 0.25s ease-out';
-      eduStageEl.appendChild(span);
+      grid.appendChild(span);
     });
+    eduStageEl.appendChild(grid);
 
     currentEduAnswer = `${targetCount}こ`;
     const choices = new Set([currentEduAnswer]);
+    const offsets = [-2, -1, 1, 2, 3, -3].sort(() => Math.random() - 0.5);
+    for (let off of offsets) {
+      if (choices.size >= 4) break;
+      const fake = targetCount + off;
+      if (fake >= 1) choices.add(`${fake}こ`);
+    }
+    let fallback = 1;
     while (choices.size < 4) {
-      const offset = (Math.random() < 0.5 ? -1 : 1) * (1 + Math.floor(Math.random() * 3));
-      const fake = Math.max(1, targetCount + offset);
-      choices.add(`${fake}こ`);
+      choices.add(`${targetCount + fallback}こ`);
+      fallback++;
     }
     renderEduChoices([...choices].sort(() => Math.random() - 0.5));
   }

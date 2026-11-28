@@ -1038,6 +1038,35 @@
       border-bottom-color: #c0392b !important;
       animation: shake 0.3s ease-in-out;
     }
+    .edu-choice-btn:disabled, .edu-choice-btn.disabled {
+      opacity: 0.42;
+      background: #7f8c8d !important;
+      border-bottom-color: #535c68 !important;
+      cursor: not-allowed;
+      pointer-events: none;
+      transform: none !important;
+    }
+    .time-bonus-tag {
+      position: absolute;
+      top: -12px;
+      right: -8px;
+      background: #2ed573;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 1px 6px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      animation: bonusPop 0.7s ease-out forwards;
+      pointer-events: none;
+      z-index: 10;
+    }
+    @keyframes bonusPop {
+      0% { opacity: 0; transform: scale(0.6) translateY(4px); }
+      30% { opacity: 1; transform: scale(1.15) translateY(0); }
+      70% { opacity: 1; transform: scale(1) translateY(-3px); }
+      100% { opacity: 0; transform: translateY(-12px); }
+    }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-6px); }
@@ -1386,7 +1415,10 @@
     <div style="font-size: 12px; color: #ffd700; margin-bottom: 6px;">あたまをつかってクリスマスクイズに挑戦！💡</div>
 
     <div style="display: flex; justify-content: space-between; width: 100%; max-width: 320px; font-size: 14px; font-weight: 800; margin-bottom: 4px;">
-      <div class="hud-chip">⏰ のこり: <span id="edu-time">60</span>秒</div>
+      <div class="hud-chip" style="position: relative;">
+        ⏰ のこり: <span id="edu-time">75</span>秒
+        <span id="edu-time-bonus" class="time-bonus-tag hidden">+2s</span>
+      </div>
       <div class="hud-chip">せいかい: <span id="edu-score" style="color:#ffd700;">0</span>もん</div>
     </div>
 
@@ -1415,6 +1447,9 @@
           <button class="diff-tab active" data-edudiff="easy" onclick="setEduDifficulty('easy')">🐥 かんたん</button>
           <button class="diff-tab" data-edudiff="normal" onclick="setEduDifficulty('normal')">🦌 ふつう</button>
           <button class="diff-tab" data-edudiff="hard" onclick="setEduDifficulty('hard')">🎅 むずかしい</button>
+        </div>
+        <div id="edu-diff-info" style="font-size: 12px; color: #ffeaa7; margin-top: 8px; font-weight: 700;">
+          ⏱️ せいげん時間: 75秒 （せいかいで＋2秒ボーナス！）
         </div>
       </div>
 
@@ -3471,12 +3506,16 @@
   // ========================================================
   let eduRunning = false;
   let eduScore = 0;
+  let eduMistakes = 0;
+  let currentEduQuestionMistakes = 0;
   let eduTotalAnswered = 0;
-  let eduTime = 40;
+  let eduTime = 75;
   let eduTimer = null;
   let eduDifficulty = 'easy';
   let currentEduAnswer = null;
   let eduLock = false;
+
+  const eduTimeLimits = { easy: 75, normal: 90, hard: 105 };
 
   const eduQuestionEl = document.getElementById('edu-question-text');
   const eduStageEl = document.getElementById('edu-stage');
@@ -3489,8 +3528,28 @@
     document.querySelectorAll('[data-edudiff]').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.edudiff === diff);
     });
+    const infoEl = document.getElementById('edu-diff-info');
+    if (infoEl) {
+      const sec = eduTimeLimits[diff] || 90;
+      infoEl.textContent = `⏱️ せいげん時間: ${sec}秒 （せいかいで＋2秒ボーナス！）`;
+    }
     playTone(550, 'triangle', 0.08, 0.24);
   };
+
+  function triggerEduTimeBonus() {
+    eduTime += 2;
+    eduTimeEl.textContent = eduTime;
+    const bonusEl = document.getElementById('edu-time-bonus');
+    if (bonusEl) {
+      bonusEl.classList.remove('hidden');
+      bonusEl.style.animation = 'none';
+      void bonusEl.offsetWidth; // reflow
+      bonusEl.style.animation = 'bonusPop 0.7s ease-out forwards';
+      setTimeout(() => {
+        bonusEl.classList.add('hidden');
+      }, 700);
+    }
+  }
 
   function startEduGame() {
     window.startEduGame = startEduGame;
@@ -3498,10 +3557,12 @@
     stopEduGame();
 
     eduScore = 0;
+    eduMistakes = 0;
+    currentEduQuestionMistakes = 0;
     eduTotalAnswered = 0;
-    eduTime = 60; // 制限時間を60秒に延長！
+    eduTime = eduTimeLimits[eduDifficulty] || 90;
     eduScoreEl.textContent = '0';
-    eduTimeEl.textContent = '60';
+    eduTimeEl.textContent = eduTime;
     document.getElementById('edu-start-overlay').classList.add('hidden');
     document.getElementById('edu-result-overlay').classList.add('hidden');
     eduRunning = true;
@@ -3528,6 +3589,7 @@
   function nextEduQuestion() {
     if (!eduRunning) return;
     eduLock = false;
+    currentEduQuestionMistakes = 0;
 
     // 多彩な問題ジャンル（9種類）から難易度に合わせて選択＆連続出題を防止！
     let availableTypes = [];
@@ -4179,7 +4241,7 @@
   }
 
   function handleEduAnswer(btn, chosen) {
-    if (eduLock || !eduRunning) return;
+    if (eduLock || !eduRunning || btn.disabled) return;
     initAudio();
 
     if (chosen === currentEduAnswer) {
@@ -4189,6 +4251,9 @@
       eduScoreEl.textContent = eduScore;
       btn.classList.add('correct');
       playSoundSuccess();
+
+      // せいかいボーナス時間（+2秒！）
+      triggerEduTimeBonus();
 
       // サンタの褒め言葉コメント（正解時にランダムでフキダシ表示）
       const santaPraises = [
@@ -4221,12 +4286,22 @@
       check.textContent = '💮 せいかい！';
       eduStageEl.appendChild(check);
 
-      setTimeout(nextEduQuestion, 700);
+      // テンポよく次の問題へ（700ms -> 450msに短縮！）
+      setTimeout(nextEduQuestion, 450);
     } else {
-      eduTotalAnswered++;
+      // 不正解時の処理:
+      // 1問につきミス判定は1回までカウント（連打による正答率激減を防止）
+      if (currentEduQuestionMistakes === 0) {
+        eduMistakes++;
+        currentEduQuestionMistakes++;
+      }
+      btn.disabled = true; // 間違えたボタンは無効化して二重押しを防止
       btn.classList.add('wrong');
       playSoundBad();
-      setTimeout(() => btn.classList.remove('wrong'), 350);
+      setTimeout(() => {
+        btn.classList.remove('wrong');
+        btn.classList.add('disabled');
+      }, 350);
     }
   }
 
@@ -4235,11 +4310,17 @@
     unlockSantaLetter();
     updateNicknameUI();
 
-    const rate = eduTotalAnswered > 0 ? Math.round((eduScore / eduTotalAnswered) * 100) : 100;
+    const totalAttempts = eduScore + eduMistakes;
+    const rate = totalAttempts > 0 ? Math.round((eduScore / totalAttempts) * 100) : 100;
+
     let rank = 'おてつだいの見習い 💡';
-    if (eduScore >= 16) rank = 'おてつだいマスター 👑';
-    else if (eduScore >= 10) rank = 'ひらめきマスター 🌟';
-    else if (eduScore >= 5) rank = 'あたまのたいそう 🦌';
+    if (eduScore >= 12 || (eduScore >= 8 && rate >= 75)) {
+      rank = 'おてつだいマスター 👑';
+    } else if (eduScore >= 7 || (eduScore >= 5 && rate >= 70)) {
+      rank = 'ひらめきマスター 🌟';
+    } else if (eduScore >= 3) {
+      rank = 'あたまのたいそう 🦌';
+    }
 
     document.getElementById('edu-result-rank').textContent = rank;
     document.getElementById('edu-final-score').textContent = `${eduScore}もん`;
@@ -4247,12 +4328,12 @@
 
     // サンタからの感謝メッセージを設定
     let santaThankYou = '';
-    if (eduScore >= 12) {
-      santaThankYou = `「${userNickname}のおかげで、プレゼントの準備がぜんぶ終わったよ！最高のパートナーじゃ、本当にありがとう！」`;
-    } else if (eduScore >= 6) {
-      santaThankYou = `「${userNickname}がたくさん手伝ってくれたから大助かりじゃ！本当にありがとう！」`;
+    if (eduScore >= 10 || (eduScore >= 7 && rate >= 75)) {
+      santaThankYou = `「${userNickname}のおかげで、プレゼントの準備がぜんぶ終わったよ！大正解連発、最高のパートナーじゃ！🎅✨」`;
+    } else if (eduScore >= 5 || rate >= 60) {
+      santaThankYou = `「${userNickname}がたくさん考えて手伝ってくれたから大助かりじゃ！本当にありがとう！🛷」`;
     } else {
-      santaThankYou = `「${userNickname}、いっしょに一生懸命手伝ってくれてうれしかったよ！ありがとう！」`;
+      santaThankYou = `「${userNickname}、いっしょに一生懸命手伝ってくれてうれしかったよ！ナイスチャレンジじゃ！🎁」`;
     }
     const thankYouEl = document.getElementById('edu-santa-thankyou-text');
     if (thankYouEl) thankYouEl.textContent = santaThankYou;
